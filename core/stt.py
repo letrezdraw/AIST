@@ -2,6 +2,8 @@
 
 import speech_recognition as sr
 import threading
+import os
+from playsound import playsound
 from core.tts import speak
 from config import WAKE_WORD
 
@@ -12,10 +14,14 @@ def listen_for_wake_word(recognizer, source):
         try:
             audio = recognizer.listen(source)
             text = recognizer.recognize_google(audio).lower()
-            print(f"Heard: '{text}'") # <-- ADD THIS LINE FOR DEBUGGING
             if WAKE_WORD in text:
                 print("Wake word detected!")
-                speak("Yes? How can I help?")
+                try:
+                    # Construct an absolute path to the sound file in the project root
+                    sound_file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'activate.wav'))
+                    playsound(sound_file_path)
+                except Exception as e:
+                    print(f"Warning: Could not play activation sound. Error: {e}")
                 return True
         except sr.UnknownValueError:
             pass  # Ignore if it doesn't understand
@@ -40,8 +46,7 @@ def listen_for_command(recognizer, source):
         speak("I didn't hear a command. Going back to sleep.")
         return None
     except sr.UnknownValueError:
-        speak("I couldn't understand that. Please try again.")
-        return None
+        return None # Don't say anything, just listen again silently
     except sr.RequestError as e:
         speak("There was a connection issue. Please try again.")
         print(f"Speech Recognition Error: {e}")

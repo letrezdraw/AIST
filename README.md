@@ -13,10 +13,10 @@ AIST is a voice-controlled, conversational AI assistant that runs locally on you
 -   **GPU Accelerated:** Leverages your NVIDIA GPU for lightning-fast responses.
 -   **Background Operation:** Runs silently in the system tray.
 -   **Core Skills:**
-    -   Open applications (`"open vscode damnit"`)
-    -   Search the web (`"Evil cat memes"`)
-    -   Get the current time (`"whait what's the time right now?"`)
-    -   Check system status (`"Whats the uses of CPU"`, `"Check battery status"`)
+    -   Open applications (`"Open notepad"`)
+    -   Search the web (`"Search for python tutorials"`)
+    -   Get the current time (`"What is the current time?"`)
+    -   Check system status (`"What's the CPU usage?"`, `"Check battery status"`)
 
 ## ⚙️ Installation
 
@@ -54,7 +54,7 @@ pip install -r requirements.txt
 This project uses a local Large Language Model. You need to download it separately as it's too large for GitHub.
 
 -   **Model:** `mistral-7b-instruct-v0.2.Q4_K_M.gguf`
--   [**Download Link:**](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF/blob/main/mistral-7b-instruct-v0.2.Q4_K_M.gguf) Click here to download from Hugging Face
+-   **Download Link:** Click here to download from Hugging Face
 
 **Important:** Place the downloaded `.gguf` file directly inside your `AIST` project folder.
 
@@ -74,8 +74,6 @@ The assistant will start in the background, and you'll see its icon in the syste
 ## 🗺️ Project Roadmap
 
 Here's what's planned for the future of AIST:
-
--   **Executable AI Assistant:** By default, it runs on Windows startup, but an `.exe` option is available for user preference.
 -   **Smarter Intent Recognition:** Move from simple keywords to full LLM-based intent recognition for more natural commands.
 -   **Enhanced User Feedback:** Add audio cues for different states (listening, processing).
 -   **New Skills:** Real-time weather reports, system controls (volume, mute, lock, shutdown).

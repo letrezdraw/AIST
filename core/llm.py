@@ -31,3 +31,30 @@ def process_with_llm(llm, command):
     except Exception as e:
         print(f"Error during LLM processing: {e}")
         return "I encountered an error while thinking."
+
+def get_intent_from_llm(llm, command):
+    """
+    Uses the LLM to determine the user's intent and extract parameters.
+    Returns a dictionary with 'command' and 'parameters'.
+    """
+    # This prompt is crucial. It constrains the LLM to act as a command parser.
+    prompt = f'''
+    Analyze the user's command and respond with a single, minified JSON object.
+    The JSON object must have two keys: "command" and "parameters".
+    The "command" can be one of the following: ["open_app", "close_app", "search_web", "get_time", "get_system_info", "chat"].
+    The "parameters" is a dictionary of extracted values.
+
+    User command: "open notepad for me"
+    {{"command": "open_app", "parameters": {{"app_name": "notepad"}}}}
+
+    User command: "what is the cpu usage"
+    {{"command": "get_system_info", "parameters": {{"stat_type": "cpu"}}}}
+
+    User command: "what is the meaning of life"
+    {{"command": "chat", "parameters": {{"query": "what is the meaning of life"}}}}
+
+    User command: "{command}"
+    '''
+    print("Determining intent...")
+    response = llm(prompt, stream=False, max_new_tokens=128, temperature=0)
+    return response

@@ -4,3 +4,4 @@ SpeechRecognition
 ctransformers[cuda]
 psutil
 pystray
+playsound==1.2.2
