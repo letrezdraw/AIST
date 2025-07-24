@@ -1,7 +1,7 @@
 # AIST - Your Personal AI Assistant for Windows
 
 ![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+[![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 AIST is a voice-controlled, conversational AI assistant that runs locally on your Windows machine. It's designed to be highly integrated with the OS, allowing you to perform tasks, get information, and have conversations, all with the power of your voice and the privacy of local processing.
 
@@ -86,4 +86,4 @@ Here's what's planned for the future of AIST:
 Contributions are welcome! If you have ideas for new skills or improvements, feel free to fork the repository, make your changes, and submit a pull request.
 
 ## 📜 License
-This project is licensed under the MIT License.
+This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](LICENSE.md).
