@@ -25,6 +25,11 @@ def run_assistant(tray_icon):
 
     speak("Assistant activated. Initializing microphone...")
     recognizer = sr.Recognizer()
+    # Adjust the recognizer's sensitivity to ambient noise.
+    # A higher value means it's less sensitive, which helps ignore the end of its own speech.
+    recognizer.energy_threshold = 1000
+    # This setting helps it adapt to changing noise levels automatically.
+    recognizer.dynamic_energy_threshold = True
 
     try:
         with sr.Microphone() as source:

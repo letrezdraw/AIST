@@ -12,6 +12,7 @@ def listen_for_wake_word(recognizer, source):
         try:
             audio = recognizer.listen(source)
             text = recognizer.recognize_google(audio).lower()
+            print(f"Heard: '{text}'") # <-- ADD THIS LINE FOR DEBUGGING
             if WAKE_WORD in text:
                 print("Wake word detected!")
                 speak("Yes? How can I help?")
