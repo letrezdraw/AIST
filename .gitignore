@@ -1,1 +1,2 @@
 git rm --cached gguf
+git rm --cached .gguf
