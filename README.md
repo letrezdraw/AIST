@@ -1,87 +1,75 @@
-# AIST - Your Personal AI Assistant for Windows
+# AIST - AI Assistant
 
-![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
-[![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+> A modular, voice-activated AI assistant for Windows that runs locally on your machine.
 
-AIST is a voice-controlled, conversational AI assistant that runs locally on your Windows machine. It's designed to be highly integrated with the OS, allowing you to perform tasks, get information, and have conversations, all with the power of your voice and the privacy of local processing.
+AIST is AI assistant designed to provide a deeply integrated, conversational, and extensible AI companion that respects user privacy by performing all core processing on-device.
 
-## ✨ Features
+---
 
--   **Voice-Controlled:** Fully operational via voice commands.
--   **Wake Word Activation:** Listens for "Hey Assistant" to start.
--   **Local & Private:** All AI processing is done on your machine using a local LLM. Nothing is sent to the cloud.
--   **GPU Accelerated:** Leverages your NVIDIA GPU for lightning-fast responses.
--   **Background Operation:** Runs silently in the system tray.
--   **Core Skills:**
-    -   Open applications (`"Open notepad"`)
-    -   Search the web (`"Search for python tutorials"`)
-    -   Get the current time (`"What is the current time?"`)
-    -   Check system status (`"What's the CPU usage?"`, `"Check battery status"`)
+## ✨ Core Features
 
-## ⚙️ Installation
+----
+----
+*   **Voice Activation**: Hands-free activation using a customizable wake word.
+*   **Local AI Processing**: All intent recognition and chat functions are handled by a local LLM (`Mistral 7B`), ensuring privacy and offline functionality.
+*   **Conversational Context**: Remembers the last few turns of a conversation to understand follow-up questions.
+*   **Long-Term Memory (Learning)**:
+    *   Can be taught specific facts using the "remember" or "learn" command.
+    *   Automatically recalls and uses learned information when relevant.
+*   **System Control**:
+    *   Open any application on the system (e.g., "open notepad").
+    *   Close running applications (e.g., "close notepad").
+*   **Web Search**: Can open the default web browser to perform a Google search.
+*   **Background Operation**: Runs as a persistent icon in the system tray.
 
-Follow these steps to get AIST running on your system.
+---
 
-### 1. Prerequisites
+## 🚀 Getting Started
 
--   **Python:** Make sure you have Python 3.9 or newer installed. You can get it from python.org.
--   **Git:** You'll need Git to clone the repository. You can get it from git-scm.com.
--   **(Optional) NVIDIA GPU:** For the best performance, an NVIDIA GPU with CUDA support is recommended.
+### Prerequisites
+*   Windows 10/11
+*   Python 3.9+
+*   A microphone
+*   An NVIDIA GPU (highly recommended for good performance)
 
-### 2. Setup Instructions
-
-**1. Clone the Repository:**
-Open a terminal or command prompt and run:
-```bash
-git clone https://github.com/letrezdraw/AIST.git
-cd AIST
-```
-
-**2. Create a Virtual Environment:**
-It's highly recommended to use a virtual environment to keep dependencies isolated.
-```bash
-python -m venv venv
-venv\Scripts\activate
-```
-
-**3. Install Dependencies:**
-Install all the required Python packages using the `requirements.txt` file.
-```bash
-pip install -r requirements.txt
-```
-
-**4. Download the AI Model:**
-This project uses a local Large Language Model. You need to download it separately as it's too large for GitHub.
-
--   **Model:** `mistral-7b-instruct-v0.2.Q4_K_M.gguf`
--   **Download Link:** Click here to download from Hugging Face
-
-**Important:** Place the downloaded `.gguf` file directly inside your `AIST` project folder.
-
-**5. Configure the Assistant:**
-Open the `config.py` file and ensure the `MODEL_PATH` matches the name of the file you just downloaded. It should already be correct by default.
-
-## 🚀 Usage
-
-Once everything is installed and configured, you can start the assistant by running:
-
-```bash
+----
+----
+----
+### Installation
+1.  **Clone the repository:**
+    ```sh
+    git clone <your-repository-url>
+    cd AIST
+    ```
+2.  **Install dependencies:**
+    ```sh
+    pip install -r requirements.txt
+    ```
+3.  **Download AI Model:**
+    - Download a GGUF model like `mistral-7b-instruct-v0.2.Q4_K_M.gguf` from Hugging Face.
+    - Place the `.gguf` file in the project's root directory.
+4.  **Configure:**
+    - Open `config.py` and ensure `MODEL_PATH` matches your model's filename.
+    
+## ▶️ Usage
+Run the assistant from your terminal:
+```sh
 python main.py
 ```
+The AIST icon will appear in your system tray. Say "hey assistant" followed by your command.
 
-The assistant will start in the background, and you'll see its icon in the system tray. Say the wake word `"Hey Assistant"` to activate it.
+**Example Commands:**
+*   *"hey assistant, what time is it?"*
+*   *"hey assistant, open notepad."*
+*   *"hey assistant, remember that my PIN is 1234."*
+*   *"hey assistant, what is my PIN?"*
 
-## 🗺️ Project Roadmap
-
-Here's what's planned for the future of AIST:
--   **Smarter Intent Recognition:** Move from simple keywords to full LLM-based intent recognition for more natural commands.
--   **Enhanced User Feedback:** Add audio cues for different states (listening, processing).
--   **New Skills:** Real-time weather reports, system controls (volume, mute, lock, shutdown).
--   **Robust Logging:** For easier debugging and development.
+## 📚 Documentation
+For a deep dive into the project's architecture, how it works, and a guide to adding new skills, please see the full **Project Documentation**.
 
 ## 🤝 Contributing
+Contributions, issues, and feature requests are welcome!
 
-Contributions are welcome! If you have ideas for new skills or improvements, feel free to fork the repository, make your changes, and submit a pull request.
+## 📄 License
+This project is licensed under the MIT License.
 
-## 📜 License
-This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](LICENSE.md).

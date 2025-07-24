@@ -1,4 +1,5 @@
 # Ignore GGUF model files
 *.gguf
-git add .gitignore
-git commit -m "feat: Ignore .gguf model files"
+
+# Ignore ChromaDB persistent storage
+chroma/

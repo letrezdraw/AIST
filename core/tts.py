@@ -14,7 +14,6 @@ except Exception as e:
 def speak(text):
     """Converts text to speech."""
     if engine and text:
-        print(f"{ASSISTANT_NAME}: {text}")
         engine.say(text)
         try:
             engine.runAndWait()

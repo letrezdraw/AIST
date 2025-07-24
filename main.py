@@ -9,6 +9,7 @@ from PIL import Image
 # --- AIST Imports ---
 from core.llm import initialize_llm
 from core.tts import speak
+from core.memory import retrieve_relevant_facts
 from core.stt import listen_for_wake_word, listen_for_command
 from skills.dispatcher import command_dispatcher
 
@@ -17,6 +18,8 @@ class AppState:
     """A simple class to hold shared application state."""
     def __init__(self):
         self.is_running = True
+
+MAX_HISTORY_TURNS = 3 # Number of conversation turns (user + assistant) to remember
 
 # --- Main Loop ---
 def run_assistant(app_state, tray_icon):
@@ -28,6 +31,9 @@ def run_assistant(app_state, tray_icon):
         if tray_icon.visible:
             tray_icon.stop()
         return
+
+    # Initialize conversation history
+    conversation_history = []
 
     speak("Assistant activated. Initializing microphone...")
     recognizer = sr.Recognizer()
@@ -65,19 +71,28 @@ def run_assistant(app_state, tray_icon):
                     break
 
                 if command:
-                    # 3. Process the command
-                    response = command_dispatcher(command, llm)
+                    # 3. Retrieve relevant facts from memory before processing
+                    relevant_facts = retrieve_relevant_facts(command)
+                    if relevant_facts:
+                        print(f"Found relevant facts: {relevant_facts}")
+
+                    # 4. Process the command with context and facts
+                    response = command_dispatcher(command, llm, conversation_history, relevant_facts)
 
                     if response is False:
                         aist_say("Goodbye!")
                         app_state.is_running = False # Set flag to terminate the loop
                         break
-                    elif isinstance(response, str) and response.strip():
-                        # More robust check for unhelpful LLM "thinking out loud" responses
-                        if "[insert" in response or "based on the user's request" in response.lower():
-                            aist_say("I had trouble processing that. Could you please rephrase your command?")
-                        else:
-                            aist_say(response)
+                    elif isinstance(response, str) and response.strip(): # We got a valid response
+                        aist_say(response)
+                        # Add the exchange to our history
+                        conversation_history.append(("user", command))
+                        conversation_history.append(("assistant", response))
+
+                        # Keep the history from growing too large
+                        if len(conversation_history) > MAX_HISTORY_TURNS * 2:
+                            conversation_history = conversation_history[-(MAX_HISTORY_TURNS * 2):]
+
                 # If command is None (due to timeout or not understanding), the loop
                 # simply restarts, correctly waiting for the wake word again.
     except (IOError, AttributeError) as e:

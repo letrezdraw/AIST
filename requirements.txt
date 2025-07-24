@@ -5,3 +5,5 @@ ctransformers[cuda]
 psutil
 pystray
 playsound==1.2.2
+chromadb
+sentence-transformers

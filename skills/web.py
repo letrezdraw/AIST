@@ -1,9 +1,11 @@
 # skills/web.py - Web-related skills
 
 import webbrowser
-from core.tts import speak
 
-def skill_search_web(query):
+def skill_search_web(parameters):
     """Searches the web."""
-    speak(f"Searching the web for {query}.")
+    query = parameters.get("query")
+    if not query:
+        return "What would you like me to search for?"
     webbrowser.open(f"https://www.google.com/search?q={query}")
+    return f"Searching the web for {query}."

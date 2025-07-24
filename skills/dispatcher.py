@@ -1,22 +1,36 @@
 import re
 import json
-from core.tts import speak
-from core.llm import process_with_llm, get_intent_from_llm
-from skills.system import skill_open_application, skill_close_application, skill_get_time, skill_get_system_info
+from core.llm import process_with_llm, get_intent_from_llm, summarize_system_output
+from skills.system import skill_open_application, skill_close_application, skill_get_time, skill_get_system_info, skill_execute_system_command
+from skills.memory_skills import skill_learn_fact, skill_list_memories, skill_forget_fact
 from skills.web import skill_search_web
 
-def command_dispatcher(command, llm):
+# --- Skill Mapping ---
+# This dictionary-based approach is much cleaner and more scalable than if/elif chains.
+# To add a new skill, just import it and add it to this dictionary.
+SKILLS = {
+    "open_app": skill_open_application,
+    "close_app": skill_close_application,
+    "search_web": skill_search_web,
+    "get_time": skill_get_time,
+    "get_system_info": skill_get_system_info,
+    "learn_fact": skill_learn_fact,
+    "list_memories": skill_list_memories,
+    "forget_fact": skill_forget_fact,
+    "execute_system_command": skill_execute_system_command,
+}
+
+def command_dispatcher(command, llm, conversation_history, relevant_facts):
     """
-    Determines user intent via LLM and routes to the appropriate skill.
-    Returns `False` to signal the main loop to exit, `True` otherwise.
+    Determines user intent, routes to the appropriate skill, and returns the response.
+    Returns a string response to be spoken, or `False` to signal exit.
     """
     # Immediately check for an exit command to ensure reliable shutdown.
     if "goodbye" in command or "exit" in command or "stop listening" in command:
-        speak("Goodbye!")
         return False  # Signal to exit
 
     try:
-        raw_response = get_intent_from_llm(llm, command)
+        raw_response = get_intent_from_llm(llm, command, conversation_history, relevant_facts)
         # Use regex to find the JSON object within the LLM's raw response
         json_match = re.search(r'\{.*\}', raw_response, re.DOTALL)
         if not json_match:
@@ -32,21 +46,19 @@ def command_dispatcher(command, llm):
         command_name = "chat"
         parameters = {"query": command}
 
-    if command_name == "open_app":
-        skill_open_application(parameters.get("app_name", ""))
-    elif command_name == "close_app":
-        skill_close_application(parameters.get("app_name", ""))
-    elif command_name == "search_web":
-        skill_search_web(parameters.get("query", ""))
-    elif command_name == "get_time":
-        skill_get_time()
-    elif command_name == "get_system_info":
-        skill_get_system_info(parameters.get("stat_type", ""))
-    elif command_name == "chat":
-        response = process_with_llm(llm, parameters.get("query", command))
-        speak(response)
-    else:
-        response = process_with_llm(llm, command) # Fallback for unrecognized commands
-        speak(response)
+    # --- Route to the appropriate skill with special handling for system commands ---
+    if command_name == "execute_system_command":
+        # Execute the command to get raw output
+        raw_output = skill_execute_system_command(parameters)
+        # Ask the LLM to summarize the raw output for the user
+        return summarize_system_output(llm, command, raw_output)
 
-    return True  # Signal to continue
+    if command_name in SKILLS:
+        skill_function = SKILLS[command_name]
+        # All other skills are called directly
+        return skill_function(parameters)
+    elif command_name == "chat":
+        return process_with_llm(llm, parameters.get("query", command), conversation_history, relevant_facts)
+    else:
+        # Fallback for unrecognized commands
+        return process_with_llm(llm, command, conversation_history, relevant_facts)
