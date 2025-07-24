@@ -1,2 +1,2 @@
-# AIST.io
-Ai windows assistant ( Build in progress )
+# AIST
+AI windows assistant ( Build in progress )
