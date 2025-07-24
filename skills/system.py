@@ -2,7 +2,6 @@
 
 import os
 import datetime
-import psutil
 from core.tts import speak
 
 def skill_open_application(app_name):
@@ -21,16 +20,5 @@ def skill_get_time():
     speak(f"The current time is {current_time}.")
 
 def skill_get_system_info(stat_type):
-    """Gets and speaks system information like CPU and battery status."""
-    if "cpu" in stat_type or "processor" in stat_type:
-        cpu_usage = psutil.cpu_percent(interval=1)
-        speak(f"The current CPU usage is at {cpu_usage:.1f} percent.")
-    elif "battery" in stat_type or "power" in stat_type:
-        battery = psutil.sensors_battery()
-        if battery:
-            plugged_in = "plugged in and charging" if battery.power_plugged else "on battery power"
-            speak(f"The battery is at {battery.percent} percent and is currently {plugged_in}.")
-        else:
-            speak("I can't find a battery on this system. It might be a desktop computer.")
-    else:
-        speak(f"I'm not sure how to check the system status for {stat_type}.")
+    """Gets system information (placeholder)."""
+    speak(f"I can't check the {stat_type} yet, but this feature is coming soon.")

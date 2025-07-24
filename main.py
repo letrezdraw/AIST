@@ -1,4 +1,4 @@
-# AIST.io - Main Entry Point
+# AIST - Main Entry Point
 
 # --- Core Libraries ---
 import threading
@@ -7,7 +7,7 @@ import speech_recognition as sr
 from pystray import MenuItem as item, Icon as icon
 from PIL import Image
 
-# --- AIST.io Imports ---
+# --- AIST Imports ---
 from core.llm import initialize_llm
 from core.tts import speak
 from core.stt import listen_for_wake_word, listen_for_command
