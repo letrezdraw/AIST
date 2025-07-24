@@ -1,3 +1,4 @@
-git rm --cached gguf
-git rm --cached .gguf
-mistral-7b-instruct-v0.2.Q4_K_M.gguf
+# Ignore GGUF model files
+*.gguf
+git add .gitignore
+git commit -m "feat: Ignore .gguf model files"
