@@ -66,8 +66,8 @@ def quit_assistant(tray_icon, item):
 def main():
     """Sets up the system tray icon and starts the assistant thread."""
     image = Image.open("icon.png")
-    menu = (item('Quit', quit_assistant),)
-    tray_icon = icon("AIST.io", image, "AIST.io Assistant", menu)
+    menu = (item('Quit AIST', quit_assistant),)
+    tray_icon = icon("AIST", image, "AIST Assistant", menu)
 
     threading.Thread(target=run_assistant, args=(tray_icon,), daemon=True).start()
     tray_icon.run()
