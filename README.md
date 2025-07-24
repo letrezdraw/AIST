@@ -13,10 +13,10 @@ AIST is a voice-controlled, conversational AI assistant that runs locally on you
 -   **GPU Accelerated:** Leverages your NVIDIA GPU for lightning-fast responses.
 -   **Background Operation:** Runs silently in the system tray.
 -   **Core Skills:**
-    -   Open applications (`"Open notepad"`)
-    -   Search the web (`"Search for the weather in Pune"`)
-    -   Get the current time (`"What time is it?"`)
-    -   Check system status (`"What's the CPU usage?"`, `"Check battery status"`)
+    -   Open applications (`"open vscode damnit"`)
+    -   Search the web (`"Evil cat memes"`)
+    -   Get the current time (`"whait what's the time right now?"`)
+    -   Check system status (`"Whats the uses of CPU"`, `"Check battery status"`)
 
 ## ⚙️ Installation
 
