@@ -20,7 +20,7 @@
 <div align="center">
 
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)
 ![Status](https://img.shields.io/badge/status-in--development-orange.svg)
 
 </div>
@@ -169,4 +169,3 @@ To shut down, say an **exit phrase** (e.g., "assist exit"), right-click the syst
 - [ ] **API-Driven Skills**: Implement skills for weather, news, and other online services.
 - [ ] **GUI Overlay**: Create a small, non-intrusive GUI to display text and status.
 - [ ] **Packaged Application**: Bundle the project into a single `.exe` with an installer.
-
