@@ -1,4 +1,5 @@
 # AIST - Autonomous Intelligent System Tasker
+## (Under Construction)
 
 AIST is a modular, offline-first, voice-controlled AI assistant framework for Windows. It is designed to be a private and extensible platform, running entirely on your local machine. The core components (STT, TTS, LLM) operate without needing an internet connection, ensuring your data stays with you.
 
