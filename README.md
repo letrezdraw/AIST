@@ -32,20 +32,24 @@ Follow these steps to get AIST running on your machine.
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/letrezdraw/AIST
 cd AIST
 ```
 
 ### 2. Create a Virtual Environment
 
 It is highly recommended to use a virtual environment to manage dependencies.
-
 ```bash
+# Open Power shell inside root directory of AIST
 # Create the virtual environment
 python -m venv venv
 
 # Activate it
 .\venv\Scripts\activate
+
+# if any error while creating or accessing Virtual Enviornment
+# run this command first -
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine 
 ```
 
 ### 3. Install Dependencies
@@ -69,31 +73,31 @@ AIST requires three different models to function. Download them and place them i
 
 **A. Large Language Model (LLM)**
 - **Format**: GGUF
-- **Recommendation**: Download a model like `Mistral-7B-Instruct-v0.2.Q4_K_M.gguf`. You can find many options on Hugging Face.
+- **Recommendation**: Download a model like `[download](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF/blob/main/mistral-7b-instruct-v0.2.Q4_K_M.gguf)` `Mistral-7B-Instruct-v0.2.Q4_K_M.gguf`. You can find many options on Hugging Face.
 - **Location**: Place the `.gguf` file in the root `AIST` directory.
 - **Configuration**: Update the `MODEL_PATH` in `config.py` to match the exact filename of your downloaded model.
 
 **B. Text-to-Speech Model (TTS)**
 - **Source**: Piper Voices
-- **Recommendation**: `en_US-lessac-medium.onnx` is a good starting point.
+- **Recommendation**: `[download](https://huggingface.co/rhasspy/piper-voices/tree/main/en/en_US/lessac/medium)` `en_US-lessac-medium` is a good starting point.
 - **Location**: Create a `piper_voices` folder. Place both the `.onnx` file and its corresponding `.json` config file inside.
 - **Configuration**: Ensure `PIPER_VOICE_MODEL` in `config.py` points to the `.onnx` file.
 
 **C. Speech-to-Text Model (STT)**
 - **Source**: Vosk Models
-- **Recommendation**: Download `vosk-model-small-en-us-0.15`.
+- **Recommendation**: Download `[download](https://alphacephei.com/vosk/models)` `vosk-model-small-en-us-0.15`. (40mb) model - other vosk model can work better `vosk-model-en-us-0.22`
 - **Location**: Create a `vosk_models` folder. Unzip the download and place the model folder (e.g., `vosk-model-small-en-us-0.15`) inside `vosk_models`.
 - **Configuration**: Ensure `VOSK_MODEL_PATH` in `config.py` points to this inner folder.
 
 ## How to Run AIST
 
-AIST requires two separate console windows to run.
+AIST requires two separate console windows to run. Use StartConsole.bat file which is already made for easy access of terminal with VE
 
 1.  **Start the Backend**: Open a console, activate the virtual environment, and run:
     ```bash
     python run_backend.py
     ```
-    Wait for it to confirm that the AI model has loaded.
+    Wait for it to confirm that the AI model has loaded, and listening 
 
 2.  **Start the Frontend**: Open a **second** console, activate the virtual environment, and run:
     ```bash
