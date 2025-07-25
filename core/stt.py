@@ -1,56 +1,70 @@
-# core/stt.py - Speech-to-Text Engine
+# core/stt.py - Speech-to-Text Engine using Vosk
 
-import speech_recognition as sr
-import threading
+import logging
+import json
 import os
-from playsound import playsound
-from core.tts import speak
-from config import WAKE_WORD
+import pyaudio
+from vosk import Model, KaldiRecognizer
+from config import VOSK_MODEL_PATH
 
-def listen_for_wake_word(recognizer, source):
-    """Listens in the background for the wake word using the provided audio source."""
-    print(f"\nListening for wake word: '{WAKE_WORD}'")
-    while True:
-        try:
-            audio = recognizer.listen(source)
-            text = recognizer.recognize_google(audio).lower()
-            if WAKE_WORD in text:
-                print("Wake word detected!")
-                try:
-                    # Construct an absolute path to the sound file in the project root
-                    sound_file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'activate.wav'))
-                    playsound(sound_file_path)
-                except Exception as e:
-                    print(f"Warning: Could not play activation sound. Error: {e}")
-                return True
-        except sr.UnknownValueError:
-            pass  # Ignore if it doesn't understand
-        except sr.RequestError as e:
-            print(f"Could not request results; {e}")
-            speak("I'm having trouble connecting to the speech service.")
-            threading.sleep(5)
-        except Exception as e:
-            print(f"An unexpected error occurred during wake word listening: {e}")
-            speak("I've run into a microphone issue. Please restart me.")
-            return False
+log = logging.getLogger(__name__)
 
-def listen_for_command(recognizer, source):
-    """Listens for a user command after the wake word is detected."""
-    print("Listening for your command...")
+# --- Vosk Initialization ---
+vosk_model = None
+try:
+    if not os.path.exists(VOSK_MODEL_PATH):
+        log.fatal(f"Vosk model not found at '{VOSK_MODEL_PATH}'")
+        log.fatal("Please download a model from https://alphacephei.com/vosk/models")
+    else:
+        log.info(f"Loading Vosk model from '{VOSK_MODEL_PATH}'...")
+        vosk_model = Model(VOSK_MODEL_PATH)
+        log.info("Vosk model loaded successfully.")
+except Exception as e:
+    log.error(f"Error initializing Vosk model: {e}", exc_info=True)
+
+def listen_generator(app_state):
+    """
+    A generator that continuously listens to the microphone and yields transcribed text.
+    Handles microphone stream and Vosk recognition internally.
+    Stops when app_state.is_running becomes False.
+    """
+    if not vosk_model:
+        log.error("Vosk model not loaded. Cannot start listening.")
+        return
+
+    p = pyaudio.PyAudio()
+    stream = None
     try:
-        audio = recognizer.listen(source, timeout=5, phrase_time_limit=15)
-        command = recognizer.recognize_google(audio).lower()
-        print(f"You said: {command}")
-        return command
-    except sr.WaitTimeoutError:
-        speak("I didn't hear a command. Going back to sleep.")
-        return None
-    except sr.UnknownValueError:
-        return None # Don't say anything, just listen again silently
-    except sr.RequestError as e:
-        speak("There was a connection issue. Please try again.")
-        print(f"Speech Recognition Error: {e}")
-        return None
+        stream = p.open(
+            format=pyaudio.paInt16,
+            channels=1,
+            rate=16000,
+            input=True,
+            frames_per_buffer=8192
+        )
+        stream.start_stream()
+        log.info("Microphone stream opened for Vosk.")
+
+        recognizer = KaldiRecognizer(vosk_model, 16000)
+        log.debug("Vosk recognizer initialized.")
+
+        while app_state.is_running:
+            data = stream.read(4096, exception_on_overflow=False)
+            if recognizer.AcceptWaveform(data):
+                result_json = recognizer.Result()
+                result_dict = json.loads(result_json)
+                transcribed_text = result_dict.get('text', '').strip().lower()
+                
+                if transcribed_text:
+                    log.debug(f"Heard: '{transcribed_text}'")
+                    yield transcribed_text
+
     except Exception as e:
-        print(f"An unexpected error occurred during command listening: {e}")
-        return None
+        log.error(f"An error occurred in the listening generator: {e}", exc_info=True)
+    finally:
+        if stream and stream.is_active():
+            stream.stop_stream()
+            stream.close()
+            log.info("Microphone stream closed.")
+        p.terminate()
+        log.info("PyAudio terminated.")

@@ -1,133 +1,150 @@
 # AIST - Main Entry Point
 
 # --- Core Libraries ---
-import sys
-import speech_recognition as sr
+import logging
 from pystray import MenuItem as item, Icon as icon
 from PIL import Image
+import keyboard
+import threading
+from typing import Callable
 
 # --- AIST Imports ---
-from core.llm import initialize_llm
 from core.tts import speak
-from core.memory import retrieve_relevant_facts
-from core.stt import listen_for_wake_word, listen_for_command
-from skills.dispatcher import command_dispatcher
+from core.stt import listen_generator
+from core.ipc.client import IPCClient
+from config import ACTIVATION_PHRASES, DEACTIVATION_PHRASES, EXIT_PHRASES
+from core.log_setup import setup_logging
 
 # --- Application State ---
 class AppState:
     """A simple class to hold shared application state."""
     def __init__(self):
+        """Initializes the application state to running."""
         self.is_running = True
 
-MAX_HISTORY_TURNS = 3 # Number of conversation turns (user + assistant) to remember
-
 # --- Main Loop ---
-def run_assistant(app_state, tray_icon):
-    """The main logic loop for the assistant, designed to run in a thread."""
-    llm = initialize_llm()
-    if not llm:
-        speak("Assistant cannot start because the AI model failed to load.")
-        app_state.is_running = False
-        if tray_icon.visible:
-            tray_icon.stop()
-        return
+def run_assistant(app_state: AppState, ipc_client: IPCClient, shutdown_callback: Callable[[], None]) -> None:
+    """
+    The main user-facing logic loop. It handles microphone input and sends
+    commands to the backend via the IPC client.
 
-    # Initialize conversation history
-    conversation_history = []
+    This function initializes the STT engine, runs a state machine to handle
+    DORMANT/LISTENING states, and sends commands to the backend via the IPC client.
+    It's designed to run in a separate thread and will call the `shutdown_callback`
+    to terminate the entire application if it exits unexpectedly.
 
-    speak("Assistant activated. Initializing microphone...")
-    recognizer = sr.Recognizer()
-    # Adjust the recognizer's sensitivity to ambient noise.
-    # A higher value means it's less sensitive, which helps ignore the end of its own speech.
-    recognizer.energy_threshold = 1000
-    # Seconds of non-speaking audio before a phrase is considered complete
-    recognizer.pause_threshold = 1.5
-    # This setting helps it adapt to changing noise levels automatically.
-    recognizer.dynamic_energy_threshold = True
+    Args:
+        app_state (AppState): The shared object holding the application's running state.
+        ipc_client (IPCClient): The client instance for communicating with the backend.
+        shutdown_callback (Callable[[], None]): A zero-argument function to be called to
+                                               initiate a graceful shutdown of the application.
+    """
+    log = logging.getLogger(__name__)
 
+    # Provide an audio confirmation that the voice is ready and the assistant thread has started.
+    # This is better placed here than in main() to ensure it's in the correct thread context.
+    speak("Voice has been implemented.")
+
+    # This outer try/finally ensures that if the assistant thread crashes for any reason,
+    # it triggers a full application shutdown, preventing a "zombie" state.
     try:
-        with sr.Microphone() as source:
-            print("Adjusting for ambient noise... Please wait.")
-            recognizer.adjust_for_ambient_noise(source, duration=1)
-            print("Microphone ready.")
+        # --- State Machine ---
+        # 'DORMANT': Listening only for activation or exit phrases.
+        # 'LISTENING': Actively listening for commands, deactivation, or exit phrases.
+        assistant_state = 'DORMANT'
+        log.info("--- AIST is DORMANT. Listening for wake word. ---")
 
-            speak("Waiting for the wake word to begin.")
+        # The main loop now consumes from the listening generator.
+        # The generator handles all microphone and STT logic internally.
+        for user_input in listen_generator(app_state):
+            if not app_state.is_running:
+                break
 
-            # --- Main application loop: Listen -> Command -> Process -> Repeat ---
-            while app_state.is_running:
-                # 1. Listen for the wake word to activate the assistant
-                if not listen_for_wake_word(recognizer, source):
-                    # This indicates a critical error from the STT function itself
-                    speak("Halting due to a critical microphone error.")
-                    break # Exit the main while loop
-
-                # 2. Wake word detected, now listen for a single command
-                speak("I'm listening.") # A shorter, better activation message
-
-                command = listen_for_command(recognizer, source)
-
-                # Check if quit was requested from the tray while we were listening
-                if not app_state.is_running:
+            if assistant_state == 'DORMANT':
+                if any(phrase in user_input for phrase in ACTIVATION_PHRASES):
+                    assistant_state = 'LISTENING'
+                    log.info("Activation phrase heard. AIST is now LISTENING.")
+                    speak("I'm listening.")
+            
+            elif assistant_state == 'LISTENING':
+                # Always check for the exit phrase first.
+                if any(phrase in user_input for phrase in EXIT_PHRASES):
+                    speak("Goodbye.")
+                    shutdown_callback()
                     break
+                
+                # Check for deactivation phrase.
+                if any(phrase in user_input for phrase in DEACTIVATION_PHRASES):
+                    assistant_state = 'DORMANT'
+                    log.info("Deactivation phrase heard. AIST is now DORMANT.")
+                    speak("Pausing.")
+                else:
+                    # This is a regular command to be processed.
+                    log.info(f"Command Heard: '{user_input}'")
+                    ipc_client.send_command(user_input)
 
-                if command:
-                    # 3. Retrieve relevant facts from memory before processing
-                    relevant_facts = retrieve_relevant_facts(command)
-                    if relevant_facts:
-                        print(f"Found relevant facts: {relevant_facts}")
-
-                    # 4. Process the command with context and facts
-                    response = command_dispatcher(command, llm, conversation_history, relevant_facts)
-
-                    if response is False:
-                        aist_say("Goodbye!")
-                        app_state.is_running = False # Set flag to terminate the loop
-                        break
-                    elif isinstance(response, str) and response.strip(): # We got a valid response
-                        aist_say(response)
-                        # Add the exchange to our history
-                        conversation_history.append(("user", command))
-                        conversation_history.append(("assistant", response))
-
-                        # Keep the history from growing too large
-                        if len(conversation_history) > MAX_HISTORY_TURNS * 2:
-                            conversation_history = conversation_history[-(MAX_HISTORY_TURNS * 2):]
-
-                # If command is None (due to timeout or not understanding), the loop
-                # simply restarts, correctly waiting for the wake word again.
-    except (IOError, AttributeError) as e:
-        speak("Could not access the microphone. Please ensure it is connected and permissions are set.")
-        print(f"Microphone Error: {e}")
     except Exception as e:
-        speak("An unexpected error occurred with the microphone.")
-        print(f"Unexpected Error: {e}")
-    
-    app_state.is_running = False
-    if tray_icon.visible:
-        tray_icon.stop()
-
-def quit_assistant(tray_icon, item, app_state):
-    """Callback function to quit the assistant from the tray menu."""
-    print("Quit requested from tray. Shutting down.")
-    app_state.is_running = False
-    tray_icon.stop()
-
-def aist_say(message):
-    """Helper function for the assistant to speak and print messages."""
-    print(f"AIST: {message}")
-    speak(message)
+        log.error(f"An unhandled exception occurred in the assistant thread: {e}", exc_info=True)
+    finally:
+        # This block ensures that no matter how the loop exits (normally or via exception),
+        # we attempt a graceful shutdown of the whole application.
+        if app_state.is_running:
+            log.warning("Assistant loop is terminating unexpectedly. Triggering full shutdown.")
+            # Set the flag to false before calling the callback to prevent potential recursion
+            app_state.is_running = False
+            shutdown_callback()
+        log.info("Assistant loop has terminated.")
 
 def main():
-    """Sets up the system tray icon and starts the assistant thread."""
-    # Using a dedicated thread library is good practice, but standard library is fine for this.
-    import threading
+    """
+    Sets up the IPC client, system tray icon, global hotkey, and starts the
+    user-facing assistant thread.
+
+    This is the main entry point of the AIST frontend application. It is responsible for:
+    1. Setting up the logging system.
+    2. Initializing the shared AppState.
+    3. Creating the IPC client to connect to the backend.
+    4. Setting up the system tray icon and its menu.
+    5. Registering the global exit hotkey.
+    6. Starting the `run_assistant` loop in a background thread.
+    7. Running the system tray icon's event loop, which blocks the main thread.
+    """
+    setup_logging()
+    log = logging.getLogger(__name__)
+
     app_state = AppState()
     image = Image.open("icon.png")
-    menu = (item('Quit AIST', lambda icon, item: quit_assistant(icon, item, app_state)),)
+
+    # Initialize and start the IPC client to connect to the backend service
+    ipc_client = IPCClient()
+    ipc_client.start()
+
+    # This will be our single point of shutdown logic, accessible to the tray and hotkey.
+    tray_icon = None
+    def shutdown_app():
+        """Signals all parts of the application to shut down gracefully."""
+        log.info("Shutdown signal received. Terminating.")
+        app_state.is_running = False
+        ipc_client.stop()
+        if tray_icon:
+            tray_icon.stop()
+
+    menu = (item('Quit AIST', lambda icon, item: shutdown_app()),)
     tray_icon = icon("AIST", image, "AIST Assistant", menu)
 
-    threading.Thread(target=run_assistant, args=(app_state, tray_icon), daemon=True).start()
+    # Register the global hotkey to call the same shutdown function.
+    try:
+        keyboard.add_hotkey('ctrl+win+x', shutdown_app)
+        log.info("Registered global hotkey Ctrl+Win+X to force quit.")
+    except Exception as e:
+        log.warning(f"Could not register global hotkey. You may need to run as administrator. Error: {e}")
+
+    threading.Thread(target=run_assistant, args=(app_state, ipc_client, shutdown_app), daemon=True).start()
     tray_icon.run()
+
+    # Cleanup hotkey when the application exits gracefully
+    keyboard.remove_all_hotkeys()
+    log.info("Global hotkeys unregistered.")
 
 if __name__ == "__main__":
     main()

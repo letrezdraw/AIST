@@ -1,5 +1,35 @@
-# Ignore GGUF model files
+# Python
+# Use the recursive globstar to match __pycache__ directories in any folder
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.spec
+
+# Caches and build artifacts
+.mypy_cache/
+.pytest_cache/
+.cache/
+*.so
+*.egg
+
+# Virtual Environment
+venv/
+.venv/
+
+# AIST Data & Logs
+AIST_data/
+
+# Downloaded Models
+vosk_models/
+piper_voices/
 *.gguf
 
-# Ignore ChromaDB persistent storage
-chroma/
+# IDE / Editor specific
+.vscode/
+.idea/
+*.swp
+*.swo

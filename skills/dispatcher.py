@@ -1,64 +1,84 @@
-import re
 import json
-from core.llm import process_with_llm, get_intent_from_llm, summarize_system_output
-from skills.system import skill_open_application, skill_close_application, skill_get_time, skill_get_system_info, skill_execute_system_command
-from skills.memory_skills import skill_learn_fact, skill_list_memories, skill_forget_fact
-from skills.web import skill_search_web
+import inspect
+from core.llm import process_with_llm
+from .skill_loader import discover_skills
 
-# --- Skill Mapping ---
-# This dictionary-based approach is much cleaner and more scalable than if/elif chains.
-# To add a new skill, just import it and add it to this dictionary.
-SKILLS = {
-    "open_app": skill_open_application,
-    "close_app": skill_close_application,
-    "search_web": skill_search_web,
-    "get_time": skill_get_time,
-    "get_system_info": skill_get_system_info,
-    "learn_fact": skill_learn_fact,
-    "list_memories": skill_list_memories,
-    "forget_fact": skill_forget_fact,
-    "execute_system_command": skill_execute_system_command,
-}
+# --- Skill Discovery ---
+# On startup, discover all available skills and create the prompt fragment for the LLM.
+# This makes the system extensible: just drop a new skill file into the directory.
+AVAILABLE_SKILLS, SKILLS_PROMPT_FRAGMENT = discover_skills()
 
-def command_dispatcher(command, llm, conversation_history, relevant_facts):
+def select_skill_with_llm(llm, command, conversation_history, relevant_facts):
     """
-    Determines user intent, routes to the appropriate skill, and returns the response.
-    Returns a string response to be spoken, or `False` to signal exit.
+    Asks the LLM to select a skill and parameters based on user input.
+    This is the "Brain" part of the architecture.
     """
-    # Immediately check for an exit command to ensure reliable shutdown.
-    if "goodbye" in command or "exit" in command or "stop listening" in command:
-        return False  # Signal to exit
+    # This prompt is critical. It instructs the LLM to act as a JSON-based router.
+    system_prompt = f"""You are an AI assistant's brain. Your primary function is to select the correct skill to execute based on the user's request.
+You must respond with a single, valid JSON object and nothing else.
 
+The JSON object must have two keys:
+1. "skill": A string representing the name of the skill to be called.
+2. "parameters": An object containing the arguments for the chosen skill.
+
+Here are the available skills:
+{SKILLS_PROMPT_FRAGMENT}
+- chat(query): Use for general conversation, questions, or when no other skill is appropriate.
+- quit(): Use when the user wants to exit or stop the assistant.
+
+Analyze the user's request, conversation history, and relevant facts to determine the most appropriate skill and its parameters.
+If the user says "goodbye", "exit", or "stop", you must call the "quit" skill.
+"""
+    # We pass the full context to the LLM, which is now acting as the core of the "Brain".
+    # The `process_with_llm` function is a generic LLM call wrapper.
+    # NOTE: `process_with_llm` in core/llm.py must be updated to accept `system_prompt_override`.
+    raw_response = process_with_llm(llm, command, conversation_history, relevant_facts, system_prompt_override=system_prompt)
+    return raw_response
+
+def command_dispatcher(command, llm, conversation_history, relevant_facts, ipc_server=None):
+    """
+    The "Skill Manager". It gets a skill selection from the "Brain" (LLM)
+    and executes it via the "Hands" (the actual skill functions).
+    Returns a string response to be spoken, or a special command like "QUIT_AIST".
+    """
+    llm_response_str = ""
     try:
-        raw_response = get_intent_from_llm(llm, command, conversation_history, relevant_facts)
-        # Use regex to find the JSON object within the LLM's raw response
-        json_match = re.search(r'\{.*\}', raw_response, re.DOTALL)
-        if not json_match:
-            raise json.JSONDecodeError("No JSON object found in LLM response.", raw_response, 0)
-        
-        intent_json = json_match.group(0)
-        intent = json.loads(intent_json) # Parse the extracted JSON
+        # 1. Ask the "Brain" (LLM) to choose a skill.
+        llm_response_str = select_skill_with_llm(llm, command, conversation_history, relevant_facts)
+        # The LLM is instructed to return *only* JSON, so we can parse it directly.
+        decision = json.loads(llm_response_str)
+        skill_name = decision.get("skill")
+        parameters = decision.get("parameters", {})
+    except (json.JSONDecodeError, AttributeError, TypeError) as e:
+        print(f"Error parsing LLM decision. Falling back to chat. Error: {e}\nLLM Response: '{llm_response_str}'")
+        skill_name = "chat"
+        parameters = {} # Parameters will be handled in the execution block
 
-        command_name = intent.get("command")
-        parameters = intent.get("parameters", {})
-    except (json.JSONDecodeError, AttributeError, TypeError, IndexError) as e:
-        print(f"Could not parse intent from LLM response. Falling back to chat. Error: {e}")
-        command_name = "chat"
-        parameters = {"query": command}
+    # 2. Execute the chosen skill (the "Hands").
+    if skill_name == "quit":
+        return "QUIT_AIST"
 
-    # --- Route to the appropriate skill with special handling for system commands ---
-    if command_name == "execute_system_command":
-        # Execute the command to get raw output
-        raw_output = skill_execute_system_command(parameters)
-        # Ask the LLM to summarize the raw output for the user
-        return summarize_system_output(llm, command, raw_output)
+    # Handle general conversation as a special case.
+    if skill_name == "chat":
+        return process_with_llm(llm, command, conversation_history, relevant_facts)
 
-    if command_name in SKILLS:
-        skill_function = SKILLS[command_name]
-        # All other skills are called directly
-        return skill_function(parameters)
-    elif command_name == "chat":
-        return process_with_llm(llm, parameters.get("query", command), conversation_history, relevant_facts)
+    if skill_name in AVAILABLE_SKILLS:
+        skill_function = AVAILABLE_SKILLS[skill_name]
+        try:
+            # Inject the 'llm' object if the skill function's signature requests it.
+            # This allows skills to perform their own sub-tasks, like summarization.
+            if 'llm' in inspect.signature(skill_function).parameters:
+                parameters['llm'] = llm
+            # Inject the 'ipc_server' object if the skill needs to request user interaction.
+            if 'ipc_server' in inspect.signature(skill_function).parameters and ipc_server:
+                parameters['ipc_server'] = ipc_server
+
+            # For all other skills, call them with the parameters decided by the LLM.
+            return skill_function(**parameters)
+        except TypeError as e:
+            return f"Error calling skill '{skill_name}'. The LLM likely provided incorrect parameters. Details: {e}"
+        except Exception as e:
+            return f"An unexpected error occurred while executing skill '{skill_name}': {e}"
     else:
-        # Fallback for unrecognized commands
+        print(f"LLM chose a non-existent skill: '{skill_name}'. Falling back to chat.")
         return process_with_llm(llm, command, conversation_history, relevant_facts)

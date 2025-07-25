@@ -1,145 +1,130 @@
 # AIST Project Documentation
 
-**Version: 1.0**
+**Version: 2.0 (Vosk Integration)**
 
-This document provides a comprehensive overview of the AI System Toolkit (AIST), a modular, voice-activated AI assistant. It details the project's architecture, features, setup, and future development roadmap.
+This document provides a comprehensive overview of the Autonomous Intelligent System Tasker (AIST), a modular, voice-activated AI assistant. It details the project's architecture, features, setup, and future development roadmap.
 
 ---
 
 ## 1. Project Overview
 
-AIST is a "Jarvis-like" AI assistant designed to run locally on a Windows machine. Its primary goal is to provide a deeply integrated, conversational, and extensible AI companion that respects user privacy by performing all core processing on-device.
+AIST is a "Jarvis-like" AI assistant designed to run locally on a Windows machine. Its primary goal is to provide a deeply integrated, conversational, and extensible AI companion that respects user privacy by performing all core processing on-device. The core components (Speech-to-Text, Text-to-Speech, and the Large Language Model) operate without needing an internet connection.
 
-The architecture is modular, separating concerns like speech recognition, language understanding, and skill execution into distinct components. This allows for easier maintenance, debugging, and expansion.
+The architecture is modular, separating concerns like speech recognition, language understanding, and skill execution into distinct components. This allows for easier maintenance, debugging, and future expansion.
+
+---
+
+## 2. Architecture: A Client-Server Model
+
+AIST operates on a robust client-server model to ensure a responsive user experience, even while the AI is processing a complex request.
+
+- **Backend (`run_backend.py`)**: The "brain" of the assistant. This process loads the large language model (LLM) into memory and handles all the heavy AI processing and skill execution. It runs in its own console window and waits for commands.
+
+- **Frontend (`main.py`)**: The "face" of the assistant. This lightweight process manages all user interaction: listening to the microphone (STT), speaking through your speakers (TTS), and managing the system tray icon.
+
+- **IPC Communication**: The frontend and backend are separate processes and communicate through a fast, local Inter-Process Communication (IPC) channel. This allows the frontend to remain responsive while the backend "thinks".
 
 ---
 
 ## 2. How It Works: The Core Loop
 
-AIST operates on a continuous, event-driven loop. Understanding this flow is key to understanding the project.
+AIST operates on a continuous, state-driven loop within the frontend (`main.py`). Understanding this flow is key to understanding the project.
 
-1.  **Wake Word Detection (`core/stt.py`)**: The system constantly listens for the wake word ("hey assistant") in the background using the microphone. It ignores all other audio until the wake word is detected.
+1.  **DORMANT State (`main.py`)**: The assistant starts in a `DORMANT` state. In this mode, the `listen_generator` from `core/stt.py` is active, but the main loop only checks the transcribed text for an **activation phrase** (e.g., "hey assist"). All other speech is ignored.
 
-2.  **Command Listening (`core/stt.py`)**: Once activated, AIST listens for a single, specific command from the user. It has a timeout, so if nothing is said, it goes back to sleep (waiting for the wake word).
+2.  **Activation**: When an activation phrase is detected, the state machine switches to `LISTENING`. The assistant speaks an acknowledgment ("I'm listening.") and is now ready for commands.
 
-3.  **Memory Retrieval (`core/memory.py`)**: The user's command is used as a query to search the long-term memory (a ChromaDB vector database). Any relevant facts that AIST has previously learned are retrieved.
+3.  **LISTENING State (`main.py`)**: In this state, the `listen_generator` continues to provide transcribed text. The main loop now checks the text for three possibilities in order:
+    a. **Exit Phrase**: Checks for a phrase like "assist exit" to shut down the application.
+    b. **Deactivation Phrase**: Checks for a phrase like "assist pause" to return to the `DORMANT` state.
+    c. **Command**: If neither of the above is found, the text is treated as a command.
 
-4.  **Intent Recognition (`core/llm.py` & `skills/dispatcher.py`)**: The user's command, along with the short-term conversation history and any relevant facts from long-term memory, are sent to the local Large Language Model (LLM). The LLM is prompted to return a structured JSON object identifying the user's intent (e.g., `{"command": "get_time", "parameters": {}}`).
+4.  **Command Processing (IPC)**: The command string is sent from the frontend to the backend via the IPC channel.
 
-5.  **Skill Dispatching (`skills/dispatcher.py`)**: The dispatcher receives the JSON intent. It uses a dictionary to map the `command` name to the appropriate Python function (the "skill").
+5.  **LLM Inference (`core/llm.py` on backend)**: The backend receives the command, retrieves any relevant facts from memory, and sends the complete prompt to the Large Language Model for processing.
 
-6.  **Skill Execution (`skills/*.py`)**: The corresponding skill function is executed (e.g., `skill_get_time()`). The skill performs its task and **returns a string** as a result (e.g., "The current time is 3:45 PM.").
+6.  **Response Communication (IPC)**: The LLM's text response is sent from the backend back to the frontend.
 
-7.  **Response Generation (`main.py` & `core/tts.py`)**: The main loop receives the string response from the skill. It prints the response to the console and uses the Text-to-Speech (TTS) engine to speak the response aloud.
-
-8.  **Context Update (`main.py`)**: The user's command and AIST's response are added to the short-term conversation history.
-
-9.  **Return to Sleep**: The loop completes, and AIST goes back to step 1, waiting for the wake word again.
+7.  **Speaking the Response (`core/tts.py` on frontend)**: The frontend receives the response text and uses the Text-to-Speech engine to speak it aloud. The loop continues in the `LISTENING` state, ready for the next command.
 
 ---
 
 ## 3. Features & Capabilities
 
-### What AIST Can Do Now
+### Current Features
 
-*   **Voice Activation**: Hands-free activation using a customizable wake word.
-*   **Local AI Processing**: All intent recognition and chat functions are handled by a local LLM (`Mistral 7B`), ensuring privacy and offline functionality.
-*   **Conversational Context**: Remembers the last few turns of a conversation to understand follow-up questions.
-*   **Long-Term Memory (Learning)**:
-    *   Can be taught specific facts using the "remember" or "learn" command.
-    *   Automatically recalls and uses learned information when relevant.
-    *   Can list everything it has learned.
-    *   Can be told to forget specific memories.
-*   **System Control**:
-    *   Open any application on the system (e.g., "open notepad").
-    *   Close running applications (e.g., "close notepad").
-    *   Report system status like CPU usage and battery level.
-*   **Web Search**: Can open the default web browser to perform a Google search.
+*   **Stateful Voice Activation**: Hands-free activation using customizable phrases. The assistant remains active for multiple commands until explicitly paused.
+*   **Offline-First Core**: The STT (Vosk), TTS (Piper), and LLM (`ctransformers`) all run locally, ensuring privacy and offline functionality.
+*   **Conversational AI**: Engages in natural conversation using a local Large Language Model.
+*   **Persistent Memory**: Uses a local SQLite database (`core/memory.py`) to store and recall user-specific facts and preferences (e.g., microphone calibration settings).
 *   **Background Operation**: Runs as a persistent icon in the system tray.
+*   **Robust Logging**: Creates a detailed, rotating log file (`AIST_data/aist.log`) for easy debugging.
 
 ### Future Roadmap
 
 The following features are planned for future development to enhance AIST's capabilities:
 
+*   **Skill System**: The highest priority is to build a skill dispatcher that allows the LLM to execute Python functions. This will enable capabilities like:
+    *   Opening/closing applications.
+    *   Reporting system status (CPU, battery).
+    *   Performing web searches.
 *   **GUI Overlay**: A small, non-intrusive graphical interface to display text, status, and feedback, making the assistant feel more integrated.
 *   **Advanced OS Automation**:
     *   Use `pyautogui` to control the mouse and keyboard.
     *   Enable skills like "take a screenshot," "type this for me," or "click the save button."
 *   **API-Driven Skills**:
-    *   **Weather**: Fetch and report real-time weather from an online API.
-    *   **News**: Get the latest headlines.
-    *   **Calendar/Email**: Integrate with Google Calendar or Outlook to manage events and read emails.
+    *   Fetch and report real-time weather, news, or other online information.
 *   **Enhanced Voice Engine**:
-    *   Integrate a higher-quality, more natural-sounding local TTS engine like `Coqui-TTS` or `piper-tts`.
+    *   Integrate a higher-quality, more natural-sounding local TTS engine like `Coqui-TTS`.
     *   Explore voice cloning to allow AIST to speak with a custom voice.
-*   **Multi-modal Input**: Accept text input from a GUI in addition to voice commands.
 *   **Packaged Application**: Bundle the entire project into a single `.exe` file with an installer using `PyInstaller` and `Inno Setup` for easy distribution.
 
 ---
 
 ## 4. Tools & Technologies
 
-AIST is built with a powerful stack of open-source Python libraries.
-
-*   **Core AI**:
-    *   `ctransformers`: Runs the quantized GGUF language model efficiently on CPU or GPU.
-    *   `chromadb`: The vector database used for long-term memory.
-    *   `sentence-transformers`: Creates the vector embeddings (numerical representations) of text for storage and retrieval in ChromaDB.
-*   **Voice & Speech**:
-    *   `pyttsx3`: The primary Text-to-Speech engine (using Windows SAPI5).
-    *   `SpeechRecognition`: The primary Speech-to-Text engine (using the Google Speech Recognition API).
-    *   `playsound`: For playing simple audio cues like the activation sound.
-*   **System & Application**:
-    *   `pystray` & `Pillow`: For creating and managing the system tray icon.
-    *   `psutil`: For accessing system information like running processes, CPU, and battery.
-*   **General Purpose**:
-    *   `os`, `datetime`, `json`, `re`, `uuid`, `threading`: Standard Python libraries for core functionality.
+- **LLM Engine**: `ctransformers`
+- **Speech-to-Text**: `vosk`
+- **Text-to-Speech**: `piper-tts`
+- **Audio I/O**: `pyaudio`
+- **GUI / Hotkeys**: `pystray`, `keyboard`
+- **Database**: `sqlite3` (built-in)
 
 ---
 
 ## 5. Setup & Usage
 
-1.  **Clone the Repository** and navigate into the project directory.
-2.  **Install Dependencies** by running `pip install -r requirements.txt`.
-3.  **Download the AI Model** (`mistral-7b-instruct-v0.2.Q4_K_M.gguf` is recommended) and place it in the project's root directory.
-4.  **Configure `config.py`** to ensure `MODEL_PATH` matches the downloaded model's filename.
-5.  **Run the Assistant** with `python main.py`.
+Please refer to the `README.md` file for detailed, step-by-step installation and setup instructions.
 
 ---
 
 ## 6. How to Add a New Skill
 
-The project is designed for easy extension. Follow these three steps to add a new capability:
+While a full skill system is not yet implemented, the architecture is designed for it. Here is the planned approach for adding new skills:
 
 **1. Create the Skill Function:**
 
-*   In a relevant `skills/*.py` file, create a new function. It must accept a `parameters` dictionary and `return` a response string.
+*   Create a new file in the `skills/` directory (e.g., `system_skills.py`).
+*   Define a simple Python function that performs the desired action and returns a string result.
 
     ```python
-    # In skills/system.py
-    def skill_get_date(parameters):
-        today = datetime.date.today().strftime("%B %d, %Y")
-        return f"Today's date is {today}."
+    # In skills/system_skills.py
+    def open_application(app_name: str) -> str:
+        try:
+            os.startfile(app_name)
+            return f"Successfully opened {app_name}."
+        except Exception as e:
+            return f"Sorry, I could not open {app_name}. Error: {e}"
     ```
 
-**2. Register the Skill:**
+**2. Create a Skill Dispatcher:**
 
-*   In `skills/dispatcher.py`, import your new function and add it to the `SKILLS` dictionary.
+*   A new file, `skills/dispatcher.py`, will be created.
+*   This file will contain a dictionary mapping skill names to their functions and descriptions. This information will be used to generate a prompt for the LLM.
 
-    ```python
-    from skills.system import ..., skill_get_date
+**3. Teach the LLM to Recognize the Skill:**
 
-    SKILLS = {
-        ...,
-        "get_date": skill_get_date,
-    }
-    ```
-
-**3. Teach the LLM:**
-
-*   In `core/llm.py`, find the `get_intent_from_llm` function. Add the new command name (e.g., `"get_date"`) to the list of valid commands in the prompt. This allows the AI to recognize when to use your new skill.
-
-    ```python
-    # In the prompt string within get_intent_from_llm
-    The "command" can be one of the following: [..., "learn_fact", "get_date", "chat"].
-    ```
+*   The backend's `IPCServer` will be modified. When it receives a command, it will first ask the LLM to perform "function calling" or "tool selection."
+*   It will provide the LLM with the list of available skills and their descriptions from the dispatcher.
+*   The LLM will respond with a structured format (like JSON) indicating which skill to use and what parameters to pass (e.g., `{"skill": "open_application", "parameters": {"app_name": "notepad"}}`).
+*   The backend will then execute the chosen function and return the result to the user.
