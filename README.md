@@ -1,3 +1,4 @@
+<div style="background-color:black;color:white;">
 <div align="center">
 
 ```
@@ -163,7 +164,7 @@ To shut down, say an **exit phrase** (e.g., "assist exit"), right-click the syst
 | 💾 **Memory** | `sqlite3` |
 
 ## 🗺️ Roadmap
-
+</div>
 - [ ] **Full Skill Integration**: Wire the `dispatcher` into the backend to enable function calling.
 - [ ] **Advanced OS Automation**: Add skills for controlling the mouse and keyboard (`pyautogui`).
 - [ ] **API-Driven Skills**: Implement skills for weather, news, and other online services.
