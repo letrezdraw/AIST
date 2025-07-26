@@ -1,51 +1,51 @@
 # core/ipc/client.py
 
+import json
 import zmq
 import logging
-import threading
-from typing import Callable
+from typing import Dict, Any
 
 log = logging.getLogger(__name__)
 
 class IPCClient:
     """
     The ZMQ client that connects to the backend server.
-    It sends user commands and receives responses in a blocking request-reply pattern.
+    It sends user commands and state, and receives structured JSON responses.
     """
     def __init__(self):
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REQ)
         self.socket.connect("tcp://localhost:5555")
         self.is_running = False
-        # Callback to be set by the main application to handle responses (e.g., speak them).
-        self.on_response_received: Callable[[str], None] | None = None
 
-    def send_command(self, command_text: str):
-        """Sends a command and waits for a response."""
+    def send_command(self, command_text: str, state: str) -> Dict[str, Any] | None:
+        """Sends a command and state to the backend and returns the response dictionary."""
         if not self.is_running:
             log.warning("IPC client is not running. Cannot send command.")
-            return
+            return None
 
         if not command_text:
-            return
+            return None
 
         try:
-            log.info(f"Sending command to backend: '{command_text}'")
-            self.socket.send_string(command_text)
-            response = self.socket.recv_string()
-            log.info(f"Received response from backend: '{response}'")
+            request_data = {"text": command_text, "state": state}
+            request_json = json.dumps(request_data)
+            log.debug(f"Sending request to backend: {request_json}")
+            self.socket.send_string(request_json)
+            
+            response_json = self.socket.recv_string()
+            log.debug(f"Received response from backend: {response_json}")
+            
+            response_dict = json.loads(response_json)
+            return response_dict
 
-            if self.on_response_received and response:
-                # The response handling (speaking) is done via the callback.
-                self.on_response_received(response)
         except zmq.ZMQError as e:
             log.error(f"ZMQ error while communicating with backend: {e}")
-            if self.on_response_received:
-                self.on_response_received("I'm having trouble connecting to my brain.")
+            # Return a dictionary that the frontend can handle, indicating an error.
+            return {"action": "COMMAND", "speak": "I'm having trouble connecting to my brain."}
         except Exception as e:
             log.error(f"Unexpected error in IPC client: {e}", exc_info=True)
-            if self.on_response_received:
-                self.on_response_received("I've encountered an unexpected error.")
+            return {"action": "COMMAND", "speak": "I've encountered an unexpected error."}
 
     def start(self):
         """Starts the client, allowing it to send messages."""

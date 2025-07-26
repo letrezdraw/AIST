@@ -5,7 +5,8 @@ This file tracks the development progress and future roadmap for the AIST assist
 ## ✅ Completed Milestones
 
 -   **Core Architecture:**
-    -   [x] Established a robust client-server model with IPC for a responsive UI.
+    -   [x] Established a robust client-server model with IPC.
+    -   [x] Upgraded architecture to use LLM for **intent recognition** and state management.
     -   [x] Created a clean, modular codebase (`core/`, `skills/`).
 -   **Voice & Language Stack:**
     -   [x] Upgraded Speech-to-Text to the high-performance **Vosk** engine.
@@ -23,10 +24,6 @@ This file tracks the development progress and future roadmap for the AIST assist
 ## 🚀 Next Steps & Roadmap
 
 ### Tier 1: Activating Skills (Immediate Priority)
--   [ ] **Wire the Skill Dispatcher:**
-    -   [ ] Modify the `IPCServer` in the backend to call the `command_dispatcher`.
-    -   [ ] Pass the LLM's skill selection and parameters to the correct skill function.
-    -   [ ] Send the skill's string result back to the frontend for TTS.
 -   [ ] **Implement Basic System Skills:**
     -   [ ] Re-implement `open_application` using the new `@aist_skill` decorator.
     -   [ ] Re-implement `get_system_info` (CPU, battery) as a skill.

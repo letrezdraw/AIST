@@ -26,26 +26,24 @@ AIST operates on a robust client-server model to ensure a responsive user experi
 
 ---
 
-## 3. ⚙️ How It Works: The Core Loop
+## 3. ⚙️ How It Works: The AI-Driven Core Loop
 
-AIST operates on a continuous, state-driven loop within the frontend (`main.py`). Understanding this flow is key to understanding the project.
+AIST's core logic is driven by the LLM in the backend, which performs **intent recognition**. The frontend is a "dumb client" that simply follows the backend's instructions.
 
-1.  **`DORMANT` State**: The assistant starts in a `DORMANT` state. In this mode, the `listen_generator` from `core/stt.py` is active, but the main loop only checks the transcribed text for an **activation phrase** (e.g., "hey assist"). All other speech is ignored.
+1.  **Listening**: The frontend (`main.py`) continuously listens for speech. When the user pauses, the transcribed text is captured.
 
-2.  **Activation**: When an activation phrase is detected, the state machine switches to `LISTENING`. The assistant speaks an acknowledgment ("I'm listening.") and is now ready for commands.
+2.  **Request to Backend (IPC)**: The frontend sends a JSON request to the backend (`run_backend.py`) containing the transcribed text and the assistant's current state (e.g., `DORMANT` or `LISTENING`).
 
-3.  **`LISTENING` State**: In this state, the `listen_generator` continues to provide transcribed text. The main loop now checks the text for three possibilities in order:
-    a. **Exit Phrase**: Checks for a phrase like "assist exit" to shut down the application.
-    b. **Deactivation Phrase**: Checks for a phrase like "assist pause" to return to the `DORMANT` state.
-    c. **Command**: If neither of the above is found, the text is treated as a command.
+3.  **Intent Recognition (LLM)**: The backend's `command_dispatcher` receives the request. It constructs a detailed prompt for the LLM, asking it to analyze the user's text *in the context of the current state*. The LLM decides the user's intent (e.g., `activate`, `deactivate`, `get_current_time`, `chat`).
 
-4.  **Command Processing (IPC)**: The command string is sent from the frontend to the backend via the IPC channel.
+4.  **Skill Execution**: Based on the LLM's decision, the dispatcher either executes a specific skill, generates a chat response, or identifies a state-change command.
 
-5.  **LLM Inference (`core/llm.py` on backend)**: The backend receives the command, retrieves any relevant facts from memory, and sends the complete prompt to the Large Language Model for processing.
+5.  **Response to Frontend (IPC)**: The backend sends a JSON response back to the frontend. This response contains two key pieces of information:
+    -   `action`: A command for the frontend (e.g., `ACTIVATE`, `DEACTIVATE`, `EXIT`, `COMMAND`).
+    -   `speak`: The exact text the assistant should say.
 
-6.  **Response Communication (IPC)**: The LLM's text response is sent from the backend back to the frontend.
+6.  **Action and Speech**: The frontend receives the JSON response. It speaks the provided text and changes its internal state if instructed to by the `action` command. The loop then repeats, waiting for the next user input.
 
-7.  **Speaking the Response (`core/tts.py` on frontend)**: The frontend receives the response text and uses the Text-to-Speech engine to speak it aloud. The loop continues in the `LISTENING` state, ready for the next command.
 
 ---
 

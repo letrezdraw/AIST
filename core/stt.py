@@ -48,17 +48,32 @@ def listen_generator(app_state):
         # Initialize the recognizer without a specific grammar to allow it
         # to recognize any spoken words, not just control phrases.
         recognizer = KaldiRecognizer(vosk_model, 16000)
-        log.debug("Vosk recognizer initialized for general-purpose recognition.")
+        # Enable word-level confidence scores
+        recognizer.SetWords(True)
+        log.debug("Vosk recognizer initialized for general-purpose recognition with word confidence.")
 
         while app_state.is_running:
             data = stream.read(4096, exception_on_overflow=False)
             if recognizer.AcceptWaveform(data):
                 result_json = recognizer.Result()
                 result_dict = json.loads(result_json)
+
+                # --- Confidence Filtering ---
+                # To improve accuracy and prevent acting on misheard speech,
+                # we calculate the average confidence of the transcription.
+                words = result_dict.get('result', [])
+                if words:
+                    total_confidence = sum(item['conf'] for item in words)
+                    average_confidence = total_confidence / len(words)
+
+                    if average_confidence < 0.85: # Confidence threshold (0.0 to 1.0)
+                        log.warning(f"Low confidence transcription ignored (conf: {average_confidence:.2f}): '{result_dict.get('text', '')}'")
+                        continue # Skip this result and listen again
+
                 transcribed_text = result_dict.get('text', '').strip().lower()
                 
                 if transcribed_text:
-                    log.debug(f"Heard: '{transcribed_text}'")
+                    log.info(f"Heard with high confidence: '{transcribed_text}'")
                     yield transcribed_text
 
     except Exception as e:

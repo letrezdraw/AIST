@@ -1,5 +1,6 @@
 # core/ipc/server.py - The "Brain" of the assistant
 
+import json
 import logging
 import zmq
 import threading
@@ -39,29 +40,33 @@ class IPCServer:
         while self.is_running:
             try:
                 # Wait for the next request from the client
-                command = self.socket.recv_string()
-                self.log.info(f"Received command from frontend: '{command}'")
+                request_json = self.socket.recv_string()
+                request_data = json.loads(request_json)
+                command = request_data.get("text")
+                state = request_data.get("state")
+                self.log.info(f"Received request from frontend: '{command}' (State: {state})")
 
                 # 1. Retrieve relevant facts from memory
                 facts = retrieve_relevant_facts(command)
 
                 # 2. Call the command dispatcher to get a response
                 # The dispatcher is the core logic that decides whether to chat or use a skill.
-                response = command_dispatcher(
+                response_dict = command_dispatcher(
                     command=command,
+                    state=state,
                     llm=self.llm,
                     conversation_history=self.conversation_history,
-                    relevant_facts=facts,
-                    ipc_server=self # Pass self to allow skills to interact back if needed
+                    relevant_facts=facts
                 )
 
                 # 3. Update conversation history
-                if response != "QUIT_AIST":
+                # Only add to history if it was a successful command interaction.
+                if response_dict.get("action") == "COMMAND":
                     self.conversation_history.append(('user', command))
-                    self.conversation_history.append(('assistant', response))
+                    self.conversation_history.append(('assistant', response_dict.get("speak")))
 
                 # 4. Send the response back to the client
-                self.socket.send_string(response)
+                self.socket.send_string(json.dumps(response_dict))
 
             except zmq.ZMQError as e:
                 if e.errno == zmq.ETERM:

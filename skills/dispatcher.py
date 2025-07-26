@@ -8,13 +8,15 @@ from .skill_loader import discover_skills
 # This makes the system extensible: just drop a new skill file into the directory.
 AVAILABLE_SKILLS, SKILLS_PROMPT_FRAGMENT = discover_skills()
 
-def select_skill_with_llm(llm, command, conversation_history, relevant_facts):
+def select_skill_with_llm(llm, command, state, conversation_history, relevant_facts):
     """
     Asks the LLM to select a skill and parameters based on user input.
     This is the "Brain" part of the architecture.
     """
     # This prompt is critical. It instructs the LLM to act as a JSON-based router.
-    system_prompt = f"""You are an AI assistant's brain. Your primary function is to select the correct skill to execute based on the user's request.
+    system_prompt = f"""You are an AI assistant's brain. Your primary function is to analyze the user's request and the assistant's current state to determine the correct action.
+The assistant's current state is: {state}
+
 You must respond with a single, valid JSON object and nothing else.
 
 The JSON object must have two keys:
@@ -23,11 +25,15 @@ The JSON object must have two keys:
 
 Here are the available skills:
 {SKILLS_PROMPT_FRAGMENT}
-- chat(query): Use for general conversation, questions, or when no other skill is appropriate.
+- activate(): The user is trying to wake the assistant. Only use this if the state is DORMANT.
+- deactivate(): The user is trying to pause the assistant. Only use this if the state is LISTENING.
+- chat(query): Use for general conversation or when no other skill is appropriate.
 - quit(): Use when the user wants to exit or stop the assistant.
 
-Analyze the user's request, conversation history, and relevant facts to determine the most appropriate skill and its parameters.
-If the user says "goodbye", "exit", or "stop", you must call the "quit" skill.
+Analyze the user's request: "{command}"
+Based on the state and the request, choose the most appropriate skill.
+If the state is DORMANT, your primary goal is to detect the 'activate' or 'quit' skill. Any other speech is likely irrelevant and should be handled with the 'chat' skill.
+If the state is LISTENING, you can use any skill.
 """
     # We pass the full context to the LLM, which is now acting as the core of the "Brain".
     # The `process_with_llm` function is a generic LLM call wrapper.
@@ -35,7 +41,7 @@ If the user says "goodbye", "exit", or "stop", you must call the "quit" skill.
     raw_response = process_with_llm(llm, command, conversation_history, relevant_facts, system_prompt_override=system_prompt)
     return raw_response
 
-def command_dispatcher(command, llm, conversation_history, relevant_facts):
+def command_dispatcher(command, state, llm, conversation_history, relevant_facts):
     """
     The "Skill Manager". It gets a skill selection from the "Brain" (LLM)
     and executes it via the "Hands" (the actual skill functions).
@@ -44,7 +50,7 @@ def command_dispatcher(command, llm, conversation_history, relevant_facts):
     llm_response_str = ""
     try:
         # 1. Ask the "Brain" (LLM) to choose a skill.
-        llm_response_str = select_skill_with_llm(llm, command, conversation_history, relevant_facts)
+        llm_response_str = select_skill_with_llm(llm, command, state, conversation_history, relevant_facts)
         # The LLM is instructed to return *only* JSON, so we can parse it directly.
         decision = json.loads(llm_response_str)
         skill_name = decision.get("skill")
@@ -54,28 +60,49 @@ def command_dispatcher(command, llm, conversation_history, relevant_facts):
         skill_name = "chat"
         parameters = {} # Parameters will be handled in the execution block
 
-    # 2. Execute the chosen skill (the "Hands").
-    if skill_name == "quit":
-        return "QUIT_AIST"
+    # --- State-based Intent Translation ---
+    # 2. Translate the LLM's skill choice into a concrete action for the frontend.
+    if state == 'DORMANT':
+        if skill_name == 'activate':
+            return {'action': 'ACTIVATE', 'speak': "I'm listening."}
+        elif skill_name == 'quit':
+            return {'action': 'EXIT', 'speak': "Goodbye."}
+        else:
+            # If dormant, ignore everything else (including 'chat' or misfires).
+            return {'action': 'IGNORE', 'speak': None}
 
-    # Handle general conversation as a special case.
-    if skill_name == "chat":
-        return process_with_llm(llm, command, conversation_history, relevant_facts)
+    elif state == 'LISTENING':
+        if skill_name == 'deactivate':
+            return {'action': 'DEACTIVATE', 'speak': "Pausing."}
+        elif skill_name == 'quit':
+            return {'action': 'EXIT', 'speak': "Goodbye."}
+        elif skill_name == 'activate':
+            # Already listening, just confirm and do nothing.
+            return {'action': 'COMMAND', 'speak': "I'm already listening."}
+        
+        # --- Skill Execution ---
+        # Handle general conversation as a special case.
+        if skill_name == "chat":
+            result = process_with_llm(llm, command, conversation_history, relevant_facts)
+            return {'action': 'COMMAND', 'speak': result}
 
-    if skill_name in AVAILABLE_SKILLS:
-        skill_function = AVAILABLE_SKILLS[skill_name]
-        try:
-            # Inject the 'llm' object if the skill function's signature requests it.
-            # This allows skills to perform their own sub-tasks, like summarization.
-            if 'llm' in inspect.signature(skill_function).parameters:
-                parameters['llm'] = llm
+        if skill_name in AVAILABLE_SKILLS:
+            skill_function = AVAILABLE_SKILLS[skill_name]
+            try:
+                # Inject the 'llm' object if the skill function's signature requests it.
+                if 'llm' in inspect.signature(skill_function).parameters:
+                    parameters['llm'] = llm
 
-            # For all other skills, call them with the parameters decided by the LLM.
-            return skill_function(**parameters)
-        except TypeError as e:
-            return f"Error calling skill '{skill_name}'. The LLM likely provided incorrect parameters. Details: {e}"
-        except Exception as e:
-            return f"An unexpected error occurred while executing skill '{skill_name}': {e}"
-    else:
-        print(f"LLM chose a non-existent skill: '{skill_name}'. Falling back to chat.")
-        return process_with_llm(llm, command, conversation_history, relevant_facts)
+                result = skill_function(**parameters)
+                return {'action': 'COMMAND', 'speak': result}
+            except TypeError as e:
+                result = f"Error calling skill '{skill_name}'. The LLM likely provided incorrect parameters. Details: {e}"
+                return {'action': 'COMMAND', 'speak': result}
+            except Exception as e:
+                result = f"An unexpected error occurred while executing skill '{skill_name}': {e}"
+                return {'action': 'COMMAND', 'speak': result}
+        else:
+            # Fallback if the LLM hallucinates a skill that doesn't exist.
+            print(f"LLM chose a non-existent skill: '{skill_name}'. Falling back to chat.")
+            result = process_with_llm(llm, command, conversation_history, relevant_facts)
+            return {'action': 'COMMAND', 'speak': result}

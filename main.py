@@ -13,7 +13,6 @@ from typing import Callable
 from core.tts import speak
 from core.stt import listen_generator
 from core.ipc.client import IPCClient
-from config import ACTIVATION_PHRASES, DEACTIVATION_PHRASES, EXIT_PHRASES
 from core.log_setup import setup_logging
 
 # --- Application State ---
@@ -52,36 +51,39 @@ def run_assistant(app_state: AppState, ipc_client: IPCClient, shutdown_callback:
         # 'DORMANT': Listening only for activation or exit phrases.
         # 'LISTENING': Actively listening for commands, deactivation, or exit phrases.
         assistant_state = 'DORMANT'
-        log.info("--- AIST is DORMANT. Listening for wake word. ---")
+        log.info("--- AIST is DORMANT. ---")
 
         # The main loop now consumes from the listening generator.
         # The generator handles all microphone and STT logic internally.
         for user_input in listen_generator(app_state):
             if not app_state.is_running:
                 break
-
-            if assistant_state == 'DORMANT':
-                if any(phrase in user_input for phrase in ACTIVATION_PHRASES):
-                    assistant_state = 'LISTENING'
-                    log.info("Activation phrase heard. AIST is now LISTENING.")
-                    speak("I'm listening.")
             
-            elif assistant_state == 'LISTENING':
-                # Check for control phrases first, in order of priority.
-                if any(phrase in user_input for phrase in EXIT_PHRASES):
-                    speak("Goodbye.")
-                    # Give the TTS a moment to finish speaking before shutting down
-                    time.sleep(1.5)
-                    shutdown_callback()
-                    break
-                elif any(phrase in user_input for phrase in DEACTIVATION_PHRASES):
-                    assistant_state = 'DORMANT'
-                    log.info("Deactivation phrase heard. AIST is now DORMANT.")
-                    speak("Pausing.")
-                else:
-                    # If no control phrase was detected, it's a command.
-                    log.info(f"Command Heard: '{user_input}'")
-                    ipc_client.send_command(user_input)
+            # The frontend no longer makes decisions. It just sends the input and its state to the backend.
+            response = ipc_client.send_command(user_input, assistant_state)
+
+            if not response:
+                log.warning("Received no response from backend. Continuing.")
+                continue
+
+            # The backend now drives the state machine.
+            action = response.get("action")
+            text_to_speak = response.get("speak")
+
+            if text_to_speak:
+                speak(text_to_speak)
+
+            if action == "ACTIVATE":
+                assistant_state = 'LISTENING'
+                log.info("State changed to LISTENING.")
+            elif action == "DEACTIVATE":
+                assistant_state = 'DORMANT'
+                log.info("State changed to DORMANT.")
+            elif action == "EXIT":
+                # Give the "Goodbye" message time to play.
+                time.sleep(1.5)
+                shutdown_callback()
+                break
 
     except Exception as e:
         log.error(f"An unhandled exception occurred in the assistant thread: {e}", exc_info=True)
@@ -117,9 +119,7 @@ def main():
 
     # Initialize and start the IPC client to connect to the backend service
     ipc_client = IPCClient()
-    # Set the callback for the IPC client to use our new speaking function
-    # This allows the client to make the assistant speak when a response is received.
-    ipc_client.on_response_received = lambda text: speak(text)
+    # The main loop now handles responses synchronously, so the callback is no longer needed.
     ipc_client.start()
 
     # This will be our single point of shutdown logic, accessible to the tray and hotkey.

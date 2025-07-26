@@ -10,7 +10,8 @@ MAX_NEW_TOKENS = 150 # Max tokens for the LLM to generate. Keeps answers concise
 # --- Assistant Configuration ---
 ASSISTANT_NAME = "AIST"
 # Phrases to wake the assistant up and start listening for commands
-ACTIVATION_PHRASES = ["hey assist", "assist start", "okay assist", "ok assist"]
+# The phrases below are no longer used for hardcoded checks, but serve as examples for the LLM.
+ACTIVATION_PHRASES = ["hey assist", "assist start", "okay assist", "ok assist", "hey"]
 # Phrase to stop listening for commands and go back to sleep
 DEACTIVATION_PHRASES = ["assist pause"]
 # Phrase to exit the application completely
