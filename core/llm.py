@@ -2,7 +2,7 @@
 
 import logging
 from ctransformers import AutoModelForCausalLM
-from config import MODEL_PATH, GPU_LAYERS, CONTEXT_LENGTH
+from config import MODEL_PATH, GPU_LAYERS, CONTEXT_LENGTH, MAX_NEW_TOKENS
 
 log = logging.getLogger(__name__)
 
@@ -60,9 +60,9 @@ def process_with_llm(llm, command, conversation_history, relevant_facts, system_
         facts_str = ""
         if relevant_facts:
             facts_str = "You have the following relevant information from your memory to help you answer:\n- " + "\n- ".join(relevant_facts) + "\n"
-        prompt = f'{history_str}[INST] {facts_str}Based on the conversation history and the provided information, answer the following user query: {command} [/INST]'
+        prompt = f'{history_str}[INST] {facts_str}Based on the conversation history and the provided information, answer the following user query. Be concise and direct. User query: {command} [/INST]'
         temperature = 0.7 # Standard temperature for creative/conversational responses
-        max_tokens = 256
+        max_tokens = MAX_NEW_TOKENS
 
     try:
         log.info("Sending prompt to LLM...")

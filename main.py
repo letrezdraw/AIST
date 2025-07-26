@@ -6,6 +6,7 @@ from pystray import MenuItem as item, Icon as icon
 from PIL import Image
 import keyboard
 import threading
+import time
 from typing import Callable
 
 # --- AIST Imports ---
@@ -19,10 +20,9 @@ from core.log_setup import setup_logging
 class AppState:
     """A simple class to hold shared application state."""
     def __init__(self):
-        """Initializes the application state to running."""
+        """Initializes the application state."""
         self.is_running = True
 
-# --- Main Loop ---
 def run_assistant(app_state: AppState, ipc_client: IPCClient, shutdown_callback: Callable[[], None]) -> None:
     """
     The main user-facing logic loop. It handles microphone input and sends
@@ -43,7 +43,7 @@ def run_assistant(app_state: AppState, ipc_client: IPCClient, shutdown_callback:
 
     # Provide an audio confirmation that the voice is ready and the assistant thread has started.
     # This is better placed here than in main() to ensure it's in the correct thread context.
-    speak("Voice has been implemented.")
+    speak("Assistant is online.")
 
     # This outer try/finally ensures that if the assistant thread crashes for any reason,
     # it triggers a full application shutdown, preventing a "zombie" state.
@@ -67,19 +67,19 @@ def run_assistant(app_state: AppState, ipc_client: IPCClient, shutdown_callback:
                     speak("I'm listening.")
             
             elif assistant_state == 'LISTENING':
-                # Always check for the exit phrase first.
+                # Check for control phrases first, in order of priority.
                 if any(phrase in user_input for phrase in EXIT_PHRASES):
                     speak("Goodbye.")
+                    # Give the TTS a moment to finish speaking before shutting down
+                    time.sleep(1.5)
                     shutdown_callback()
                     break
-                
-                # Check for deactivation phrase.
-                if any(phrase in user_input for phrase in DEACTIVATION_PHRASES):
+                elif any(phrase in user_input for phrase in DEACTIVATION_PHRASES):
                     assistant_state = 'DORMANT'
                     log.info("Deactivation phrase heard. AIST is now DORMANT.")
                     speak("Pausing.")
                 else:
-                    # This is a regular command to be processed.
+                    # If no control phrase was detected, it's a command.
                     log.info(f"Command Heard: '{user_input}'")
                     ipc_client.send_command(user_input)
 
@@ -117,6 +117,9 @@ def main():
 
     # Initialize and start the IPC client to connect to the backend service
     ipc_client = IPCClient()
+    # Set the callback for the IPC client to use our new speaking function
+    # This allows the client to make the assistant speak when a response is received.
+    ipc_client.on_response_received = lambda text: speak(text)
     ipc_client.start()
 
     # This will be our single point of shutdown logic, accessible to the tray and hotkey.

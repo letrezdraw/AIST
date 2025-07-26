@@ -1,29 +1,24 @@
 @echo off
 setlocal
 
-:: ============================================================================
-:: AIST Manual Console Helper
+:: ==========================================================================
+:: AIST Console Helper
+:: 
+:: This script opens a new PowerShell console with the project's virtual
+:: environment pre-activated.
 ::
-:: This script requests admin rights and opens a pre-configured command
-:: prompt with the virtual environment activated. You can then run the
-:: necessary commands manually.
-:: ============================================================================
-title AIST Manual Console Helper
-
-:: 1. Check for Administrator privileges and self-elevate if necessary.
-net session >nul 2>&1
-if %errorLevel% NEQ 0 (
-    echo Requesting administrative privileges to manage AIST...
-    powershell -command "Start-Process -FilePath '%~f0' -Verb RunAs"
-    exit /b
-)
+:: NOTE: If you want to use the global hotkey (Ctrl+Win+X) and it doesn't
+:: work, you may need to run this script as an Administrator. To do that,
+:: right-click this file and select "Run as administrator".
+:: ==========================================================================
+title AIST Console
 
 :: Change directory to the script's location
 cd /d "%~dp0"
 
-:: 2. Open a new PowerShell console with the venv activated and keep it open.
+:: Open a new PowerShell console with the venv activated and keep it open.
 echo.
-echo A new PowerShell console will now open with the AIST environment ready.
-start "AIST Manual Console" powershell -ExecutionPolicy Bypass -NoExit -Command ". .\venv\Scripts\Activate.ps1"
+echo Opening a new PowerShell console with the AIST environment ready...
+start "AIST Console" powershell -ExecutionPolicy Bypass -NoExit -Command ". .\venv\Scripts\Activate.ps1"
 
 exit /b

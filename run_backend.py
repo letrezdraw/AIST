@@ -5,6 +5,7 @@
 import os
 import sys
 import logging
+import time
 
 # Ensure the script's directory is in the Python path
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -22,13 +23,19 @@ def main():
     log.info("--- AIST Backend Console ---")
     log.info("Starting IPC Server... This may take a moment to load the AI model.")
     
-    ipc_server = IPCServer()
-    
-    log.info("Backend is running. Press Ctrl+C to stop.")
+    ipc_server = None # Define before try block
     try:
+        ipc_server = IPCServer()
         ipc_server.start()
+        log.info("Backend is running. Press Ctrl+C to stop.")
+        # Keep the main thread alive to listen for KeyboardInterrupt
+        while True:
+            time.sleep(1)
     except KeyboardInterrupt:
         log.info("Ctrl+C received. Shutting down backend server.")
+    finally:
+        if ipc_server:
+            ipc_server.stop()
 
 if __name__ == "__main__":
     main()

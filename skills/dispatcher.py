@@ -35,7 +35,7 @@ If the user says "goodbye", "exit", or "stop", you must call the "quit" skill.
     raw_response = process_with_llm(llm, command, conversation_history, relevant_facts, system_prompt_override=system_prompt)
     return raw_response
 
-def command_dispatcher(command, llm, conversation_history, relevant_facts, ipc_server=None):
+def command_dispatcher(command, llm, conversation_history, relevant_facts):
     """
     The "Skill Manager". It gets a skill selection from the "Brain" (LLM)
     and executes it via the "Hands" (the actual skill functions).
@@ -69,9 +69,6 @@ def command_dispatcher(command, llm, conversation_history, relevant_facts, ipc_s
             # This allows skills to perform their own sub-tasks, like summarization.
             if 'llm' in inspect.signature(skill_function).parameters:
                 parameters['llm'] = llm
-            # Inject the 'ipc_server' object if the skill needs to request user interaction.
-            if 'ipc_server' in inspect.signature(skill_function).parameters and ipc_server:
-                parameters['ipc_server'] = ipc_server
 
             # For all other skills, call them with the parameters decided by the LLM.
             return skill_function(**parameters)

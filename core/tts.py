@@ -2,9 +2,10 @@
 
 import os
 import logging
-import tempfile
+import io
 import wave
 import pyaudio
+import threading
 from piper.voice import PiperVoice
 from config import PIPER_VOICE_MODEL
 
@@ -29,47 +30,52 @@ try:
 except Exception as e:
     log.error(f"Error initializing Piper TTS engine: {e}", exc_info=True)
 
-def speak(text):
-    """Converts text to speech using Piper and plays it."""
+def speak(text: str):
+    """
+    Converts text to speech using Piper and plays it.
+    """
     if not voice:
-        log.error("TTS engine not available. Cannot speak.")
+        log.error("TTS engine not available. Cannot speak.", exc_info=True)
         return
     if text:
-        log.info(f"AIST Speaking: \"{text}\"")
-        output_path = None # Define here to ensure it's in scope for finally
-        # Use a temporary file to prevent race conditions
+        log.info(f"AIST Speaking: \"{text}\"")        
+        p = pyaudio.PyAudio()
+        stream = None
         try:
-            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp_wav_file:
-                output_path = tmp_wav_file.name
-            
-            # Synthesize speech to the temporary WAV file
-            with wave.open(output_path, "wb") as wav_file:
-                # Set the parameters for the WAV file based on the voice model's config.
-                wav_file.setnchannels(1) # Piper voices are mono
-                wav_file.setsampwidth(2) # 16-bit audio
-                wav_file.setframerate(voice.config.sample_rate)
-                voice.synthesize(text, wav_file)
+            # Create an in-memory buffer to hold the WAV data.
+            wav_buffer = io.BytesIO()
 
-            # --- PyAudio Playback Logic ---
-            # Open the wave file for reading
-            with wave.open(output_path, 'rb') as wf:
-                p = pyaudio.PyAudio()
-                stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
-                                channels=wf.getnchannels(),
-                                rate=wf.getframerate(),
-                                output=True)
-                # Read data in chunks and write to the stream
-                data = wf.readframes(1024)
+            # The piper library expects a wave writer object that it can configure.
+            # We create a wave writer that writes to our in-memory buffer.
+            with wave.open(wav_buffer, "wb") as wav_file_writer:
+                # The piper library will set the WAV parameters (channels, sample rate, etc.)
+                # on the wav_file_writer object during synthesis.
+                voice.synthesize_wav(text, wav_file=wav_file_writer)
+
+            # After the 'with' block, the buffer is written and the wave file is closed.
+            # Now, rewind the buffer to the beginning so we can read from it for playback.
+            wav_buffer.seek(0)
+
+            # Use the wave module to read the in-memory WAV data
+            with wave.open(wav_buffer, 'rb') as wf:
+                # Open a PyAudio stream with the correct format from the WAV file
+                stream = p.open(
+                    format=p.get_format_from_width(wf.getsampwidth()),
+                    channels=wf.getnchannels(),
+                    rate=wf.getframerate(),
+                    output=True
+                )
+                # Read data in chunks and stream it to the speakers
+                chunk_size = 1024
+                data = wf.readframes(chunk_size)
                 while data:
                     stream.write(data)
-                    data = wf.readframes(1024)
-                # Stop and close the stream and PyAudio instance
-                stream.stop_stream()
-                stream.close()
-                p.terminate()
+                    data = wf.readframes(chunk_size)
         except Exception as e:
             log.error(f"Error during TTS playback: {e}", exc_info=True)
         finally:
-            # Ensure the temporary audio file is always cleaned up
-            if output_path and os.path.exists(output_path):
-                os.remove(output_path)
+            # Always ensure the stream and PyAudio instance are closed
+            if stream:
+                stream.stop_stream()
+                stream.close()
+            p.terminate()

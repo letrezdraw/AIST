@@ -5,6 +5,7 @@
 MODEL_PATH = "mistral-7b-instruct-v0.2.Q4_K_M.gguf"
 GPU_LAYERS = 99 # Offload all possible layers to the GPU.
 CONTEXT_LENGTH = 4096
+MAX_NEW_TOKENS = 150 # Max tokens for the LLM to generate. Keeps answers concise.
 
 # --- Assistant Configuration ---
 ASSISTANT_NAME = "AIST"

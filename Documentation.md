@@ -136,4 +136,3 @@ While a full skill system is not yet implemented, the architecture is designed f
 *   It will provide the LLM with the list of available skills and their descriptions from the dispatcher.
 *   The LLM will respond with a structured format (like JSON) indicating which skill to use and what parameters to pass (e.g., `{"skill": "open_application", "parameters": {"app_name": "notepad"}}`).
 *   The backend will then execute the chosen function and return the result to the user.
-
