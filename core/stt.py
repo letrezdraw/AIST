@@ -5,7 +5,7 @@ import json
 import os
 import pyaudio
 from vosk import Model, KaldiRecognizer
-from config import VOSK_MODEL_PATH
+from config import VOSK_MODEL_PATH, ACTIVATION_PHRASES, DEACTIVATION_PHRASES, EXIT_PHRASES
 
 log = logging.getLogger(__name__)
 
@@ -45,8 +45,10 @@ def listen_generator(app_state):
         stream.start_stream()
         log.info("Microphone stream opened for Vosk.")
 
+        # Initialize the recognizer without a specific grammar to allow it
+        # to recognize any spoken words, not just control phrases.
         recognizer = KaldiRecognizer(vosk_model, 16000)
-        log.debug("Vosk recognizer initialized.")
+        log.debug("Vosk recognizer initialized for general-purpose recognition.")
 
         while app_state.is_running:
             data = stream.read(4096, exception_on_overflow=False)
