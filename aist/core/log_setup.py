@@ -4,7 +4,7 @@ import logging.handlers
 import os
 import sys
 
-LOG_FOLDER = "AIST_data"
+LOG_FOLDER = "data/logs"
 LOG_FILENAME = "aist.log"
 
 def setup_logging():

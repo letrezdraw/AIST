@@ -2,7 +2,7 @@
 
 **Version: 2.0 (Vosk Integration)**
 
-This document provides a comprehensive, in-depth overview of the Autonomous Intelligent System Tasker (AIST). It details the project's architecture, core logic, features, and future development roadmap.
+This document provides a comprehensive, in-depth overview of the Autonomous Intelligent System (AIST). It details the project's architecture, core logic, features, and future development roadmap.
 
 ---
 
@@ -53,12 +53,13 @@ AIST's core logic is driven by the LLM in the backend, which performs **intent r
 
 | Feature | Description |
 | :--- | :--- |
-| 🎙️ **Stateful Voice Activation** | Hands-free activation using customizable phrases. The assistant remains active for multiple commands until explicitly paused. |
+| 🧠 **AI-Driven Intent** | Uses a local LLM to understand the user's intent, not just keywords. |
 | 🔒 **Offline-First Core** | The STT (Vosk), TTS (Piper), and LLM (`ctransformers`) all run locally, ensuring privacy and offline functionality. |
+| 🎙️ **Stateful Voice Activation** | Hands-free activation and control with a `DORMANT` <-> `LISTENING` conversational loop. |
 | 💬 **Conversational AI** | Engages in natural conversation using a local Large Language Model. |
-| 🧠 **Persistent Memory** | Uses a local SQLite database (`core/memory.py`) to store and recall user-specific facts and preferences. |
+| 💾 **Persistent Memory** | Uses a local SQLite database (`aist/core/memory.py`) to store and recall user-specific facts and preferences. |
 | 🖥️ **Background Operation** | Runs as a persistent icon in the system tray with a global exit hotkey. |
-| 📝 **Robust Logging** | Creates a detailed, rotating log file (`AIST_data/aist.log`) for easy debugging. |
+| 📝 **Robust Logging** | Creates a detailed, rotating log file (`data/logs/aist.log`) for easy debugging. |
 
 ### Future Roadmap
 
@@ -100,22 +101,23 @@ Please refer to the `README.md` file for detailed, step-by-step installation and
 
 ---
 
-## 7. 🧩 How to Add a New Skill
+## 7. 🧩 How to Add New Skills
 
-While a full skill system is not yet implemented, the architecture is designed for it. Here is the planned approach for adding new skills:
+The foundation for a powerful skill system is already in place. The `aist/skills/dispatcher.py` uses the LLM to select an action, and the `aist/skills/skill_loader.py` can already discover skills. Here is how you would add and use a new skill within the current architecture:
 
-**1. Create the Skill Function:**
+**1. Create the Skill File:**
 
-*   Create a new file in the `skills/` directory (e.g., `system_skills.py`).
-*   Define a simple Python function that performs the desired action and returns a string result. Use the `@aist_skill` decorator.
+*   Create a new Python file in the `aist/skills/` directory (e.g., `system.py`).
+*   Import the `@aist_skill` decorator and apply it to your function. The function's docstring is crucial, as it's what the LLM uses to understand the skill's purpose.
 
     ```python
-    # In skills/system_skills.py
+    # In aist/skills/system.py
+    import os
     from .skill_loader import aist_skill
 
     @aist_skill
     def open_application(app_name: str) -> str:
-        """Opens a specified application by name."""
+        """Opens a specified application by its name or path."""
         try:
             os.startfile(app_name)
             return f"Successfully opened {app_name}."
@@ -123,14 +125,13 @@ While a full skill system is not yet implemented, the architecture is designed f
             return f"Sorry, I could not open {app_name}. Error: {e}"
     ```
 
-**2. Create a Skill Dispatcher:**
+**2. Automatic Discovery:**
 
-*   The `skills/dispatcher.py` file is responsible for this.
-*   It uses the `discover_skills` function to find all decorated skills and build a prompt for the LLM.
+*   The `skill_loader.py` automatically finds any function decorated with `@aist_skill` when the application starts.
+*   It builds a list of available tools and their descriptions (from the docstrings) and provides this to the `dispatcher.py`.
 
-**3. Teach the LLM to Recognize the Skill:**
+**3. LLM-Powered Execution:**
 
-*   The backend's `IPCServer` will be modified. When it receives a command, it will first ask the LLM to perform "function calling" or "tool selection."
-*   It will provide the LLM with the list of available skills and their descriptions from the dispatcher.
-*   The LLM will respond with a structured format (like JSON) indicating which skill to use and what parameters to pass (e.g., `{"skill": "open_application", "parameters": {"app_name": "notepad"}}`).
-*   The backend will then execute the chosen function and return the result to the user.
+*   When you give a command like "assist, open notepad for me", the `dispatcher` sends your command and the list of available skills to the LLM.
+*   The LLM, understanding the context, will respond with a JSON object like: `{"skill": "open_application", "parameters": {"app_name": "notepad.exe"}}`.
+*   The dispatcher then parses this JSON, finds the `open_application` function in its list of `AVAILABLE_SKILLS`, and executes it with the provided parameters. The string returned by the skill is then sent to the frontend to be spoken.

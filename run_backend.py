@@ -12,8 +12,8 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 if script_dir not in sys.path:
     sys.path.insert(0, script_dir)
 
-from core.log_setup import setup_logging
-from core.ipc.server import IPCServer
+from aist.core.log_setup import setup_logging
+from aist.core.ipc.server import IPCServer
 
 def main():
     # Set up logging for the backend process

@@ -7,7 +7,7 @@ import wave
 import pyaudio
 import threading
 from piper.voice import PiperVoice
-from config import PIPER_VOICE_MODEL
+from aist.config import PIPER_VOICE_MODEL
 
 log = logging.getLogger(__name__)
 

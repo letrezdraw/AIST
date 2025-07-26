@@ -1,35 +1,31 @@
-# Python
-# Use the recursive globstar to match __pycache__ directories in any folder
-**/__pycache__/
+# Byte-compiled / optimized / DLL files
+__pycache__/
 *.pyc
-*.pyo
-*.pyd
-*.egg-info/
-dist/
-build/
-*.spec
+*.py[cod]
+*$py.class
 
-# Caches and build artifacts
-.mypy_cache/
-.pytest_cache/
-.cache/
+# C extensions
 *.so
-*.egg
 
-# Virtual Environment
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+
+# Test output
+*.wav
+
+# Virtual environment
 venv/
-.venv/
 
-# AIST Data & Logs
-AIST_data/
+# Project-specific data (logs, models, memory)
+/data/
 
-# Downloaded Models
-vosk_models/
-piper_voices/
-*.gguf
+# OS-generated files
+.DS_Store
+Thumbs.db
 
-# IDE / Editor specific
+# Editor-specific files
 .vscode/
 .idea/
-*.swp
-*.swo

@@ -2,7 +2,7 @@
 
 import logging
 from ctransformers import AutoModelForCausalLM
-from config import MODEL_PATH, GPU_LAYERS, CONTEXT_LENGTH, MAX_NEW_TOKENS
+from aist.config import MODEL_PATH, GPU_LAYERS, CONTEXT_LENGTH, MAX_NEW_TOKENS
 
 log = logging.getLogger(__name__)
 
@@ -49,9 +49,8 @@ def process_with_llm(llm, command, conversation_history, relevant_facts, system_
     # If a system prompt override is provided, it takes precedence.
     # This is used for structured tasks like skill selection.
     if system_prompt_override:
-        # The system prompt contains the full instruction. The user's command is the final piece of data.
-        # We combine the history with the new instruction.
-        prompt = f"{history_str}[INST] {system_prompt_override}\n\nUser's latest request: \"{command}\" [/INST]"
+        # The system prompt contains the full instruction, including the user's command.
+        prompt = f"{history_str}[INST] {system_prompt_override} [/INST]"
         # For skill selection, we want a deterministic, low-creativity response.
         temperature = 0.0
         max_tokens = 256 # Should be enough for a JSON object

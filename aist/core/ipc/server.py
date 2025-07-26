@@ -52,12 +52,11 @@ AIST is a modular, offline-first, voice-controlled AI assistant framework for Wi
 
 | Feature | Description |
 | :--- | :--- |
-| 🧠 **AI-Driven Intent** | Uses a local LLM to understand the user's intent, not just keywords. |
+| 🎙️ **Voice-Activated** | Control the assistant using natural voice commands with a stateful `DORMANT` -> `LISTENING` loop. |
 | 🔒 **Offline & Private** | All core components (STT, TTS, LLM) run locally. No data is sent to the cloud. |
-| 🎙️ **Stateful Voice Activation** | Hands-free activation and control with a `DORMANT` <-> `LISTENING` conversational loop. |
 | 🧩 **Modular Design** | Easily swap components. The current stack uses Vosk, Piper, and `ctransformers`. |
-| 🛠️ **Foundation for Skills** | A dynamic skill discovery system is in place, ready for new capabilities to be added. |
-| 💾 **Persistent Memory** | Remembers facts and user preferences using a local SQLite database. |
+| 🛠️ **Extensible Skills** | A dynamic skill discovery system is in place, ready for new capabilities to be added. |
+| 🧠 **Persistent Memory** | Remembers facts and user preferences using a local SQLite database. |
 | 📝 **Robust Logging** | Creates detailed, rotating logs for easy debugging and monitoring. |
 
 ## 🏛️ Architecture
@@ -166,6 +165,8 @@ To shut down, say an **exit phrase** (e.g., "assist exit"), right-click the syst
 
 ## 🗺️ Roadmap
 
-The project has a detailed, phased development plan focused on creating a best-in-class AI assistant framework. Key goals include implementing a message bus architecture for scalability, building a powerful and secure skill ecosystem, and polishing the user experience with a GUI and pluggable AI providers.
-
-For a complete vision and breakdown of upcoming epics, see the full Project Roadmap.
+- [ ] **Full Skill Integration**: Wire the `dispatcher` into the backend to enable function calling.
+- [ ] **Advanced OS Automation**: Add skills for controlling the mouse and keyboard (`pyautogui`).
+- [ ] **API-Driven Skills**: Implement skills for weather, news, and other online services.
+- [ ] **GUI Overlay**: Create a small, non-intrusive GUI to display text and status.
+- [ ] **Packaged Application**: Bundle the project into a single `.exe` with an installer.

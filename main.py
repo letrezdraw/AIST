@@ -10,10 +10,10 @@ import time
 from typing import Callable
 
 # --- AIST Imports ---
-from core.tts import speak
-from core.stt import listen_generator
-from core.ipc.client import IPCClient
-from core.log_setup import setup_logging
+from aist.core.tts import speak
+from aist.core.stt import listen_generator
+from aist.core.ipc.client import IPCClient
+from aist.core.log_setup import setup_logging
 
 # --- Application State ---
 class AppState:

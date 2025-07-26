@@ -5,7 +5,7 @@ import json
 import os
 import pyaudio
 from vosk import Model, KaldiRecognizer
-from config import VOSK_MODEL_PATH, ACTIVATION_PHRASES, DEACTIVATION_PHRASES, EXIT_PHRASES
+from aist.config import VOSK_MODEL_PATH
 
 log = logging.getLogger(__name__)
 

@@ -7,18 +7,18 @@ import os
 log = logging.getLogger(__name__)
 
 # --- Database Configuration ---
-DB_FOLDER = "AIST_data"
-DB_FILENAME = "knowledge.db"
+DB_FOLDER = "data/memory"
+DB_FILENAME = "memory.db"
 DB_FILEPATH = os.path.join(DB_FOLDER, DB_FILENAME)
 
 # --- Connection and Setup ---
-# Ensure the data directory exists
-os.makedirs(DB_FOLDER, exist_ok=True)
+# The connection is established here, but the DB file is created in setup_database()
 connection = sqlite3.connect(DB_FILEPATH, check_same_thread=False)
 connection.row_factory = sqlite3.Row # Allows accessing columns by name
 
 def setup_database():
     """Creates the necessary tables if they don't exist."""
+    os.makedirs(DB_FOLDER, exist_ok=True)
     cursor = connection.cursor()
     # Table for user preferences and specific facts (key-value)
     cursor.execute('''

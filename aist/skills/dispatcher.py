@@ -1,12 +1,14 @@
 import json
 import inspect
-from core.llm import process_with_llm
-from .skill_loader import discover_skills
+import logging
+from aist.core.llm import process_with_llm
+from aist.skills.skill_loader import discover_skills
 
 # --- Skill Discovery ---
 # On startup, discover all available skills and create the prompt fragment for the LLM.
 # This makes the system extensible: just drop a new skill file into the directory.
 AVAILABLE_SKILLS, SKILLS_PROMPT_FRAGMENT = discover_skills()
+log = logging.getLogger(__name__)
 
 def select_skill_with_llm(llm, command, state, conversation_history, relevant_facts):
     """
@@ -27,12 +29,13 @@ Here are the available skills:
 {SKILLS_PROMPT_FRAGMENT}
 - activate(): The user is trying to wake the assistant. Only use this if the state is DORMANT.
 - deactivate(): The user is trying to pause the assistant. Only use this if the state is LISTENING.
-- chat(query): Use for general conversation or when no other skill is appropriate.
+- ignore(): The user's speech is irrelevant or should be ignored. Use this if no other skill fits, especially when the state is DORMANT.
+- chat(query): Use for general conversation or when no other skill is appropriate. Only use this if the state is LISTENING.
 - quit(): Use when the user wants to exit or stop the assistant.
 
 Analyze the user's request: "{command}"
 Based on the state and the request, choose the most appropriate skill.
-If the state is DORMANT, your primary goal is to detect the 'activate' or 'quit' skill. Any other speech is likely irrelevant and should be handled with the 'chat' skill.
+If the state is DORMANT, you must be very strict. Only choose 'activate' or 'quit'. If the user says anything else, you must choose 'ignore'.
 If the state is LISTENING, you can use any skill.
 """
     # We pass the full context to the LLM, which is now acting as the core of the "Brain".
@@ -56,26 +59,27 @@ def command_dispatcher(command, state, llm, conversation_history, relevant_facts
         skill_name = decision.get("skill")
         parameters = decision.get("parameters", {})
     except (json.JSONDecodeError, AttributeError, TypeError) as e:
-        print(f"Error parsing LLM decision. Falling back to chat. Error: {e}\nLLM Response: '{llm_response_str}'")
+        log.error(f"Error parsing LLM decision. Falling back to chat. Error: {e}\nLLM Response: '{llm_response_str}'")
         skill_name = "chat"
         parameters = {} # Parameters will be handled in the execution block
 
-    # --- State-based Intent Translation ---
-    # 2. Translate the LLM's skill choice into a concrete action for the frontend.
+    # --- Universal Actions & State-based Intent Translation ---
+    # These actions are independent of the current state.
+    if skill_name == 'ignore':
+        return {'action': 'IGNORE', 'speak': None}
+    if skill_name == 'quit':
+        return {'action': 'EXIT', 'speak': "Goodbye."}
+
     if state == 'DORMANT':
         if skill_name == 'activate':
             return {'action': 'ACTIVATE', 'speak': "I'm listening."}
-        elif skill_name == 'quit':
-            return {'action': 'EXIT', 'speak': "Goodbye."}
         else:
-            # If dormant, ignore everything else (including 'chat' or misfires).
+            # If dormant, and it wasn't activate or quit (already handled), ignore it.
             return {'action': 'IGNORE', 'speak': None}
 
     elif state == 'LISTENING':
         if skill_name == 'deactivate':
             return {'action': 'DEACTIVATE', 'speak': "Pausing."}
-        elif skill_name == 'quit':
-            return {'action': 'EXIT', 'speak': "Goodbye."}
         elif skill_name == 'activate':
             # Already listening, just confirm and do nothing.
             return {'action': 'COMMAND', 'speak': "I'm already listening."}
@@ -103,6 +107,6 @@ def command_dispatcher(command, state, llm, conversation_history, relevant_facts
                 return {'action': 'COMMAND', 'speak': result}
         else:
             # Fallback if the LLM hallucinates a skill that doesn't exist.
-            print(f"LLM chose a non-existent skill: '{skill_name}'. Falling back to chat.")
+            log.warning(f"LLM chose a non-existent skill: '{skill_name}'. Falling back to chat.")
             result = process_with_llm(llm, command, conversation_history, relevant_facts)
             return {'action': 'COMMAND', 'speak': result}

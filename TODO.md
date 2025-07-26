@@ -25,7 +25,7 @@ This file tracks the development progress and future roadmap for the AIST assist
 
 ### Tier 1: Activating Skills (Immediate Priority)
 -   [ ] **Implement Basic System Skills:**
-    -   [ ] Re-implement `open_application` using the new `@aist_skill` decorator.
+    -   [x] Implement `open_application` using the new `@aist_skill` decorator.
     -   [ ] Re-implement `get_system_info` (CPU, battery) as a skill.
 -   [ ] **Enhanced User Feedback:**
     -   [ ] Add audio cues (e.g., a "ding" sound on wake word detection, another for command processing).
