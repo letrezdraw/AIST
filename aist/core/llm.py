@@ -2,24 +2,29 @@
 
 import logging
 from ctransformers import AutoModelForCausalLM
-from aist.config import MODEL_PATH, GPU_LAYERS, CONTEXT_LENGTH, MAX_NEW_TOKENS
+from aist.core.config_manager import config
 
 log = logging.getLogger(__name__)
 
 def initialize_llm():
     """Loads the Local AI Model."""
     log.info("Loading AI model... This may take a few moments.")
+    model_path = config.get('models.llm.path')
+    if not model_path:
+        log.fatal("FATAL: LLM model path is not configured in config.yaml (models.llm.path).")
+        return None
+
     try:
         llm = AutoModelForCausalLM.from_pretrained(
-            MODEL_PATH,
+            model_path,
             model_type="mistral",
-            gpu_layers=GPU_LAYERS,
-            context_length=CONTEXT_LENGTH
+            gpu_layers=config.get('models.llm.gpu_layers', 0),
+            context_length=config.get('models.llm.context_length', 2048)
         )
         log.info("AI Model loaded successfully.")
         return llm
     except Exception as e:
-        log.fatal(f"FATAL: Could not load the AI model from path: {MODEL_PATH}")
+        log.fatal(f"FATAL: Could not load the AI model from path: {model_path}")
         log.error(f"Error: {e}", exc_info=True)
         return None
 
@@ -61,7 +66,7 @@ def process_with_llm(llm, command, conversation_history, relevant_facts, system_
             facts_str = "You have the following relevant information from your memory to help you answer:\n- " + "\n- ".join(relevant_facts) + "\n"
         prompt = f'{history_str}[INST] {facts_str}Based on the conversation history and the provided information, answer the following user query. Be concise and direct. User query: {command} [/INST]'
         temperature = 0.7 # Standard temperature for creative/conversational responses
-        max_tokens = MAX_NEW_TOKENS
+        max_tokens = config.get('models.llm.max_new_tokens', 150)
 
     try:
         log.info("Sending prompt to LLM...")

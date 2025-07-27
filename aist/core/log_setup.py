@@ -3,9 +3,29 @@ import logging
 import logging.handlers
 import os
 import sys
+from aist.core.config_manager import config
 
-LOG_FOLDER = "data/logs"
+# This is now configured in config.yaml
 LOG_FILENAME = "aist.log"
+
+# ANSI color codes for a more professional console output
+class Colors:
+    RESET = "\033[0m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    CYAN = "\033[96m"
+    MAGENTA = "\033[95m"
+    WHITE = "\033[97m"
+
+def console_log(message: str, prefix: str = "STATUS", color: str = Colors.WHITE):
+    """
+    Prints a colored and formatted message directly to the console.
+    This is used for critical status updates that the user should see even
+    if console logging is disabled in the config.
+    """
+    # Using a distinct, padded prefix makes the output align neatly.
+    print(f"{color}[{prefix:<8}]{Colors.RESET} {message}", file=sys.stdout)
+    sys.stdout.flush()
 
 def setup_logging():
     """
@@ -23,9 +43,12 @@ def setup_logging():
     # Set the root logger level to the lowest possible level to capture all messages.
     logger.setLevel(logging.DEBUG)
 
+    # Get log folder path from the central configuration
+    log_folder = config.get('logging.folder', 'data/logs')
+
     # Ensure the log directory exists
-    os.makedirs(LOG_FOLDER, exist_ok=True)
-    log_filepath = os.path.join(LOG_FOLDER, LOG_FILENAME)
+    os.makedirs(log_folder, exist_ok=True)
+    log_filepath = os.path.join(log_folder, LOG_FILENAME)
 
     # Define the log format
     formatter = logging.Formatter(
@@ -41,8 +64,9 @@ def setup_logging():
     file_handler.setLevel(logging.DEBUG) # Set file handler to capture debug messages
     logger.addHandler(file_handler)
 
-    # --- Console Handler (captures INFO level and up) ---
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(formatter)
-    console_handler.setLevel(logging.INFO) # Set console handler to show only INFO and higher
-    logger.addHandler(console_handler)
+    # --- Console Handler (captures INFO level and up, if enabled) ---
+    if config.get('logging.console_enabled', True):
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setFormatter(formatter)
+        console_handler.setLevel(logging.INFO) # Set console handler to show only INFO and higher
+        logger.addHandler(console_handler)

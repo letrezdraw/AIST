@@ -7,41 +7,54 @@ import wave
 import pyaudio
 import threading
 from piper.voice import PiperVoice
-from aist.config import PIPER_VOICE_MODEL
+from aist.core.audio import audio_manager # type: ignore
+from aist.core.events import bus, TTS_SPEAK, TTS_STARTED, TTS_FINISHED
+from aist.core.config_manager import config
 
 log = logging.getLogger(__name__)
 
 # --- Piper TTS Initialization ---
 voice = None
+model_path = None # Define in outer scope for error logging
 
 try:
-    # Check if the model file and its .json config exist
-    model_path = os.path.abspath(PIPER_VOICE_MODEL)
-    model_config_path = f"{model_path}.json"
-
-    if not os.path.exists(model_path) or not os.path.exists(model_config_path):
-        log.fatal(f"Piper voice model or config not found at '{model_path}'")
-        log.fatal("Please download a voice from https://huggingface.co/rhasspy/piper-voices/tree/main")
-        log.fatal("And place both the .onnx and .json files in the configured path.")
+    model_path_config = config.get('models.tts.piper_voice_model')
+    if not model_path_config:
+        log.fatal("FATAL: Piper TTS model path is not configured in config.yaml (models.tts.piper_voice_model).")
     else:
-        log.info("Loading Piper TTS voice... This may take a moment.")
-        voice = PiperVoice.load(model_path, config_path=model_config_path)
-        log.info("Piper TTS voice loaded successfully.")
-except Exception as e:
-    log.error(f"Error initializing Piper TTS engine: {e}", exc_info=True)
+        model_path = os.path.abspath(model_path_config)
+        model_config_path = f"{model_path}.json"
 
-def speak(text: str):
+        if not os.path.exists(model_path) or not os.path.exists(model_config_path):
+            log.fatal(f"Piper voice model or config not found at '{model_path}'")
+            log.fatal("Please download a voice from https://huggingface.co/rhasspy/piper-voices/tree/main")
+            log.fatal("And place both the .onnx and .json files in the configured path.")
+        else:
+            log.info("Loading Piper TTS voice... This may take a moment.")
+            voice = PiperVoice.load(model_path, config_path=model_config_path)
+            log.info("Piper TTS voice loaded successfully.")
+except Exception as e:
+    log.error(f"Error initializing Piper TTS engine for model '{model_path}': {e}", exc_info=True)
+
+def _speak_audio(text: str):
     """
-    Converts text to speech using Piper and plays it.
+    The core implementation of converting text to speech and playing it.
     """
     if not voice:
-        log.error("TTS engine not available. Cannot speak.", exc_info=True)
+        log.error("TTS engine not available. Cannot play audio.")
         return
     if text:
-        log.info(f"AIST Speaking: \"{text}\"")        
-        p = pyaudio.PyAudio()
+        log.info(f"AIST Speaking: \"{text}\"")
+        p = audio_manager.get_pyaudio()
+        if not p:
+            log.error("PyAudio instance not available. Cannot play audio.")
+            return
+
         stream = None
         try:
+            # Signal that TTS is starting, so other components (like STT) can pause.
+            bus.sendMessage(TTS_STARTED)
+
             # Create an in-memory buffer to hold the WAV data.
             wav_buffer = io.BytesIO()
 
@@ -74,8 +87,25 @@ def speak(text: str):
         except Exception as e:
             log.error(f"Error during TTS playback: {e}", exc_info=True)
         finally:
-            # Always ensure the stream and PyAudio instance are closed
+            # Always ensure the stream is closed.
+            # We DO NOT terminate the PyAudio instance because it is shared.
             if stream:
                 stream.stop_stream()
                 stream.close()
-            p.terminate()
+            
+            # Signal that TTS has finished.
+            bus.sendMessage(TTS_FINISHED)
+
+def _handle_speak_request(text: str):
+    """
+    Handles a speak request from the event bus.
+    Runs the actual speaking in a separate thread to avoid blocking the bus.
+    """
+    if not text:
+        return
+    threading.Thread(target=_speak_audio, args=(text,), daemon=True).start()
+
+def initialize_tts_listener():
+    """Subscribes the TTS engine to the event bus."""
+    bus.subscribe(_handle_speak_request, TTS_SPEAK)
+    log.info("TTS engine is listening for 'tts.speak' events.")

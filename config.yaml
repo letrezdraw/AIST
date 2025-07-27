@@ -1,0 +1,60 @@
+# AIST Configuration File
+#
+# Copy this file to 'config.yaml' in the project root and edit it to your needs.
+# The application will load 'config.yaml' at startup.
+
+assistant:
+  name: "AIST"
+  # Phrases that will activate the assistant from the DORMANT state.
+  # The STT engine is highly optimized to listen for these specific phrases.
+  activation_phrases:
+    - "hey assist"
+    - "okay assist"
+    - "hey assistant"
+    - "okay assistant"
+  # Phrases that will shut down the assistant from any state.
+  exit_phrases:
+    - "assist exit"
+    - "assist quit"
+  # Phrases that will return the assistant to the DORMANT state.
+  deactivation_phrases:
+    - "assist pause"
+    - "go to sleep"
+  # How similar (in percent) speech must be to a command phrase to be a match.
+  # Lower is more lenient but risks more false positives. 85 is a good starting point.
+  fuzzy_match_threshold: 85
+
+models:
+  llm:
+    path: "data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
+    gpu_layers: 99
+    context_length: 4096
+    max_new_tokens: 150
+  tts:
+    piper_voice_model: "data/models/tts/en_US-lessac-medium.onnx"
+  stt:
+    vosk_model_path: "data/models/stt/vosk-model-en-us-0.22"
+    # The STT provider to use. 'vosk' is the default lightweight engine.
+    # 'whisper' will provide higher quality recognition.
+    provider: "whisper"
+    # --- Whisper Provider Settings ---
+    # Model size (e.g., "tiny.en", "base.en", "small.en", "medium.en"). Larger models are
+    # more accurate but slower and use more memory. ".en" models are English-only.
+    whisper_model_name: "base.en"
+    whisper_device: "cuda" # "cuda" for NVIDIA GPUs, "cpu" for CPU
+
+audio:
+  stt:
+    # Confidence threshold (0.0 to 1.0) for accepting a transcription.
+    # Lower values are more permissive but may result in more errors.
+    confidence_threshold: 0.85
+
+logging:
+  # Path for the log folder, relative to project root.
+  folder: "data/logs"
+  # Whether to show log output in the console. Set to false for a cleaner terminal.
+  console_enabled: false
+
+hotkeys:
+  # Global hotkey to force quit the application.
+  quit: "ctrl+win+x"

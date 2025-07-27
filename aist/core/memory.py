@@ -28,13 +28,10 @@ def setup_database():
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     ''')
-    # Table for general, unstructured facts that can be searched
+    # FTS5 virtual table for efficient full-text search on general facts.
+    # We keep 'id' and 'timestamp' but mark them as UNINDEXED as we only search 'content'.
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS general_facts (
-            id TEXT PRIMARY KEY,
-            content TEXT NOT NULL,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
+        CREATE VIRTUAL TABLE IF NOT EXISTS general_facts USING fts5(id UNINDEXED, content, timestamp UNINDEXED)
     ''')
     connection.commit()
 
@@ -61,17 +58,17 @@ def add_fact(fact_text: str, fact_id: str) -> bool:
 
 def retrieve_relevant_facts(query: str, top_n: int = 3) -> list[str]:
     """
-    Retrieves relevant general facts using a basic LIKE search.
-    NOTE: This is a simple keyword search, not a true semantic search like the
-    previous vector DB implementation. It's a trade-off for using SQLite as per the blueprint.
+    Retrieves relevant general facts using SQLite's FTS5 full-text search.
+    This is much more effective than a simple LIKE search.
     """
     try:
         cursor = connection.cursor()
-        # Create a search pattern from the query words
-        search_pattern = f"%{'%'.join(query.split())}%"
+        # FTS5 queries are more powerful. We can use OR to find documents containing any of the words.
+        # For more complex logic, this can be enhanced (e.g., using NEAR).
+        search_query = ' OR '.join(query.split())
         cursor.execute(
-            "SELECT content FROM general_facts WHERE content LIKE ? ORDER BY timestamp DESC LIMIT ?",
-            (search_pattern, top_n)
+            "SELECT content FROM general_facts WHERE general_facts MATCH ? ORDER BY rank LIMIT ?",
+            (search_query, top_n)
         )
         results = [row['content'] for row in cursor.fetchall()]
         return results
@@ -93,11 +90,11 @@ def find_and_delete_fact(query: str) -> str | None:
     """Finds the most relevant general fact to a query and deletes it."""
     try:
         cursor = connection.cursor()
-        search_pattern = f"%{'%'.join(query.split())}%"
-        # Find the most recent matching fact
+        search_query = ' OR '.join(query.split())
+        # Find the most relevant matching fact using FTS5's ranking
         cursor.execute(
-            "SELECT id, content FROM general_facts WHERE content LIKE ? ORDER BY timestamp DESC LIMIT 1",
-            (search_pattern,)
+            "SELECT id, content FROM general_facts WHERE general_facts MATCH ? ORDER BY rank LIMIT 1",
+            (search_query,)
         )
         result = cursor.fetchone()
         if not result:

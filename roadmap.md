@@ -26,23 +26,23 @@ These philosophies will guide every architectural decision and feature implement
 #### **Epic 1.1: The Message Bus Architecture**
 > **Why:** To achieve true decoupling and scalability, we are moving from a direct client-server model to a fully event-driven architecture. This is the #1 prerequisite for a large-scale system, inspired by the stability of frameworks like Mycroft.
 >
-> **Key Tasks:**
-> - [ ] Research and select a lightweight, thread-safe message bus library (e.g., `PyPubSub`).
-> - [ ] Define a strict event naming convention in `core/events.py` (e.g., `stt.transcribed`, `llm.response.ready`, `skill.execute`).
-> - [ ] Refactor all existing components (STT, TTS, Main, Backend) to communicate exclusively through publishing and subscribing to messages on the bus.
+> **Key Tasks (Frontend):**
+> - [x] Research and select a lightweight, thread-safe message bus library (`PyPubSub`).
+> - [x] Define a strict event naming convention in `core/events.py`.
+> - [x] Refactor frontend components (STT, TTS, Main) to communicate exclusively through the message bus.
 >
-> **✅ Success Criteria:** The frontend and backend processes have zero direct code dependency on each other; they only know about the message bus. The system functions identically to the user but is now architecturally superior.
+> **✅ Success Criteria:** The frontend components are fully decoupled. The system is robust and ready for a GUI overlay.
 
-#### **Epic 1.2: Centralized & Dynamic Configuration**
+#### **Epic 1.2: Centralized & Dynamic Configuration (DONE)**
 > **Why:** To empower users and simplify deployment, all hardcoded settings will be externalized into a user-friendly configuration file.
 >
 > **Key Tasks:**
-> - [ ] Implement a `ConfigManager` class in `core/config.py` that loads settings from `AIST_data/config.yaml`.
-> - [ ] Create a `config.template.yaml` file with extensive comments explaining every possible configuration option.
-> - [ ] Replace every hardcoded path, model name, activation phrase, hotkey, and setting in the entire codebase with a call to the `ConfigManager`.
+> - [x] Implement a `ConfigManager` class in `core/config_manager.py` that loads settings from `config.yaml`.
+> - [x] Create a `config.template.yaml` file with extensive comments explaining every possible configuration option.
+> - [x] Replace every hardcoded path, model name, activation phrase, hotkey, and setting in the entire codebase with a call to the `ConfigManager`.
 > - [ ] **(Stretch Goal):** Implement hot-reloading: the system should detect changes to `config.yaml` and reload relevant services without a full restart.
 >
-> **✅ Success Criteria:** The assistant's voice, language model, activation phrase, and performance settings can be changed by editing the YAML file and restarting the service.
+> **✅ Success Criteria:** The assistant's voice, language model, STT provider, activation phrases, and performance settings can be changed by editing the YAML file and restarting the service.
 
 #### **Epic 1.3: The Test-Driven Development Framework**
 > **Why:** To ensure stability, reliability, and code quality at scale, we will adopt a Test-Driven Development (TDD) approach for all new features.
@@ -98,11 +98,11 @@ These philosophies will guide every architectural decision and feature implement
 #### **Epic 3.1: The Pluggable Provider Architecture**
 > **Why:** To offer ultimate flexibility, allowing users to easily swap out core AI components. This makes AIST a true framework, not just an application.
 >
-> **Key Tasks:**
-> - [ ] Create abstract base classes for each core service: `BaseSTTProvider`, `BaseTTSProvider`, `BaseLLMProvider`.
-> - [ ] Refactor the existing `Vosk`, `Piper`, and `ctransformers` integrations into concrete provider classes that inherit from these bases.
-> - [ ] The `ConfigManager` will dynamically load the provider specified in `config.yaml`.
-> - [ ] Write clear documentation on how a developer can create and contribute a new provider (e.g., for OpenAI Whisper or Coqui TTS).
+> **Key Tasks (STT):**
+> - [x] Create abstract base class `BaseSTTProvider`.
+> - [x] Refactor the existing `Vosk` integration into a concrete provider class.
+> - [x] Implement a new, high-accuracy `Whisper` provider.
+> - [x] The `ConfigManager` dynamically loads the STT provider specified in `config.yaml`.
 >
 > **✅ Success Criteria:** A user can switch their STT engine from `Vosk` to `Whisper` by changing one line in the config file.
 
@@ -135,4 +135,3 @@ These philosophies will guide every architectural decision and feature implement
 - [ ] **Multi-Modal Interaction:** Create skills that can understand more than just voice, such as reading text from a screenshot (Vision) or the clipboard.
 - [ ] **The AIST Skill Store:** Build a command-line interface and eventually a web UI for users to easily discover, install, and manage third-party skills.
 - [ ] **Packaged Installer:** Create a professional Windows installer using `Inno Setup` that handles dependencies, model downloads, and setup, providing a one-click installation experience.
-

@@ -12,7 +12,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 if script_dir not in sys.path:
     sys.path.insert(0, script_dir)
 
-from aist.core.log_setup import setup_logging
+from aist.core.log_setup import setup_logging, console_log, Colors
 from aist.core.ipc.server import IPCServer
 
 def main():
@@ -20,17 +20,20 @@ def main():
     setup_logging()
     log = logging.getLogger(__name__)
 
-    log.info("--- AIST Backend Console ---")
-    log.info("Starting IPC Server... This may take a moment to load the AI model.")
+    console_log("--- AIST Backend Console ---", prefix="SYSTEM")
+    console_log("Starting backend services...", prefix="INIT")
     
     ipc_server = None # Define before try block
     try:
         ipc_server = IPCServer()
-        ipc_server.start()
-        log.info("Backend is running. Press Ctrl+C to stop.")
-        # Keep the main thread alive to listen for KeyboardInterrupt
-        while True:
-            time.sleep(1)
+        if ipc_server.start():
+            console_log("Backend is running. Press Ctrl+C to stop.", prefix="READY", color=Colors.GREEN)
+            # Keep the main thread alive to listen for KeyboardInterrupt
+            while True:
+                time.sleep(1)
+        else:
+            log.fatal("Backend failed to start due to a critical error. Please check the logs.")
+            # The application will exit here naturally.
     except KeyboardInterrupt:
         log.info("Ctrl+C received. Shutting down backend server.")
     finally:
