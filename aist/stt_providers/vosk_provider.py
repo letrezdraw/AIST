@@ -94,10 +94,8 @@ class VoskProvider(BaseSTTProvider):
             current_state = state
             if state == 'LISTENING':
                 current_recognizer = recognizer_listening
-                log.info("STT engine switched to general recognition mode.")
             elif state == 'DORMANT':
                 current_recognizer = recognizer_dormant
-                log.info("STT engine switched to activation phrase mode.")
 
         stream = None
         try:

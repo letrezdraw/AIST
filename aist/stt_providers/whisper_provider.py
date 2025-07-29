@@ -6,10 +6,10 @@ import pyaudio
 import numpy as np
 import threading
 import time
-from queue import Queue
+from queue import Queue, Empty
 
 from aist.core.audio import audio_manager
-from aist.core.events import bus, STT_TRANSCRIBED, TTS_STARTED, TTS_FINISHED
+from aist.core.events import bus, STT_TRANSCRIBED, TTS_STARTED, TTS_FINISHED, VAD_STATUS_CHANGED
 from aist.core.config_manager import config
 from .base import BaseSTTProvider
 
@@ -44,34 +44,34 @@ class WhisperProvider(BaseSTTProvider):
             return None
 
     def _transcription_worker(self):
-        """A worker thread that processes audio from the queue."""
+        """
+        Continuously pulls audio data from the queue and transcribes it.
+        This runs in a background thread.
+        """
         while self.app_state.is_running:
             try:
+                # Wait for audio data to become available. The timeout prevents
+                # this loop from blocking indefinitely when the app is shutting down.
                 audio_data = self.audio_queue.get(timeout=1)
-                if audio_data is None: # Sentinel value to stop the thread
-                    break
-
-                log.info("Transcribing captured audio with Whisper...")
-                # Convert raw bytes to a NumPy array of 16-bit integers
-                audio_np = np.frombuffer(audio_data, dtype=np.int16)
-                # Convert to a 32-bit float array and normalize
-                audio_fp32 = audio_np.astype(np.float32) / 32768.0
-
-                # Transcribe
-                result = self.model.transcribe(audio_fp32, fp16=torch.cuda.is_available())
-                text = result.get('text', '').strip()
-
-                if text:
-                    log.info(f"Whisper transcribed: '{text}'")
-                    bus.sendMessage(STT_TRANSCRIBED, text=text.lower())
                 
-                self.audio_queue.task_done()
+                # Convert the raw bytes to a NumPy array that Whisper can process.
+                audio_np = np.frombuffer(audio_data, dtype=np.int16).astype(np.float32) / 32768.0
+                
+                # Transcribe the audio.
+                result = self.model.transcribe(audio_np, fp16=torch.cuda.is_available())
+                text = result['text'].strip()
+                
+                # Filter out junk transcriptions that are common with silence.
+                # We check if there is at least one alphabetic character.
+                if text and any(c.isalpha() for c in text):
+                    log.info(f"Whisper transcribed: '{text}'")
+                    bus.sendMessage(STT_TRANSCRIBED, text=text)
+
+            except Empty:
+                # This is expected when there's no speech. Continue the loop silently.
+                continue
             except Exception as e:
-                if isinstance(e, KeyboardInterrupt):
-                    break
-                # This handles the queue.get() timeout
-                if "Empty" not in str(e):
-                    log.error(f"Error in Whisper transcription worker: {e}", exc_info=True)
+                log.error(f"Error in Whisper transcription worker: {e}", exc_info=True)
 
     def run(self):
         """The core loop that listens for voice activity and queues audio for transcription."""
@@ -121,20 +121,38 @@ class WhisperProvider(BaseSTTProvider):
             phrase_buffer = []
             last_speech_time = time.time()
 
+            last_vad_status = "silence"
+
             while self.app_state.is_running:
                 if is_tts_active:
                     phrase_buffer.clear() # Clear any buffered audio
                     time.sleep(0.1)
                     continue
 
-                data = stream.read(CHUNK)
+                data = stream.read(CHUNK, exception_on_overflow=False)
+                if not data:
+                    continue
                 
                 # Simple energy-based VAD
                 # We use numpy for fast RMS calculation
                 audio_chunk_np = np.frombuffer(data, dtype=np.int16)
-                energy = np.sqrt(np.mean(audio_chunk_np**2))
+                # Add a more robust check to ensure the audio chunk is not empty before processing.
+                # This prevents a RuntimeWarning if the audio stream returns an empty chunk.
+                if audio_chunk_np.size == 0:
+                    continue
+                
+                try:
+                    energy = np.sqrt(np.mean(audio_chunk_np.astype(np.float64)**2))
+                except RuntimeWarning:
+                    # This can happen with empty or invalid audio chunks. Assume silence.
+                    energy = 0.0
 
                 if energy > ENERGY_THRESHOLD:
+                    # Broadcast that speech is detected, but only on change
+                    if last_vad_status == "silence":
+                        bus.sendMessage(VAD_STATUS_CHANGED, status="speech")
+                        last_vad_status = "speech"
+
                     phrase_buffer.append(data)
                     last_speech_time = time.time()
                 elif phrase_buffer:
@@ -143,6 +161,11 @@ class WhisperProvider(BaseSTTProvider):
                         audio_to_transcribe = b''.join(phrase_buffer)
                         phrase_buffer.clear()
                         self.audio_queue.put(audio_to_transcribe)
+                
+                # Broadcast that silence is detected, but only on change
+                if energy <= ENERGY_THRESHOLD and last_vad_status == "speech":
+                    bus.sendMessage(VAD_STATUS_CHANGED, status="silence")
+                    last_vad_status = "silence"
 
         except Exception as e:
             log.error(f"An error occurred in the Whisper listening loop: {e}", exc_info=True)

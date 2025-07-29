@@ -4,6 +4,7 @@ import logging.handlers
 import os
 import sys
 from aist.core.config_manager import config
+from aist.core.gui_logging_handler import GUILoggingHandler
 
 # This is now configured in config.yaml
 LOG_FILENAME = "aist.log"
@@ -27,7 +28,7 @@ def console_log(message: str, prefix: str = "STATUS", color: str = Colors.WHITE)
     print(f"{color}[{prefix:<8}]{Colors.RESET} {message}", file=sys.stdout)
     sys.stdout.flush()
 
-def setup_logging():
+def setup_logging(is_frontend: bool = False):
     """
     Configures the root logger for the entire application.
     This will log to both a rotating file and the console.
@@ -70,3 +71,11 @@ def setup_logging():
         console_handler.setFormatter(formatter)
         console_handler.setLevel(logging.INFO) # Set console handler to show only INFO and higher
         logger.addHandler(console_handler)
+
+    # Only the frontend process should broadcast logs to the GUI.
+    if is_frontend:
+        # --- GUI Broadcast Handler (captures INFO level and up) ---
+        gui_handler = GUILoggingHandler()
+        gui_handler.setFormatter(formatter)
+        gui_handler.setLevel(logging.INFO)
+        logger.addHandler(gui_handler)

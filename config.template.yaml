@@ -23,6 +23,19 @@ assistant:
   # How similar (in percent) speech must be to a command phrase to be a match.
   # Lower is more lenient but risks more false positives. 85 is a good starting point.
   fuzzy_match_threshold: 85
+  # The maximum time in seconds a skill is allowed to run before being terminated.
+  skill_timeout: 5
+  # The number of user/assistant exchanges to keep in short-term memory for context.
+  conversation_history_length: 5
+
+ipc:
+  # Port for the event bus, broadcasting state changes to GUIs or other listeners.
+  # This is separate from the main command/response channel.
+  event_bus_port: 5556
+  # Port for receiving text commands from the GUI or other text-based clients.
+  text_command_port: 5557
+  # Port for broadcasting log records to the GUI or other listeners.
+  log_broadcast_port: 5558
 
 models:
   llm:
@@ -31,6 +44,9 @@ models:
     context_length: 4096
     max_new_tokens: 150
   tts:
+    # The TTS provider to use. 'piper' is the default high-quality local engine.
+    provider: "piper"
+    # --- Piper Provider Settings ---
     piper_voice_model: "data/models/tts/en_US-lessac-medium.onnx"
   stt:
     vosk_model_path: "data/models/stt/vosk-model-en-us-0.22"

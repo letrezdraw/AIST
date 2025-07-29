@@ -1,0 +1,6 @@
+{
+    "name": "Memory Skill",
+    "version": "1.0",
+    "author": "AIST-Core",
+    "description": "Remembers and recalls facts. Use to store information like 'my pin is 1234' or to ask 'what is my pin?'."
+}

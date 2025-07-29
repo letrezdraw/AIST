@@ -141,19 +141,23 @@ AIST uses local models for its core functionality. The STT models are handled di
 
 ## ▶️ How to Run
 
-AIST requires two separate console windows to run. The `start_console.bat` script is provided for easy access to a terminal with the virtual environment pre-activated.
+Starting AIST is simple. Just double-click the `start_aist.bat` file in the project's root directory.
 
-1.  **Start the Backend**: Open a console (or run `start_console.bat`), activate the venv, and run:
-    ```bash
-    python run_backend.py
-    ```
-    Wait for it to confirm that the AI model has loaded and the IPC server is listening.
+This will open a main "Launcher" console window, which will then automatically:
+1.  Activate the Python virtual environment.
+2.  Launch the Backend, Frontend, and GUI, each in its own separate console window.
 
-2.  **Start the Frontend**: Open a **second** console (or run `start_console.bat` again), activate the venv, and run:
-    ```bash
-    python main.py
-    ```
-    The AIST icon will appear in your system tray, and the assistant will be active.
+To shut down the application, use the system tray icon or the global hotkey (`Ctrl+Win+X`).
+
+<details>
+<summary><strong>Running Manually (for Development)</strong></summary>
+
+If you prefer to run the components manually for debugging:
+
+1.  Open three separate consoles (e.g., by running `start_console.bat` multiple times).
+2.  In each console, activate the virtual environment: `.\venv\Scripts\activate`
+3.  In the respective consoles, run `python run_backend.py`, `python main.py`, and `python run_gui.py`.
+</details>
 
 ## 🗣️ Usage Guide
 

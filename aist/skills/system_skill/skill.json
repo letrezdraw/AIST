@@ -1,0 +1,6 @@
+{
+    "name": "System Control Skill",
+    "version": "1.0",
+    "author": "AIST-Core",
+    "description": "Provides basic system control functions like opening applications."
+}

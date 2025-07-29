@@ -1,56 +1,73 @@
+# aist/skills/skill_loader.py
 import os
 import importlib
-import inspect
+import json
 import logging
-import sys
+from pathlib import Path
 
 log = logging.getLogger(__name__)
 
-def aist_skill(func):
-    """A decorator to mark functions as AIST skills."""
-    func._is_aist_skill = True
-    return func
+class SkillManager:
+    def __init__(self, skills_dir="aist/skills"):
+        self.skills_dir = Path(skills_dir)
+        self.skills = {}
+        self.intents = {}
+        self._load_skills()
 
-def discover_skills() -> tuple[dict, str]:
-    """
-    Dynamically discovers and loads all functions marked with the @aist_skill decorator.
-
-    Returns:
-        A tuple containing:
-            - A dictionary mapping skill names to their function objects.
-            - A formatted string describing the skills for the LLM prompt.
-    """
-    available_skills = {}
-    skills_prompt_fragment = ""
-    skills_dir = os.path.dirname(__file__)
-
-    # Add the parent directory of this file to sys.path to fix import issues
-    parent_dir = os.path.abspath(os.path.join(skills_dir, os.pardir))
-    if parent_dir not in sys.path:
-        sys.path.insert(0, parent_dir)
-
-    for filename in os.listdir(skills_dir):
-        if filename.endswith(".py") and not filename.startswith("__"):
-            module_name = f"aist.skills.{filename[:-3]}"
-            try:
-                module = importlib.import_module(module_name)
-                for name, func in inspect.getmembers(module, inspect.isfunction):
-                    if hasattr(func, '_is_aist_skill'):
-                        skill_name = func.__name__
-                        available_skills[skill_name] = func
-                        
-                        docstring = inspect.getdoc(func)
-                        if docstring:
-                            sig = inspect.signature(func)
-                            # Create a more descriptive parameter string for the LLM, including type hints.
-                            params = ", ".join(f"{p.name}: {p.annotation.__name__}" for p in sig.parameters.values())
-                            first_line = docstring.strip().split('\n')[0]
-                            skills_prompt_fragment += f"- {skill_name}({params}): {first_line}\n"
-                        log.info(f"Discovered skill: '{skill_name}' in {module_name}")
-            except Exception as e:
-                log.error(f"Failed to load skills from {module_name}: {e}", exc_info=True)
-
-    if not available_skills:
-        log.warning("No skills were discovered. The assistant will only have 'chat' and 'quit' capabilities.")
+    def _register_intent(self, skill_id, intent_name, intent_data):
+        """Internal method to register an intent from a skill."""
+        handler = intent_data.get("handler")
+        if not callable(handler):
+            log.error(f"Intent handler for '{intent_name}' in skill '{skill_id}' is not callable.")
+            return
         
-    return available_skills, skills_prompt_fragment
+        # Store the full intent data, linking it back to the skill
+        self.intents[intent_name] = {
+            "skill_id": skill_id,
+            "phrases": intent_data.get("phrases", []),
+            "handler": handler,
+            "parameters": intent_data.get("parameters", [])
+        }
+        log.info(f"Registered intent '{intent_name}' for skill '{skill_id}'.")
+
+    def _load_skills(self):
+        """Discovers, loads, and registers all valid skills."""
+        log.info(f"Searching for skills in '{self.skills_dir}'...")
+        if not self.skills_dir.is_dir():
+            log.warning(f"Skills directory not found: {self.skills_dir}")
+            return
+
+        for skill_dir in self.skills_dir.iterdir():
+            if skill_dir.is_dir() and (skill_dir / "__init__.py").exists():
+                skill_id = skill_dir.name
+                manifest_path = skill_dir / "skill.json"
+
+                if not manifest_path.exists():
+                    log.warning(f"Skipping skill '{skill_id}': missing skill.json.")
+                    continue
+
+                try:
+                    with open(manifest_path, 'r', encoding='utf-8') as f:
+                        manifest = json.load(f)
+
+                    module_path = f"aist.skills.{skill_id}"
+                    skill_module = importlib.import_module(module_path)
+                    
+                    if not hasattr(skill_module, 'create_skill'):
+                        log.warning(f"Skipping skill '{skill_id}': missing create_skill() function.")
+                        continue
+
+                    skill_instance = skill_module.create_skill()
+                    skill_instance._register(skill_id)
+                    skill_instance.register_intents(
+                        lambda intent_name, intent_data: self._register_intent(skill_id, intent_name, intent_data)
+                    )
+                    
+                    self.skills[skill_id] = {"instance": skill_instance, "manifest": manifest}
+                    log.info(f"Successfully loaded skill '{manifest.get('name', skill_id)}' (v{manifest.get('version', 'N/A')}).")
+
+                except Exception as e:
+                    log.error(f"Failed to load skill '{skill_id}': {e}", exc_info=True)
+
+# Global instance for easy access across the application
+skill_manager = SkillManager()

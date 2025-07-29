@@ -17,7 +17,7 @@ from aist.core.ipc.server import IPCServer
 
 def main():
     # Set up logging for the backend process
-    setup_logging()
+    setup_logging(is_frontend=False)
     log = logging.getLogger(__name__)
 
     console_log("--- AIST Backend Console ---", prefix="SYSTEM")

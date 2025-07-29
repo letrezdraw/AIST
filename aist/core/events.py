@@ -38,6 +38,9 @@ STATE_CHANGED = 'state.changed'      # Fired when the assistant's state changes 
 APP_STARTUP = 'app.startup'          # Fired when the application starts.
 APP_SHUTDOWN = 'app.shutdown'        # Fired to signal a graceful shutdown.
 
+# VAD (Voice Activity Detection) Events
+VAD_STATUS_CHANGED = "vad.status.changed" # payload: status: str ("speech" or "silence")
+
 # Command Dispatcher Events
 COMMAND_PROCESSED = 'command.processed' # Fired after the backend processes a command.
                                         # Data: {'response': dict}

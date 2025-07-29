@@ -11,15 +11,16 @@ class BaseSTTProvider(ABC):
     def __init__(self, app_state, stt_ready_event: threading.Event):
         """
         Initializes the provider.
-        
-        Args:
-            app_state: The shared application state object.
-            stt_ready_event: A threading event to signal when the provider is ready.
+        :param app_state: The shared application state object.
+        :param stt_ready_event: An event to signal when the STT engine is fully initialized.
         """
         self.app_state = app_state
         self.stt_ready_event = stt_ready_event
 
     @abstractmethod
     def run(self):
-        """Starts the main listening loop for the provider."""
+        """
+        The main loop for the STT provider. This should block until the provider is stopped.
+        It is responsible for listening to the audio stream and publishing transcriptions.
+        """
         pass

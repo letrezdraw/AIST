@@ -2,6 +2,7 @@ import json
 import zmq
 import logging
 import threading
+from aist.core.conversation import ConversationManager
 from aist.core.log_setup import console_log, Colors
 from aist.skills.dispatcher import command_dispatcher # type: ignore
 from aist.core.llm import initialize_llm
@@ -20,6 +21,7 @@ class IPCServer:
         self.is_running = False
         self.thread = None
         self.llm = None
+        self.conversation_manager = ConversationManager()
 
     def start(self):
         """Starts the IPC server and loads the LLM model. Returns True on success, False on failure."""
@@ -48,14 +50,36 @@ class IPCServer:
                     request = json.loads(message)
                     command_text = request.get("text", "")
                     state = request.get("state", "DORMANT")
+
+                    # --- Handle Special GUI Commands ---
+                    if command_text == "__AIST_CLEAR_CONVERSATION__":
+                        log.info("Received special command to clear conversation history.")
+                        self.conversation_manager.clear()
+                        self.socket.send_string(json.dumps({})) # Send an empty ack
+                        continue # Skip normal processing
+
                     console_log(f"'{command_text}' (State: {state})", prefix="RECV", color=Colors.CYAN)
 
-                    # For simplicity, conversation history and relevant facts are empty here
-                    response = command_dispatcher(command_text, state, self.llm, [], [])
-                    speak_text = response.get('speak', 'None') if response else 'None'
-                    console_log(f"Action: {response.get('action') if response else 'None'}, Speak: '{speak_text}'", prefix="SEND", color=Colors.MAGENTA)
+                    # Add user's message to history and get the current context
+                    self.conversation_manager.add_message(role="user", text=command_text)
+                    history = self.conversation_manager.get_history()
+
+                    # The dispatcher will handle retrieving relevant facts from long-term memory.
+                    # We pass the conversation history to it for context.
+                    response = command_dispatcher(command_text, state, self.llm, history)
+                    
+                    if response is None:
+                        # If the dispatcher returns None (e.g., ignored command in DORMANT state),
+                        # send a valid but empty JSON object back to the client to prevent errors.
+                        response = {}
+
+                    speak_text = response.get("speak") if response else None
+                    console_log(f"Action: {response.get('action') if response else 'None'}, Speak: '{speak_text or 'None'}'", prefix="SEND", color=Colors.MAGENTA)
                     response_json = json.dumps(response)
                     self.socket.send_string(response_json)
+
+                    if speak_text:
+                        self.conversation_manager.add_message(role="assistant", text=speak_text)
             except Exception as e:
                 log.error(f"Error processing request: {e}", exc_info=True)
                 error_response = {"action": "COMMAND", "speak": "An error occurred processing your request."}
