@@ -108,10 +108,8 @@ class WhisperProvider(BaseSTTProvider):
         # --- VAD Parameters ---
         RATE = 16000
         CHUNK = 1024
-        # How long to record after the user stops talking.
-        PHRASE_TIMEOUT = 1.0
-        # Minimum volume to be considered speech. This may need tuning.
-        ENERGY_THRESHOLD = 300 # RMS
+        PHRASE_TIMEOUT = config.get('audio.stt.whisper_vad.phrase_timeout', 1.0)
+        ENERGY_THRESHOLD = config.get('audio.stt.whisper_vad.energy_threshold', 300)
 
         stream = None
         try:

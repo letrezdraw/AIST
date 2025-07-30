@@ -29,11 +29,11 @@ assistant:
   conversation_history_length: 5
 
 ipc:
+  # Port for the main command/response channel between the frontend and backend.
+  command_port: 5555
   # Port for the event bus, broadcasting state changes to GUIs or other listeners.
   # This is separate from the main command/response channel.
   event_bus_port: 5556
-  # Port for receiving text commands from the GUI or other text-based clients.
-  text_command_port: 5557
   # Port for broadcasting log records to the GUI or other listeners.
   log_broadcast_port: 5558
 
@@ -64,6 +64,12 @@ audio:
     # Confidence threshold (0.0 to 1.0) for accepting a transcription.
     # Lower values are more permissive but may result in more errors.
     confidence_threshold: 0.85
+    # --- VAD settings for the 'whisper' provider ---
+    whisper_vad:
+      # How long to record in seconds after the user stops talking.
+      phrase_timeout: 1.0
+      # Minimum volume (RMS) to be considered speech. Tune this for your microphone.
+      energy_threshold: 300
 
 logging:
   # Path for the log folder, relative to project root.

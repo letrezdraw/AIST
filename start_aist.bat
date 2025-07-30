@@ -1,35 +1,35 @@
 @echo off
-setlocal
-title AIST Launcher
+REM This script starts the AIST AI Assistant.
+REM It uses PowerShell to activate the virtual environment, install dependencies,
+REM and run the main GUI application.
 
-echo --- AIST Application Launcher ---
-echo.
-echo This script will launch the Backend, Frontend, and GUI components,
-echo each in its own new PowerShell window.
-echo.
-echo To shut down the application, use the system tray icon or the global hotkey.
-echo.
-
-:: Change directory to the script's location
+REM Change to the script's directory to ensure all paths are correct.
 cd /d "%~dp0"
 
-:: Check if the PowerShell virtual environment script exists
-IF NOT EXIST ".\venv\Scripts\Activate.ps1" (
-    echo ERROR: Virtual environment not found.
-    echo Please run the installation steps in README.md first.
+echo --- AIST AI Assistant ---
+
+REM Check if the virtual environment's Python executable exists.
+IF NOT EXIST "venv\Scripts\python.exe" (
+    echo ERROR: Virtual environment not found or is incomplete.
+    echo Please run 'python -m venv venv' to create it, then run this script again.
+    echo.
     pause
-    exit /b 1
+    exit /b
 )
- 
-echo Launching components...
-:: The -NoExit flag keeps the new console window open even if the script inside it fails.
-:: The -ExecutionPolicy Bypass flag ensures the activation script can run.
-start "AIST Backend" powershell -ExecutionPolicy Bypass -NoExit -Command "& {.\venv\Scripts\Activate.ps1; python run_backend.py}"
-timeout /t 2 /nobreak >nul :: Give the backend a moment to start before the frontend connects
-start "AIST Frontend" powershell -ExecutionPolicy Bypass -NoExit -Command "& {.\venv\Scripts\Activate.ps1; python main.py}"
-start "AIST GUI" powershell -ExecutionPolicy Bypass -NoExit -Command "& {.\venv\Scripts\Activate.ps1; python run_gui.py}"
- 
+
+echo Found virtual environment.
+
+REM Define the PowerShell command block that will be executed.
+REM This is a more robust method that calls the venv executables directly,
+REM avoiding potential PATH issues with environment activation.
+REM 1. Define variables for the pip and python executables.
+REM 2. Install/verify dependencies using the venv's pip.
+REM 3. Run the main GUI application using the venv's python.
+set "PS_COMMAND=& { $pip = '.\venv\Scripts\pip.exe'; $python = '.\venv\Scripts\python.exe'; Write-Host '--- Installing/Verifying Dependencies ---' -ForegroundColor Green; & $pip install -r requirements.txt; Write-Host '--- Starting AIST GUI ---' -ForegroundColor Green; & $python gui.py }"
+
+REM Execute the command block using PowerShell.
+powershell -NoProfile -ExecutionPolicy Bypass -Command "%PS_COMMAND%"
+
 echo.
-echo All components launched. This launcher window will now close.
-timeout /t 3 >nul
-exit /b 0
+echo The AIST application has closed. Press any key to exit this window.
+pause >nul

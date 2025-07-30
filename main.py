@@ -85,6 +85,15 @@ def main():
         if tray_icon:
             tray_icon.stop()
 
+    # --- State Management Helper ---
+    def set_assistant_state(new_state: str):
+        """Updates, logs, and broadcasts the assistant's state."""
+        nonlocal assistant_state
+        if new_state != assistant_state:
+            assistant_state = new_state
+            log.info(f"State changed to {assistant_state}.")
+            event_broadcaster.broadcast("state:changed", {"state": assistant_state})
+            bus.sendMessage(STATE_CHANGED, state=assistant_state)
     menu = (item('Quit AIST', lambda icon, item: shutdown_app()),)
     tray_icon = icon("AIST", image, "AIST Assistant", menu)
 
@@ -127,15 +136,9 @@ def main():
             bus.sendMessage(TTS_SPEAK, text=text_to_speak)
 
         if action == "ACTIVATE":
-            assistant_state = 'LISTENING'
-            log.info("State changed to LISTENING.")
-            event_broadcaster.broadcast("state:changed", {"state": "LISTENING"})
-            bus.sendMessage(STATE_CHANGED, state=assistant_state)
+            set_assistant_state('LISTENING')
         elif action == "DEACTIVATE":
-            assistant_state = 'DORMANT'
-            log.info("State changed to DORMANT.")
-            event_broadcaster.broadcast("state:changed", {"state": "DORMANT"})
-            bus.sendMessage(STATE_CHANGED, state=assistant_state)
+            set_assistant_state('DORMANT')
         elif action == "EXIT":
             # Give the "Goodbye" message time to play before shutting down.
             time.sleep(1.5)

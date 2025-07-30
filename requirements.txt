@@ -1,12 +1,12 @@
 ﻿# Core AI and ML Libraries
-ctransformers>=0.2.27
+llama-cpp-python
 piper-tts>=1.2.0
 vosk>=0.3.45
 openai-whisper>=20231117
 torch>=2.0.0
 
 # GUI and System Integration
-flet==0.23.2
+customtkinter
 pystray>=0.19.0
 Pillow>=10.0.0
 keyboard>=0.13.5
@@ -14,6 +14,6 @@ keyboard>=0.13.5
 # Audio, Communication, and Utilities
 pyaudio>=0.2.14
 pyzmq>=25.1.2
-PyPubSub>=4.0.3
 PyYAML>=6.0.1
-thefuzz[python-Levenshtein]>=0.20.0
+# thefuzz with the 'speedup' extra for performance
+thefuzz[speedup]>=0.20.0

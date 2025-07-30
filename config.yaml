@@ -29,11 +29,11 @@ assistant:
   conversation_history_length: 5
 
 ipc:
+  # Port for the main command/response channel between the frontend and backend.
+  command_port: 5555
   # Port for the event bus, broadcasting state changes to GUIs or other listeners.
   # This is separate from the main command/response channel.
   event_bus_port: 5556
-  # Port for receiving text commands from the GUI or other text-based clients.
-  text_command_port: 5557
   # Port for broadcasting log records to the GUI or other listeners.
   log_broadcast_port: 5558
 

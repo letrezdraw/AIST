@@ -3,6 +3,7 @@ import zmq
 import logging
 import threading
 from aist.core.conversation import ConversationManager
+from aist.core.config_manager import config
 from aist.core.log_setup import console_log, Colors
 from aist.skills.dispatcher import command_dispatcher # type: ignore
 from aist.core.llm import initialize_llm
@@ -14,10 +15,11 @@ class IPCServer:
     The ZMQ server that listens for frontend requests.
     It processes commands using the skill dispatcher and returns JSON responses.
     """
-    def __init__(self, host="tcp://*:5555"):
+    def __init__(self):
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REP)
-        self.socket.bind(host)
+        port = config.get('ipc.command_port', 5555)
+        self.socket.bind(f"tcp://*:{port}")
         self.is_running = False
         self.thread = None
         self.llm = None
@@ -33,7 +35,8 @@ class IPCServer:
         self.is_running = True
         self.thread = threading.Thread(target=self._serve_forever, daemon=True)
         self.thread.start()
-        console_log("IPC Server started and listening for requests.", prefix="INIT", color=Colors.GREEN)
+        port = config.get('ipc.command_port', 5555)
+        console_log(f"IPC Server started and listening on tcp://*:{port}", prefix="INIT", color=Colors.GREEN)
         return True
 
     def _serve_forever(self):
@@ -46,8 +49,13 @@ class IPCServer:
                 # This makes the loop non-blocking and allows it to check self.is_running
                 socks = dict(poller.poll(100))
                 if self.socket in socks and socks[self.socket] == zmq.POLLIN:
-                    message = self.socket.recv_string()
-                    request = json.loads(message)
+                    try:
+                        message = self.socket.recv_string()
+                        request = json.loads(message)
+                    except json.JSONDecodeError:
+                        log.error(f"Failed to decode JSON from request: {message}")
+                        self.socket.send_string(json.dumps({"error": "Invalid JSON format"}))
+                        continue
                     command_text = request.get("text", "")
                     state = request.get("state", "DORMANT")
 

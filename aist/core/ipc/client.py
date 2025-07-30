@@ -4,6 +4,7 @@ import json
 import zmq
 import logging
 from typing import Dict, Any
+from aist.core.config_manager import config
 
 log = logging.getLogger(__name__)
 
@@ -15,7 +16,8 @@ class IPCClient:
     def __init__(self):
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REQ)
-        self.socket.connect("tcp://localhost:5555")
+        port = config.get('ipc.command_port', 5555)
+        self.socket.connect(f"tcp://localhost:{port}")
         self.is_running = False
 
     def send_command(self, command_text: str, state: str) -> Dict[str, Any] | None:
@@ -49,7 +51,8 @@ class IPCClient:
 
     def start(self):
         """Starts the client, allowing it to send messages."""
-        log.info("IPC Client started and connected to tcp://localhost:5555")
+        port = config.get('ipc.command_port', 5555)
+        log.info(f"IPC Client started and connected to tcp://localhost:{port}")
         self.is_running = True
 
     def stop(self):

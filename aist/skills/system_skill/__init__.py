@@ -1,6 +1,8 @@
 # aist/skills/system_skill/__init__.py
 import logging
 import os
+import sys
+import subprocess
 from aist.skills.base import BaseSkill
 
 log = logging.getLogger(__name__)
@@ -32,7 +34,12 @@ class SystemSkill(BaseSkill):
         
         try:
             log.info(f"Attempting to open application: {app_name}")
-            os.startfile(app_name)
+            if sys.platform == "win32":
+                os.startfile(app_name)
+            elif sys.platform == "darwin": # macOS
+                subprocess.Popen(["open", app_name])
+            else: # Linux and other UNIX-like systems
+                subprocess.Popen(["xdg-open", app_name])
             return f"I've opened {app_name} for you."
         except FileNotFoundError:
             log.error(f"Application not found: {app_name}")
