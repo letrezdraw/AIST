@@ -14,6 +14,7 @@ class IPCClient:
     It sends user commands and state, and receives structured JSON responses.
     """
     def __init__(self):
+        
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REQ)
         port = config.get('ipc.command_port', 5555)
