@@ -30,6 +30,7 @@ class WhisperProvider(BaseSTTProvider):
         """Loads the Whisper model based on configuration."""
         model_name = config.get('models.stt.whisper_model_name', 'tiny.en')
         device = config.get('models.stt.whisper_device', 'cpu')
+        log.info(f"Checking for CUDA availability... torch.cuda.is_available() = {torch.cuda.is_available()}")
         if device == "cuda" and not torch.cuda.is_available():
             log.warning("CUDA device specified but not available. Falling back to CPU.")
             device = "cpu"

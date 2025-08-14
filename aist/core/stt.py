@@ -5,10 +5,11 @@ import threading
 import importlib
 from aist.core.log_setup import console_log
 from aist.core.config_manager import config
+from aist.core.ipc.protocol import INIT_STATUS_UPDATE # New import
 
 log = logging.getLogger(__name__)
 
-def initialize_stt_engine(app_state, stt_ready_event: threading.Event):
+def initialize_stt_engine(app_state, stt_ready_event: threading.Event, event_broadcaster):
     """
     Initializes the configured STT provider and starts it in a background thread.
     """
@@ -25,10 +26,13 @@ def initialize_stt_engine(app_state, stt_ready_event: threading.Event):
         
         # Start the provider's listening loop in a background thread
         threading.Thread(target=provider_instance.run, daemon=True).start()
+        event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "stt", "status": "initialized", "provider": provider_name}) # Send update
 
     except (ImportError, AttributeError) as e:
         log.fatal(f"Failed to load STT provider '{provider_name}'. Please check your configuration and ensure the provider file exists.")
         log.error(e, exc_info=True)
+        event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "stt", "status": "failed", "provider": provider_name, "error": str(e)}) # Send error update
     except Exception as e:
         log.fatal(f"An unexpected error occurred while initializing the STT provider '{provider_name}'.")
         log.error(e, exc_info=True)
+        event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "stt", "status": "failed", "provider": provider_name, "error": str(e)}) # Send error update

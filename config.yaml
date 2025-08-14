@@ -52,7 +52,7 @@ models:
     vosk_model_path: "data/models/stt/vosk-model-en-us-0.22"
     # The STT provider to use. 'vosk' is the default lightweight engine.
     # 'whisper' will provide higher quality recognition.
-    provider: "whisper"
+    provider: "vosk"
     # --- Whisper Provider Settings ---
     # Model size (e.g., "tiny.en", "base.en", "small.en", "medium.en"). Larger models are
     # more accurate but slower and use more memory. ".en" models are English-only.

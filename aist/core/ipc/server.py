@@ -15,7 +15,7 @@ class IPCServer:
     The ZMQ server that listens for frontend requests.
     It processes commands using the skill dispatcher and returns JSON responses.
     """
-    def __init__(self):
+    def __init__(self, event_broadcaster):
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REP)
         port = config.get('ipc.command_port', 5555)
@@ -24,16 +24,17 @@ class IPCServer:
         self.thread = None
         self.llm = None
         self.conversation_manager = ConversationManager()
+        self.event_broadcaster = event_broadcaster # Store the broadcaster
 
     def start(self):
         """Starts the IPC server and loads the LLM model. Returns True on success, False on failure."""
         console_log("Initializing LLM...", prefix="INIT")
-        self.llm = initialize_llm()
+        self.llm = initialize_llm(event_broadcaster=self.event_broadcaster) # Pass broadcaster
         if self.llm is None:
             log.fatal("Failed to initialize LLM. IPC Server will not start.")
             return False
         self.is_running = True
-        self.thread = threading.Thread(target=self._serve_forever, daemon=True)
+        self.thread = threading.Thread(target=self._serve_forever, daemon=False)
         self.thread.start()
         port = config.get('ipc.command_port', 5555)
         console_log(f"IPC Server started and listening on tcp://*:{port}", prefix="INIT", color=Colors.GREEN)
@@ -102,3 +103,6 @@ class IPCServer:
         self.socket.close()
         self.context.term()
         log.info("IPC Server stopped.")
+
+
+

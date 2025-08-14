@@ -33,7 +33,7 @@ def main():
 
     # Determine the correct python executable based on the OS and venv
     if platform.system() == "Windows":
-        python_executable = os.path.join(sys.prefix, 'python.exe')
+        python_executable = os.path.join(sys.prefix, 'Scripts', 'python.exe')
     else:
         python_executable = os.path.join(sys.prefix, 'bin', 'python')
 
@@ -45,7 +45,7 @@ def main():
     components = {
         "Backend": "run_backend.py",
         "Frontend": "main.py",
-        "GUI": "run_gui.py"
+        "GUI": "gui.py"
     }
 
     # On Windows, use CREATE_NEW_CONSOLE to give each component its own window.
@@ -57,9 +57,24 @@ def main():
             continue
         
         print(f"Launching {name}...")
-        process = subprocess.Popen([python_executable, script], creationflags=creation_flags)
+        process = subprocess.Popen([python_executable, script], creationflags=creation_flags, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         child_processes.append(process)
         print(f"  -> {name} launched with PID: {process.pid}")
+
+    print("\nAll AIST components have been launched in separate windows.")
+    print("To shut down the entire application, close this launcher window or press Ctrl+C.")
+
+    # Create a thread to read the output from the child processes
+    def read_output(process, name):
+        for line in iter(process.stdout.readline, ''):
+            print(f"[{name}] {line}", end='')
+        for line in iter(process.stderr.readline, ''):
+            print(f"[{name}-ERROR] {line}", end='')
+
+    import threading
+    for process in child_processes:
+        name = [k for k, v in components.items() if v == process.args[1]][0]
+        threading.Thread(target=read_output, args=(process, name), daemon=True).start()
 
     print("\nAll AIST components have been launched in separate windows.")
     print("To shut down the entire application, close this launcher window or press Ctrl+C.")

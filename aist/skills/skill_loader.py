@@ -4,14 +4,16 @@ import importlib
 import json
 import logging
 from pathlib import Path
+from aist.core.ipc.protocol import INIT_STATUS_UPDATE # New import
 
 log = logging.getLogger(__name__)
 
 class SkillManager:
-    def __init__(self, skills_dir="aist/skills"):
+    def __init__(self, event_broadcaster, skills_dir="aist/skills"):
         self.skills_dir = Path(skills_dir)
         self.skills = {}
         self.intents = {}
+        self.event_broadcaster = event_broadcaster # Store the broadcaster
         self._load_skills()
 
     def _register_intent(self, skill_id, intent_name, intent_data):
@@ -35,8 +37,10 @@ class SkillManager:
         log.info(f"Searching for skills in '{self.skills_dir}'...")
         if not self.skills_dir.is_dir():
             log.warning(f"Skills directory not found: {self.skills_dir}")
+            self.event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "skills", "status": "failed", "error": f"Skills directory not found: {self.skills_dir}"}) # Send error update
             return
 
+        loaded_count = 0
         for skill_dir in self.skills_dir.iterdir():
             if skill_dir.is_dir() and (skill_dir / "__init__.py").exists():
                 skill_id = skill_dir.name
@@ -65,9 +69,16 @@ class SkillManager:
                     
                     self.skills[skill_id] = {"instance": skill_instance, "manifest": manifest}
                     log.info(f"Successfully loaded skill '{manifest.get('name', skill_id)}' (v{manifest.get('version', 'N/A')}).")
+                    loaded_count += 1
 
                 except Exception as e:
                     log.error(f"Failed to load skill '{skill_id}': {e}", exc_info=True)
+        
+        if loaded_count > 0:
+            self.event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "skills", "status": "initialized", "count": loaded_count}) # Send update
+        else:
+            self.event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "skills", "status": "failed", "error": "No skills loaded."})
 
 # Global instance for easy access across the application
-skill_manager = SkillManager()
+# This will be initialized in run_backend.py and passed to the IPCServer
+skill_manager = None # Initialize as None, set in IPCServer

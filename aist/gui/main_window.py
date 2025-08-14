@@ -4,10 +4,12 @@ import threading
 import queue
 import logging
 import zmq
+import json # New import
 from aist.core.ipc.client import IPCClient
 from aist.core.log_setup import setup_logging
 from aist.core.gui_logging_handler import GUILoggingHandler
 from aist.core.config_manager import config
+from aist.core.ipc.protocol import INIT_STATUS_UPDATE # New import
 
 class App(ctk.CTk):
     def __init__(self):
@@ -21,30 +23,20 @@ class App(ctk.CTk):
         self.log_queue = queue.Queue()
         self.ipc_client = IPCClient()
 
+        self.llm_status = ctk.StringVar(value="LLM: Initializing...")
+        self.tts_status = ctk.StringVar(value="TTS: Initializing...")
+        self.stt_status = ctk.StringVar(value="STT: Initializing...")
+        self.skills_status = ctk.StringVar(value="Skills: Initializing...") # New status variable
+
         self._setup_gui_logging()
         self._create_widgets()
         self._start_services()
 
-        # Ensure graceful shutdown when the window is closed via the 'X' button
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     def _setup_gui_logging(self):
-        """
-        Sets up logging for the GUI process.
-        This includes the GUI handler that broadcasts logs to this window.
-        """
-        # 1. Set up base logging (file, console)
-        setup_logging()
-
-        # 2. Add the GUI-specific handler to broadcast logs
-        # This is a cleaner separation of concerns than the previous implementation.
-        formatter = logging.Formatter('%(asctime)s - %(levelname)-8s - %(name)-22s - %(message)s')
-        gui_handler = GUILoggingHandler()
-        gui_handler.setFormatter(formatter)
-        gui_handler.setLevel(logging.INFO)
-        logging.getLogger().addHandler(gui_handler)
-
-        # 3. Start a thread to listen for broadcasted logs
+        # The GUI process is a listener, not a broadcaster.
+        # It just needs to start the thread that listens for logs.
         log_thread = threading.Thread(target=self._log_listener, daemon=True)
         log_thread.start()
 
@@ -52,90 +44,159 @@ class App(ctk.CTk):
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        # --- Main Frame ---
-        main_frame = ctk.CTkFrame(self)
-        main_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
-        main_frame.grid_columnconfigure(0, weight=1)
-        main_frame.grid_rowconfigure(0, weight=1)
+        # --- Initialization Frame ---
+        self.init_frame = ctk.CTkFrame(self)
+        self.init_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        self.init_frame.grid_columnconfigure(0, weight=1)
 
-        # --- Log/Output Text Box ---
-        self.log_textbox = ctk.CTkTextbox(main_frame, state="disabled", wrap="word")
-        self.log_textbox.grid(row=0, column=0, columnspan=2, padx=10, pady=(10, 5), sticky="nsew")
+        ctk.CTkLabel(self.init_frame, text="Initializing Backend Services...", font=ctk.CTkFont(size=20, weight="bold")).grid(row=0, column=0, pady=(20, 10))
+        ctk.CTkLabel(self.init_frame, textvariable=self.llm_status, font=ctk.CTkFont(size=14)).grid(row=1, column=0, pady=5)
+        ctk.CTkLabel(self.init_frame, textvariable=self.tts_status, font=ctk.CTkFont(size=14)).grid(row=2, column=0, pady=5)
+        ctk.CTkLabel(self.init_frame, textvariable=self.stt_status, font=ctk.CTkFont(size=14)).grid(row=3, column=0, pady=5)
+        ctk.CTkLabel(self.init_frame, textvariable=self.skills_status, font=ctk.CTkFont(size=14)).grid(row=4, column=0, pady=5) # New status label
 
-        # --- Command Entry ---
-        self.command_entry = ctk.CTkEntry(main_frame, placeholder_text="Enter command...")
+        # --- Main Chat Frame ---
+        self.chat_frame = ctk.CTkFrame(self)
+        self.chat_frame.grid_columnconfigure(0, weight=1)
+        self.chat_frame.grid_rowconfigure(0, weight=1)
+
+        self.chat_textbox = ctk.CTkTextbox(self.chat_frame, state="disabled", wrap="word")
+        self.chat_textbox.grid(row=0, column=0, columnspan=2, padx=10, pady=(10, 5), sticky="nsew")
+
+        self.command_entry = ctk.CTkEntry(self.chat_frame, placeholder_text="Enter command...")
         self.command_entry.grid(row=1, column=0, padx=(10, 5), pady=(5, 10), sticky="ew")
         self.command_entry.bind("<Return>", self._on_send_command)
 
-        # --- Send Button ---
-        self.send_button = ctk.CTkButton(main_frame, text="Send", command=self._on_send_command)
+        self.send_button = ctk.CTkButton(self.chat_frame, text="Send", command=self._on_send_command)
         self.send_button.grid(row=1, column=1, padx=(5, 10), pady=(5, 10), sticky="ew")
 
     def _start_services(self):
-        """Start the IPC client and begin processing the log queue."""
         self.ipc_client.start()
         self.after(100, self._process_log_queue)
 
     def _log_listener(self):
-        """Listens for log messages on the ZMQ SUB socket and puts them in a queue."""
         context = zmq.Context()
-        socket = context.socket(zmq.SUB)
-        port = config.get('ipc.log_broadcast_port', 5558)
-        socket.connect(f"tcp://localhost:{port}")
-        socket.setsockopt_string(zmq.SUBSCRIBE, "") # Subscribe to all messages
+        log_socket = context.socket(zmq.SUB)
+        log_port = config.get('ipc.log_broadcast_port', 5558)
+        log_socket.connect(f"tcp://localhost:{log_port}")
+        log_socket.setsockopt_string(zmq.SUBSCRIBE, "") # Subscribe to all log messages
+
+        event_socket = context.socket(zmq.SUB)
+        event_port = config.get('ipc.event_bus_port', 5556)
+        event_socket.connect(f"tcp://localhost:{event_port}")
+        event_socket.setsockopt_string(zmq.SUBSCRIBE, INIT_STATUS_UPDATE.encode('utf-8')) # Subscribe to init status updates
+
+        poller = zmq.Poller()
+        poller.register(log_socket, zmq.POLLIN)
+        poller.register(event_socket, zmq.POLLIN)
 
         while True:
             try:
-                log_message = socket.recv_string()
-                self.log_queue.put(log_message)
-            except zmq.ZMQError:
-                break # Context was terminated
+                socks = dict(poller.poll(100)) # Poll with a timeout
+
+                if log_socket in socks and socks[log_socket] == zmq.POLLIN:
+                    log_message = log_socket.recv_string()
+                    self.log_queue.put({"type": "log", "data": log_message})
+
+                if event_socket in socks and socks[event_socket] == zmq.POLLIN:
+                    event_type, payload_json = event_socket.recv_multipart()
+                    payload = json.loads(payload_json.decode('utf-8'))
+                    self.log_queue.put({"type": event_type.decode('utf-8'), "data": payload})
+
+            except zmq.ZMQError as e:
+                logging.error(f"ZMQ error in log listener: {e}")
+                break
+            except Exception as e:
+                logging.error(f"Unexpected error in log listener: {e}", exc_info=True)
+                break
 
     def _process_log_queue(self):
-        """Processes messages from the log queue and updates the GUI."""
         try:
             while not self.log_queue.empty():
-                message = self.log_queue.get_nowait()
-                self.log_textbox.configure(state="normal")
-                self.log_textbox.insert("end", message + "\n")
-                self.log_textbox.configure(state="disabled")
-                self.log_textbox.see("end")
+                item = self.log_queue.get_nowait()
+                message_type = item["type"]
+                data = item["data"]
+
+                if message_type == "log":
+                    # Original log message handling
+                    self._update_status_from_log(data) # Keep for now, will refactor
+                    if self.chat_frame.winfo_ismapped():
+                        self.chat_textbox.configure(state="normal")
+                        self.chat_textbox.insert("end", data + "\n")
+                        self.chat_textbox.configure(state="disabled")
+                        self.chat_textbox.see("end")
+                elif message_type == INIT_STATUS_UPDATE:
+                    self._handle_init_status_update(data)
+
         finally:
             self.after(100, self._process_log_queue)
 
+    def _handle_init_status_update(self, data):
+        component = data.get("component")
+        status = data.get("status")
+        error = data.get("error", "")
+        provider = data.get("provider", "")
+        count = data.get("count", 0)
+
+        display_status = f"{status.capitalize()}"
+        if error: display_status += f" (Error: {error})"
+        if provider: display_status += f" ({provider})"
+        if count: display_status += f" ({count} loaded)"
+
+        if component == "llm":
+            self.llm_status.set(f"LLM: {display_status}")
+        elif component == "tts":
+            self.tts_status.set(f"TTS: {display_status}")
+        elif component == "stt":
+            self.stt_status.set(f"STT: {display_status}")
+        elif component == "skills":
+            self.skills_status.set(f"Skills: {display_status}")
+
+        self._check_all_initialized()
+
+    def _check_all_initialized(self):
+        # Check if all components are initialized (or failed, but not still initializing)
+        all_ready = (
+            "Initializing" not in self.llm_status.get() and
+            "Initializing" not in self.tts_status.get() and
+            "Initializing" not in self.stt_status.get() and
+            "Initializing" not in self.skills_status.get()
+        )
+
+        if all_ready:
+            self.after(1000, self._show_chat_frame)
+
+    def _update_status_from_log(self, message):
+        # This method is now deprecated for init status, but kept for general log parsing if needed.
+        # It will be removed or refactored if all status updates come via INIT_STATUS_UPDATE.
+        pass # No longer needed for init status, handled by _handle_init_status_update
+
+    def _show_chat_frame(self):
+        self.init_frame.grid_forget()
+        self.chat_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
     def _on_send_command(self, event=None):
-        """Handles the send command action."""
         command_text = self.command_entry.get()
         if not command_text:
             return
 
-        # For now, we'll assume the state is always LISTENING when using the GUI
-        # A more advanced GUI could have a visual state indicator.
         state = "LISTENING"
-
-        # Clear the entry box
         self.command_entry.delete(0, "end")
-
-        # Run the command in a separate thread to avoid blocking the GUI
         threading.Thread(target=self._send_command_thread, args=(command_text, state), daemon=True).start()
 
     def _send_command_thread(self, command_text, state):
-        """Sends the command to the backend and handles the response."""
+        self.log_queue.put({"type": "log", "data": f"You: {command_text}"})
         response = self.ipc_client.send_command(command_text, state)
         if response:
-            # You can add more logic here to handle different response actions
-            # For example, updating a status label, showing an image, etc.
             action = response.get("action")
             speak_text = response.get("speak")
 
             if action == "EXIT":
-                self.after(100, self.destroy) # Schedule GUI shutdown
+                self.after(100, self.destroy)
 
             if speak_text:
-                # In a real application, you might have the TTS engine play this.
-                # For now, we'll just log it to the GUI.
                 log_message = f"AIST: {speak_text}"
-                self.log_queue.put(log_message)
+                self.log_queue.put({"type": "log", "data": log_message})
 
     def on_closing(self):
         self.ipc_client.stop()

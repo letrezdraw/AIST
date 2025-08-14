@@ -91,7 +91,7 @@ def _execute_skill(intent_name: str, intent_data: dict, params: dict, llm, origi
     process = multiprocessing.Process(
         target=_skill_process_wrapper,
         args=(skill_id, handler.__name__, params, result_queue),
-        daemon=True # Child process should not outlive parent
+        daemon=False # Child process should not outlive parent
     )
     
     log.info(f"Executing skill '{skill_id}' in a sandboxed process.")

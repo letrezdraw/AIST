@@ -4,13 +4,14 @@ import threading
 import importlib
 from aist.core.config_manager import config
 from aist.core.events import bus, TTS_SPEAK
+from aist.core.ipc.protocol import INIT_STATUS_UPDATE # New import
 
 log = logging.getLogger(__name__)
 
 # Global instance of the TTS provider
 tts_provider = None
 
-def initialize_tts_engine():
+def initialize_tts_engine(event_broadcaster):
     """
     Initializes the configured TTS provider.
     This should be called once at application startup.
@@ -25,12 +26,15 @@ def initialize_tts_engine():
         ProviderClass = getattr(provider_module, f"{provider_name.capitalize()}Provider")
         tts_provider = ProviderClass()
         log.info(f"TTS provider '{provider_name}' initialized.")
+        event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "tts", "status": "initialized"}) # Send update
     except (ImportError, AttributeError) as e:
         log.fatal(f"Failed to load TTS provider '{provider_name}'. Please check your configuration.")
         log.error(e, exc_info=True)
+        event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "tts", "status": "failed", "error": str(e)}) # Send error update
     except Exception as e:
         log.fatal(f"An unexpected error occurred while initializing the TTS provider '{provider_name}'.")
         log.error(e, exc_info=True)
+        event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "tts", "status": "failed", "error": str(e)}) # Send error update
     return tts_provider
 
 def _handle_speak_request(text: str):

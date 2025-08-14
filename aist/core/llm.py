@@ -3,10 +3,11 @@
 import logging
 from ctransformers import AutoModelForCausalLM
 from aist.core.config_manager import config
+from aist.core.ipc.protocol import INIT_STATUS_UPDATE # New import
 
 log = logging.getLogger(__name__)
 
-def initialize_llm():
+def initialize_llm(event_broadcaster):
     """Loads the Local AI Model."""
     log.info("Loading AI model... This may take a few moments.")
     model_path = config.get('models.llm.path')
@@ -22,10 +23,12 @@ def initialize_llm():
             context_length=config.get('models.llm.context_length', 2048)
         )
         log.info("AI Model loaded successfully.")
+        event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "llm", "status": "initialized"}) # Send update
         return llm
     except Exception as e:
         log.fatal(f"FATAL: Could not load the AI model from path: {model_path}")
         log.error(f"Error: {e}", exc_info=True)
+        event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "llm", "status": "failed", "error": str(e)}) # Send error update
         return None
 
 def _format_history(history: list[tuple[str, str]]) -> str:

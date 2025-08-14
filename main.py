@@ -16,7 +16,6 @@ from aist.core.events import bus, STT_TRANSCRIBED, TTS_SPEAK, STATE_CHANGED, VAD
 from aist.core.tts import initialize_tts_engine, subscribe_to_events
 from aist.core.stt import initialize_stt_engine
 from aist.core.ipc.client import IPCClient
-from aist.core.ipc.event_bus import EventBroadcaster
 from aist.core.log_setup import setup_logging, console_log, Colors
 from aist.core.config_manager import config
 
@@ -41,7 +40,8 @@ def main():
     6. Starting the `run_assistant` loop in a background thread.
     7. Running the system tray icon's event loop, which blocks the main thread.
     """
-    setup_logging()
+    print("---- EXECUTING main.py ----") # ADDED FOR DEBUGGING
+    setup_logging(is_frontend=True) # This is the frontend
     log = logging.getLogger(__name__)
 
     # --- State Machine ---
@@ -63,9 +63,6 @@ def main():
     # The main loop now handles responses synchronously, so the callback is no longer needed.
     ipc_client.start()
 
-    # Initialize the event broadcaster for the GUI
-    event_broadcaster = EventBroadcaster()
-
     # This will be our single point of shutdown logic, accessible to the tray and hotkey.
     tray_icon = None
     def shutdown_app():
@@ -74,7 +71,6 @@ def main():
         log.info("--- SHUTDOWN_APP CALLED --- Shutdown signal received. Terminating.")
         app_state.is_running = False
         ipc_client.stop()
-        event_broadcaster.stop()
 
         # Terminate the shared PyAudio instance gracefully.
         p = audio_manager.get_pyaudio()
@@ -92,7 +88,6 @@ def main():
         if new_state != assistant_state:
             assistant_state = new_state
             log.info(f"State changed to {assistant_state}.")
-            event_broadcaster.broadcast("state:changed", {"state": assistant_state})
             bus.sendMessage(STATE_CHANGED, state=assistant_state)
     menu = (item('Quit AIST', lambda icon, item: shutdown_app()),)
     tray_icon = icon("AIST", image, "AIST Assistant", menu)
@@ -109,7 +104,6 @@ def main():
 
         # Show the user exactly what the AI heard.
         console_log(f"'{text}'", prefix="HEARD", color=Colors.CYAN)
-        event_broadcaster.broadcast("stt:heard", {"text": text})
 
         # Broadcast that the assistant is thinking
         event_broadcaster.broadcast("state:changed", {"state": "THINKING"})
@@ -119,7 +113,6 @@ def main():
 
         if not response:
             # If something went wrong, revert state to LISTENING
-            event_broadcaster.broadcast("state:changed", {"state": "LISTENING"})
             log.info("Received an empty or null response from backend (e.g., ignored command). Continuing.")
             return
 
@@ -129,10 +122,9 @@ def main():
 
         intent_info = response.get("intent")
         if intent_info:
-            event_broadcaster.broadcast("intent:matched", intent_info)
+            bus.sendMessage("intent:matched", intent_info)
 
         if text_to_speak:
-            event_broadcaster.broadcast("tts:speak", {"text": text_to_speak})
             bus.sendMessage(TTS_SPEAK, text=text_to_speak)
 
         if action == "ACTIVATE":
@@ -146,18 +138,13 @@ def main():
 
     def _handle_vad_status(status: str):
         """Broadcasts the VAD status to the GUI."""
-        event_broadcaster.broadcast("vad:status", {"status": status.upper()})
+        bus.sendMessage(VAD_STATUS_CHANGED, status=status.upper())
     
     # --- Setup function for pystray ---
     # This function is run in a separate thread after the icon has been set up.
     # It's the recommended way to start background tasks.
     def setup_services(icon):
         icon.visible = True # Make the icon visible after setup
-
-        # Broadcast component statuses now that all components are initializing.
-        event_broadcaster.broadcast("component:status", {"name": "Event Bus", "status": "Broadcasting"})
-        # Broadcast the backend status now that all components are initializing.
-        event_broadcaster.broadcast("component:status", {"name": "Backend", "status": "Connected"})
 
         # --- Hotkey Listener Thread ---
         # We run the hotkey listener in its own thread to prevent it from
@@ -201,10 +188,9 @@ def main():
 
         stt_ready_event = threading.Event()
 
-        # Initialize TTS and broadcast its status
+        # Initialize TTS
         tts_provider = initialize_tts_engine()
         subscribe_to_events()
-        event_broadcaster.broadcast("component:status", {"name": "TTS", "status": "Ready" if tts_provider else "Failed"})
 
         initialize_stt_engine(app_state, stt_ready_event)
         bus.subscribe(_handle_transcription, STT_TRANSCRIBED)
@@ -212,11 +198,8 @@ def main():
 
         console_log("Waiting for STT engine to be ready...", prefix="INIT")
         stt_ready_event.wait() # This blocks until the STT provider signals it's ready
-        event_broadcaster.broadcast("component:status", {"name": "STT", "status": "Ready"})
 
         console_log("--- AIST is DORMANT ---", prefix="STATE", color=Colors.YELLOW)
-        event_broadcaster.broadcast("state:changed", {"state": "DORMANT"})
-        # Provide an audio confirmation that the assistant is ready.
         bus.sendMessage(TTS_SPEAK, text="Assistant is online.")
 
     # The main thread is now blocked by the system tray icon's run() method.
