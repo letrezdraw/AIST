@@ -6,7 +6,7 @@ import re
 import multiprocessing
 import queue
 from aist.core.config_manager import config
-from aist.skills.skill_loader import skill_manager
+from aist.skills import skill_loader
 from aist.core.llm import process_with_llm, summarize_system_output
 from aist.core.memory import retrieve_relevant_facts
 
@@ -37,7 +37,7 @@ def _find_fast_path_intent(command_text: str):
     Checks if the command text is a fuzzy match for any registered intent phrases.
     This is the "fast path" that avoids using the LLM for simple, known commands.
     """
-    for intent_name, intent_data in skill_manager.intents.items():
+    for intent_name, intent_data in skill_loader.skill_manager.intents.items():
         if _is_fuzzy_match(command_text, intent_data.get("phrases", [])):
             log.info(f"Fast-path intent match found: '{intent_name}'")
             return intent_name, intent_data
@@ -52,10 +52,12 @@ def _skill_process_wrapper(skill_id, handler_name, params, result_queue):
     from aist.core.log_setup import setup_logging
     import importlib
     import logging
-    setup_logging()
+    setup_logging() # Ensure logging is set up first
     log = logging.getLogger(__name__)
+    log.info(f"Skill process wrapper started for skill: {skill_id}") # Added log
 
     try:
+        log.info(f"Attempting to load skill module: {skill_id}") # Added log
         # We need to re-import and create the skill in the new process
         module_path = f"aist.skills.{skill_id}"
         skill_module = importlib.import_module(module_path)
@@ -66,9 +68,11 @@ def _skill_process_wrapper(skill_id, handler_name, params, result_queue):
         skill_instance = skill_module.create_skill()
         skill_instance._register(skill_id) # Properly initialize the skill with its ID
         handler = getattr(skill_instance, handler_name)
+        log.info(f"Executing handler {handler_name} for skill {skill_id}") # Added log
         
         result = handler(params)
         result_queue.put({"status": "success", "output": result})
+        log.info(f"Skill {skill_id} handler {handler_name} completed successfully.") # Added log
     except Exception as e:
         # Log the full error in the child process for debugging
         log.error(f"Skill '{skill_id}' crashed in isolated process.", exc_info=True)
@@ -134,7 +138,7 @@ def _get_llm_decision(command_text: str, llm, conversation_history: list):
     # Build a list of dictionaries representing the available functions.
     # This is safer than manual string formatting as it handles escaping automatically.
     prompt_functions_data = []
-    for name, data in skill_manager.intents.items():
+    for name, data in skill_loader.skill_manager.intents.items():
         skill_id = data['skill_id']
         skill_info = skill_manager.skills.get(skill_id, {})
         prompt_functions_data.append({

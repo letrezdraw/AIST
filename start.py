@@ -31,11 +31,12 @@ def main():
     """
     print("--- AIST Master Launcher ---")
 
-    # Determine the correct python executable based on the OS and venv
     if platform.system() == "Windows":
         python_executable = os.path.join(sys.prefix, 'Scripts', 'python.exe')
+        pythonw_executable = os.path.join(sys.prefix, 'Scripts', 'pythonw.exe')
     else:
         python_executable = os.path.join(sys.prefix, 'bin', 'python')
+        pythonw_executable = python_executable # No pythonw on other systems
 
     if not os.path.exists(python_executable):
         print(f"Error: Could not find Python executable at {python_executable}")
@@ -43,45 +44,37 @@ def main():
         sys.exit(1)
 
     components = {
-        "Backend": "run_backend.py",
-        "Frontend": "main.py",
-        "GUI": "gui.py"
+        "Backend": {"script": "run_backend.py", "headless": True},
+        "Frontend": {"script": "main.py", "headless": True},
+        "GUI": {"script": "gui.py", "headless": True}
     }
 
-    # On Windows, use CREATE_NEW_CONSOLE to give each component its own window.
-    creation_flags = subprocess.CREATE_NEW_CONSOLE if platform.system() == "Windows" else 0
-
-    for name, script in components.items():
+    for name, info in components.items():
+        script = info["script"]
         if not os.path.exists(script):
             print(f"Warning: Script for component '{name}' not found at '{script}'. Skipping.")
             continue
         
         print(f"Launching {name}...")
-        process = subprocess.Popen([python_executable, script], creationflags=creation_flags, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        
+        executable = pythonw_executable if info["headless"] and platform.system() == "Windows" else python_executable
+        creation_flags = 0 if info["headless"] else (subprocess.CREATE_NEW_CONSOLE if platform.system() == "Windows" else 0)
+
+        process = subprocess.Popen([executable, script], creationflags=creation_flags)
         child_processes.append(process)
         print(f"  -> {name} launched with PID: {process.pid}")
 
-    print("\nAll AIST components have been launched in separate windows.")
-    print("To shut down the entire application, close this launcher window or press Ctrl+C.")
-
-    # Create a thread to read the output from the child processes
-    def read_output(process, name):
-        for line in iter(process.stdout.readline, ''):
-            print(f"[{name}] {line}", end='')
-        for line in iter(process.stderr.readline, ''):
-            print(f"[{name}-ERROR] {line}", end='')
-
-    import threading
-    for process in child_processes:
-        name = [k for k, v in components.items() if v == process.args[1]][0]
-        threading.Thread(target=read_output, args=(process, name), daemon=True).start()
-
-    print("\nAll AIST components have been launched in separate windows.")
+    print("\nAll AIST components have been launched.")
     print("To shut down the entire application, close this launcher window or press Ctrl+C.")
 
     try:
         # Keep the main launcher script alive to manage child processes
         while True:
+            # Check if any process has terminated unexpectedly
+            for p in child_processes:
+                if p.poll() is not None:
+                    print(f"\nProcess {p.pid} has terminated. Shutting down all components.")
+                    sys.exit(1) # Exit the launcher, which will trigger the cleanup
             time.sleep(1)
     except KeyboardInterrupt:
         print("\nLauncher received Ctrl+C. Initiating shutdown...")

@@ -116,6 +116,9 @@ class VoskProvider(BaseSTTProvider):
                 if is_tts_active:
                     continue
 
+                if not data:
+                    continue
+
                 if current_recognizer.AcceptWaveform(data):
                     result_json = current_recognizer.Result()
                     result_dict = json.loads(result_json)

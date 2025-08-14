@@ -6,7 +6,7 @@ from pystray import MenuItem as item, Icon as icon # type: ignore
 from PIL import Image
 import threading
 import time
-from typing import Callable
+from typing import Callable, Dict, Any
 
 # --- AIST Imports ---
 from aist.core.audio import audio_manager
@@ -19,6 +19,8 @@ from aist.core.ipc.client import IPCClient
 from aist.core.log_setup import setup_logging, console_log, Colors
 from aist.core.config_manager import config
 
+log = logging.getLogger(__name__)
+
 # --- Application State ---
 class AppState:
     """A simple class to hold shared application state."""
@@ -26,53 +28,54 @@ class AppState:
         """Initializes the application state."""
         self.is_running = True
 
+class FrontendEventProxy:
+    """A proxy to send events from the frontend to the backend via IPC."""
+    def __init__(self, ipc_client: IPCClient):
+        self.ipc_client = ipc_client
+
+    def broadcast(self, event_type: str, payload: Dict[str, Any]):
+        """Sends the event to the backend."""
+        log.debug(f"Forwarding event '{event_type}' to backend.")
+        self.ipc_client.send_event(event_type, payload)
+
+    def stop(self):
+        """No-op to match the real broadcaster's interface."""
+        pass
+
 def main():
     """
     Sets up the IPC client, system tray icon, global hotkey, and starts the
     user-facing assistant thread.
-
-    This is the main entry point of the AIST frontend application. It is responsible for:
-    1. Setting up the logging system.
-    2. Initializing the shared AppState.
-    3. Creating the IPC client to connect to the backend.
-    4. Setting up the system tray icon and its menu.
-    5. Registering the global exit hotkey.
-    6. Starting the `run_assistant` loop in a background thread.
-    7. Running the system tray icon's event loop, which blocks the main thread.
     """
-    print("---- EXECUTING main.py ----") # ADDED FOR DEBUGGING
-    setup_logging(is_frontend=True) # This is the frontend
-    log = logging.getLogger(__name__)
+    print("---- EXECUTING main.py ----")
+    setup_logging(is_frontend=True)
+
+    # Initialize and start the IPC client to connect to the backend service
+    ipc_client = IPCClient()
+    ipc_client.start()
+
+    # This proxy will forward events to the backend instead of broadcasting directly
+    event_broadcaster = FrontendEventProxy(ipc_client)
 
     # --- State Machine ---
-    # 'DORMANT': Listening only for activation or exit phrases.
-    # 'LISTENING': Actively listening for commands, deactivation, or exit phrases.
     assistant_state = 'DORMANT'
     app_state = AppState()
+    
     # --- Icon Loading ---
-    # We'll try to load the icon, but fall back to a default if it fails.
-    # This makes the app more robust and helps debug startup issues.
     try:
         image = Image.open("icon.png")
     except Exception as e:
         log.warning(f"Could not load 'icon.png': {e}. Using default icon.")
-        image = None # pystray will use a default icon
+        image = None
 
-    # Initialize and start the IPC client to connect to the backend service
-    ipc_client = IPCClient()
-    # The main loop now handles responses synchronously, so the callback is no longer needed.
-    ipc_client.start()
-
-    # This will be our single point of shutdown logic, accessible to the tray and hotkey.
     tray_icon = None
     def shutdown_app():
         """Signals all parts of the application to shut down gracefully."""
-        # Added extra logging to be certain when this function is called.
         log.info("--- SHUTDOWN_APP CALLED --- Shutdown signal received. Terminating.")
         app_state.is_running = False
         ipc_client.stop()
+        event_broadcaster.stop()
 
-        # Terminate the shared PyAudio instance gracefully.
         p = audio_manager.get_pyaudio()
         if p:
             p.terminate()
@@ -88,41 +91,32 @@ def main():
         if new_state != assistant_state:
             assistant_state = new_state
             log.info(f"State changed to {assistant_state}.")
-            bus.sendMessage(STATE_CHANGED, state=assistant_state)
+            event_broadcaster.broadcast("state:changed", {"state": assistant_state})
+            
     menu = (item('Quit AIST', lambda icon, item: shutdown_app()),)
     tray_icon = icon("AIST", image, "AIST Assistant", menu)
 
     # --- Event Handler for Transcribed Text ---
     def _handle_transcription(text: str):
-        """
-        This function is called when the STT engine publishes a transcription.
-        It sends the text to the backend and handles the response.
-        """
         nonlocal assistant_state
         if not app_state.is_running:
             return
 
-        # Show the user exactly what the AI heard.
         console_log(f"'{text}'", prefix="HEARD", color=Colors.CYAN)
-
-        # Broadcast that the assistant is thinking
-        event_broadcaster.broadcast("state:changed", {"state": "THINKING"})
-
+        
         # The frontend no longer makes decisions. It just sends the input and its state to the backend.
         response = ipc_client.send_command(text, assistant_state)
 
         if not response:
-            # If something went wrong, revert state to LISTENING
             log.info("Received an empty or null response from backend (e.g., ignored command). Continuing.")
             return
 
-        # The backend now drives the state machine.
         action = response.get("action")
         text_to_speak = response.get("speak")
 
         intent_info = response.get("intent")
         if intent_info:
-            bus.sendMessage("intent:matched", intent_info)
+            bus.sendMessage("intent:matched", data=intent_info) # Pass intent_info as keyword argument
 
         if text_to_speak:
             bus.sendMessage(TTS_SPEAK, text=text_to_speak)
@@ -132,23 +126,16 @@ def main():
         elif action == "DEACTIVATE":
             set_assistant_state('DORMANT')
         elif action == "EXIT":
-            # Give the "Goodbye" message time to play before shutting down.
             time.sleep(1.5)
             shutdown_app()
 
     def _handle_vad_status(status: str):
         """Broadcasts the VAD status to the GUI."""
-        bus.sendMessage(VAD_STATUS_CHANGED, status=status.upper())
+        event_broadcaster.broadcast("vad:status_changed", {"status": status.upper()})
     
-    # --- Setup function for pystray ---
-    # This function is run in a separate thread after the icon has been set up.
-    # It's the recommended way to start background tasks.
     def setup_services(icon):
-        icon.visible = True # Make the icon visible after setup
+        icon.visible = True
 
-        # --- Hotkey Listener Thread ---
-        # We run the hotkey listener in its own thread to prevent it from
-        # blocking or conflicting with the pystray event loop on the main thread.
         def _hotkey_listener():
             quit_hotkey = config.get('hotkeys.quit', 'ctrl+win+x')
             log.info(f"Registering global quit hotkey: {quit_hotkey.upper()}")
@@ -169,7 +156,7 @@ def main():
 
             while app_state.is_running:
                 try:
-                    if socket.poll(1000): # 1 second timeout
+                    if socket.poll(1000):
                         command_text = socket.recv_string()
                         log.info(f"Received text command: '{command_text}'")
                         _handle_transcription(command_text)
@@ -189,24 +176,21 @@ def main():
         stt_ready_event = threading.Event()
 
         # Initialize TTS
-        tts_provider = initialize_tts_engine()
+        tts_provider = initialize_tts_engine(event_broadcaster)
         subscribe_to_events()
 
-        initialize_stt_engine(app_state, stt_ready_event)
+        initialize_stt_engine(app_state, stt_ready_event, event_broadcaster)
         bus.subscribe(_handle_transcription, STT_TRANSCRIBED)
         bus.subscribe(_handle_vad_status, VAD_STATUS_CHANGED)
 
         console_log("Waiting for STT engine to be ready...", prefix="INIT")
-        stt_ready_event.wait() # This blocks until the STT provider signals it's ready
+        stt_ready_event.wait()
 
         console_log("--- AIST is DORMANT ---", prefix="STATE", color=Colors.YELLOW)
         bus.sendMessage(TTS_SPEAK, text="Assistant is online.")
 
-    # The main thread is now blocked by the system tray icon's run() method.
-    # All other work happens in background threads (STT) or via event handlers.
     tray_icon.run(setup=setup_services)
 
-    # Cleanup hotkey when the application exits gracefully
     keyboard.remove_all_hotkeys()
     log.info("Global hotkeys unregistered.")
 

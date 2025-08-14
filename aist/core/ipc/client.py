@@ -31,7 +31,7 @@ class IPCClient:
             return None
 
         try:
-            request_data = {"text": command_text, "state": state}
+            request_data = {"type": "command", "payload": {"text": command_text, "state": state}}
             request_json = json.dumps(request_data)
             log.debug(f"Sending request to backend: {request_json}")
             self.socket.send_string(request_json)
@@ -49,6 +49,23 @@ class IPCClient:
         except Exception as e:
             log.error(f"Unexpected error in IPC client: {e}", exc_info=True)
             return {"action": "COMMAND", "speak": "I've encountered an unexpected error."}
+
+    def send_event(self, event_type: str, payload: dict):
+        """Sends an event to the backend for broadcasting."""
+        if not self.is_running:
+            log.warning("IPC client is not running. Cannot send event.")
+            return
+
+        try:
+            request_data = {"type": "event", "event_type": event_type, "payload": payload}
+            request_json = json.dumps(request_data)
+            self.socket.send_string(request_json)
+            # Wait for the empty ack from the server
+            self.socket.recv_string()
+        except zmq.ZMQError as e:
+            log.error(f"ZMQ error while sending event to backend: {e}")
+        except Exception as e:
+            log.error(f"Unexpected error in IPC client sending event: {e}", exc_info=True)
 
     def start(self):
         """Starts the client, allowing it to send messages."""

@@ -14,7 +14,9 @@ if script_dir not in sys.path:
 
 from aist.core.log_setup import setup_logging, console_log, Colors
 from aist.core.ipc.server import IPCServer
-from aist.core.ipc.event_bus import EventBroadcaster # New import
+from aist.core.ipc.event_bus import EventBroadcaster
+from aist.skills.skill_loader import initialize_skill_manager
+from aist.core.llm import initialize_llm
 
 def main():
     # Set up logging for the backend process
@@ -28,6 +30,7 @@ def main():
     ipc_server = None # Define before try block
     try:
         event_broadcaster = EventBroadcaster()
+        initialize_skill_manager(event_broadcaster) # Load skills
         ipc_server = IPCServer(event_broadcaster=event_broadcaster) # Pass broadcaster
         if ipc_server.start():
             console_log("Backend is running. Press Ctrl+C to stop.", prefix="READY", color=Colors.GREEN)

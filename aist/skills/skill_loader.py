@@ -80,5 +80,11 @@ class SkillManager:
             self.event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "skills", "status": "failed", "error": "No skills loaded."})
 
 # Global instance for easy access across the application
-# This will be initialized in run_backend.py and passed to the IPCServer
-skill_manager = None # Initialize as None, set in IPCServer
+skill_manager = None
+
+def initialize_skill_manager(event_broadcaster):
+    """Initializes the global skill_manager instance."""
+    global skill_manager
+    if skill_manager is None:
+        skill_manager = SkillManager(event_broadcaster)
+    return skill_manager

@@ -7,6 +7,7 @@ from aist.core.config_manager import config
 from aist.core.log_setup import console_log, Colors
 from aist.skills.dispatcher import command_dispatcher # type: ignore
 from aist.core.llm import initialize_llm
+from aist.skills.skill_loader import initialize_skill_manager
 
 log = logging.getLogger(__name__)
 
@@ -25,6 +26,7 @@ class IPCServer:
         self.llm = None
         self.conversation_manager = ConversationManager()
         self.event_broadcaster = event_broadcaster # Store the broadcaster
+        initialize_skill_manager(event_broadcaster)
 
     def start(self):
         """Starts the IPC server and loads the LLM model. Returns True on success, False on failure."""
@@ -57,8 +59,20 @@ class IPCServer:
                         log.error(f"Failed to decode JSON from request: {message}")
                         self.socket.send_string(json.dumps({"error": "Invalid JSON format"}))
                         continue
-                    command_text = request.get("text", "")
-                    state = request.get("state", "DORMANT")
+
+                    request_type = request.get("type", "command") # Default to command for old clients
+
+                    if request_type == "event":
+                        event_type = request.get("event_type")
+                        payload = request.get("payload")
+                        if event_type and payload:
+                            self.event_broadcaster.broadcast(event_type, payload)
+                        self.socket.send_string(json.dumps({})) # Send empty ack
+                        continue
+
+                    # --- Existing Command Processing ---
+                    command_text = request.get("payload", {}).get("text", "")
+                    state = request.get("payload", {}).get("state", "DORMANT")
 
                     # --- Handle Special GUI Commands ---
                     if command_text == "__AIST_CLEAR_CONVERSATION__":

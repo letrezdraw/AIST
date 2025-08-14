@@ -77,7 +77,7 @@ def setup_logging(is_frontend=False):
         logger.addHandler(console_handler)
 
     # --- GUI Handler (broadcasts logs for the GUI to display) ---
-    if not is_frontend:
+    if is_frontend:
         gui_handler = GUILoggingHandler()
         gui_handler.setFormatter(formatter)
         gui_handler.setLevel(logging.INFO)
