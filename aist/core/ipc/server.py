@@ -5,6 +5,7 @@ import threading
 from aist.core.conversation import ConversationManager
 from aist.core.config_manager import config
 from aist.core.log_setup import console_log, Colors
+from aist.core.ipc.protocol import STATE_DORMANT
 from aist.skills.dispatcher import command_dispatcher # type: ignore
 from aist.core.llm import initialize_llm
 from aist.skills.skill_loader import initialize_skill_manager
@@ -31,6 +32,7 @@ class IPCServer:
     def start(self):
         """Starts the IPC server and loads the LLM model. Returns True on success, False on failure."""
         console_log("Initializing LLM...", prefix="INIT")
+        console_log("The first model load can take several minutes. Please be patient.", prefix="INFO", color=Colors.YELLOW)
         self.llm = initialize_llm(event_broadcaster=self.event_broadcaster) # Pass broadcaster
         if self.llm is None:
             log.fatal("Failed to initialize LLM. IPC Server will not start.")
@@ -72,7 +74,7 @@ class IPCServer:
 
                     # --- Existing Command Processing ---
                     command_text = request.get("payload", {}).get("text", "")
-                    state = request.get("payload", {}).get("state", "DORMANT")
+                    state = request.get("payload", {}).get("state", STATE_DORMANT)
 
                     # --- Handle Special GUI Commands ---
                     if command_text == "__AIST_CLEAR_CONVERSATION__":

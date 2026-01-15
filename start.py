@@ -31,22 +31,12 @@ def main():
     """
     print("--- AIST Master Launcher ---")
 
-    if platform.system() == "Windows":
-        python_executable = os.path.join(sys.prefix, 'Scripts', 'python.exe')
-        pythonw_executable = os.path.join(sys.prefix, 'Scripts', 'pythonw.exe')
-    else:
-        python_executable = os.path.join(sys.prefix, 'bin', 'python')
-        pythonw_executable = python_executable # No pythonw on other systems
-
-    if not os.path.exists(python_executable):
-        print(f"Error: Could not find Python executable at {python_executable}")
-        print("Please ensure you are running this script from within an activated virtual environment.")
-        sys.exit(1)
+    python_executable = sys.executable
 
     components = {
-        "Backend": {"script": "run_backend.py", "headless": True},
-        "Frontend": {"script": "main.py", "headless": True},
-        "GUI": {"script": "gui.py", "headless": True}
+        "Backend": {"script": "run_backend.py"},
+        "Frontend": {"script": "main.py"},
+        "GUI": {"script": "gui.py"}
     }
 
     for name, info in components.items():
@@ -57,9 +47,20 @@ def main():
         
         print(f"Launching {name}...")
         
-        executable = pythonw_executable if info["headless"] and platform.system() == "Windows" else python_executable
-        creation_flags = 0 if info["headless"] else (subprocess.CREATE_NEW_CONSOLE if platform.system() == "Windows" else 0)
+        executable = python_executable
+        creation_flags = 0
 
+        if platform.system() == "Windows":
+            if name in ["Backend", "Frontend"]:
+                creation_flags = subprocess.CREATE_NEW_CONSOLE
+            elif name == "GUI":
+                # Try to use pythonw.exe for the GUI to avoid a console window
+                pythonw_path = python_executable.replace("python.exe", "pythonw.exe")
+                if os.path.exists(pythonw_path):
+                    executable = pythonw_path
+                else:
+                    print("Warning: pythonw.exe not found. GUI may open with a console window.")
+        
         process = subprocess.Popen([executable, script], creationflags=creation_flags)
         child_processes.append(process)
         print(f"  -> {name} launched with PID: {process.pid}")

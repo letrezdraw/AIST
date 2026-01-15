@@ -1,22 +1,14 @@
 # run_backend.py
 # A simple script to run the AIST backend server in a console window.
-# This replaces the need for a Windows Service for simpler use cases.
 
-import os
-import sys
 import logging
 import time
-
-# Ensure the script's directory is in the Python path
-script_dir = os.path.dirname(os.path.abspath(__file__))
-if script_dir not in sys.path:
-    sys.path.insert(0, script_dir)
+import sys
+import os
 
 from aist.core.log_setup import setup_logging, console_log, Colors
 from aist.core.ipc.server import IPCServer
 from aist.core.ipc.event_bus import EventBroadcaster
-from aist.skills.skill_loader import initialize_skill_manager
-from aist.core.llm import initialize_llm
 
 def main():
     # Set up logging for the backend process
@@ -25,23 +17,25 @@ def main():
 
     console_log("--- AIST Backend Console ---", prefix="SYSTEM")
     console_log("Starting backend services...", prefix="INIT")
-    
-    event_broadcaster = None # Define before try block
-    ipc_server = None # Define before try block
+
+    event_broadcaster = None
+    ipc_server = None
     try:
         event_broadcaster = EventBroadcaster()
-        initialize_skill_manager(event_broadcaster) # Load skills
-        ipc_server = IPCServer(event_broadcaster=event_broadcaster) # Pass broadcaster
+        ipc_server = IPCServer(event_broadcaster=event_broadcaster)
+        
         if ipc_server.start():
             console_log("Backend is running. Press Ctrl+C to stop.", prefix="READY", color=Colors.GREEN)
             # Keep the main thread alive to listen for KeyboardInterrupt
             while True:
                 time.sleep(1)
         else:
-            log.fatal("Backend failed to start due to a critical error. Please check the logs.")
-            # The application will exit here naturally.
+            log.fatal("Backend failed to start. Please check the logs.")
+
     except KeyboardInterrupt:
         log.info("Ctrl+C received. Shutting down backend server.")
+    except Exception as e:
+        log.critical(f"An unhandled exception occurred: {e}", exc_info=True)
     finally:
         if ipc_server:
             ipc_server.stop()

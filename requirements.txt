@@ -9,6 +9,8 @@ piper-tts>=1.2.0
 vosk>=0.3.45
 openai-whisper>=20231117
 torch>=2.0.0
+ctransformers
+pypubsub
 
 # GUI and System Integration
 customtkinter

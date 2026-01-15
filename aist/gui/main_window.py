@@ -10,7 +10,7 @@ from aist.core.ipc.client import IPCClient
 from aist.core.log_setup import setup_logging
 from aist.core.gui_logging_handler import GUILoggingHandler
 from aist.core.config_manager import config
-from aist.core.ipc.protocol import INIT_STATUS_UPDATE
+from aist.core.ipc.protocol import INIT_STATUS_UPDATE, STATE_DORMANT, STATE_LISTENING
 
 log = logging.getLogger(__name__)
 
@@ -184,9 +184,9 @@ class App(ctk.CTk):
 
     def _handle_state_changed(self, data):
         log.info(f"Handling STATE_CHANGED: {data}")
-        state = data.get("state", "DORMANT").upper()
+        state = data.get("state", STATE_DORMANT).upper()
         color = "grey"
-        if state == "LISTENING":
+        if state == STATE_LISTENING:
             color = "blue"
         elif state == "THINKING":
             color = "purple"
@@ -221,7 +221,7 @@ class App(ctk.CTk):
             log.warning("Command entry is empty.")
             return
 
-        state = "LISTENING"
+        state = STATE_LISTENING
         self.command_entry.delete(0, "end")
         log.info(f"Sending command to backend: '{command_text}'")
         threading.Thread(target=self._send_command_thread, args=(command_text, state), daemon=True).start()

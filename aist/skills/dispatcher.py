@@ -6,6 +6,7 @@ import re
 import multiprocessing
 import queue
 from aist.core.config_manager import config
+from aist.core.ipc.protocol import STATE_DORMANT, STATE_LISTENING
 from aist.skills import skill_loader
 from aist.core.llm import process_with_llm, summarize_system_output
 from aist.core.memory import retrieve_relevant_facts
@@ -140,7 +141,7 @@ def _get_llm_decision(command_text: str, llm, conversation_history: list):
     prompt_functions_data = []
     for name, data in skill_loader.skill_manager.intents.items():
         skill_id = data['skill_id']
-        skill_info = skill_manager.skills.get(skill_id, {})
+        skill_info = skill_loader.skill_manager.skills.get(skill_id, {})
         prompt_functions_data.append({
             "name": name,
             "description": skill_info.get('manifest', {}).get('description', 'No description available.'),
@@ -197,14 +198,14 @@ def command_dispatcher(command_text: str, state: str, llm, conversation_history:
         return {"action": "EXIT", "speak": "Goodbye."}
 
     # --- State-Specific Logic ---
-    if state == 'DORMANT':
+    if state == STATE_DORMANT:
         if _is_fuzzy_match(command_text, activation_phrases):
             return {"action": "ACTIVATE", "speak": "Listening."}
         else:
             # In dormant state, we ignore anything that isn't an activation or exit phrase.
             return None
     
-    elif state == 'LISTENING':
+    elif state == STATE_LISTENING:
         if _is_fuzzy_match(command_text, deactivation_phrases):
             return {"action": "DEACTIVATE", "speak": "Okay."}
 
@@ -240,7 +241,7 @@ def command_dispatcher(command_text: str, state: str, llm, conversation_history:
             return {"action": "COMMAND", "speak": chat_response, "intent": {"name": "chat", "params": {"user_query": command_text}}}
         
         # 3. Execute the skill chosen by the LLM.
-        chosen_intent = skill_manager.intents.get(intent_name)
+        chosen_intent = skill_loader.skill_manager.intents.get(intent_name)
         if chosen_intent:
             return _execute_skill(intent_name, chosen_intent, params, llm, command_text)
         

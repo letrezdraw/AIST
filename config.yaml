@@ -39,7 +39,7 @@ ipc:
 
 models:
   llm:
-    path: "data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
+    path: "./data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
     gpu_layers: 99
     context_length: 4096
     max_new_tokens: 150

@@ -7,6 +7,7 @@ import vosk
 from aist.core.audio import audio_manager
 from aist.core.events import bus, STT_TRANSCRIBED, TTS_STARTED, TTS_FINISHED, STATE_CHANGED
 from aist.core.config_manager import config
+from aist.core.ipc.protocol import STATE_DORMANT, STATE_LISTENING
 from .base import BaseSTTProvider
 
 log = logging.getLogger(__name__)
@@ -70,7 +71,7 @@ class VoskProvider(BaseSTTProvider):
             return
 
         current_recognizer = recognizer_dormant
-        current_state = 'DORMANT'
+        current_state = STATE_DORMANT
 
         p = audio_manager.get_pyaudio()
         if not p:
@@ -92,9 +93,9 @@ class VoskProvider(BaseSTTProvider):
         def _handle_state_change(state: str):
             nonlocal current_recognizer, current_state
             current_state = state
-            if state == 'LISTENING':
+            if state == STATE_LISTENING:
                 current_recognizer = recognizer_listening
-            elif state == 'DORMANT':
+            elif state == STATE_DORMANT:
                 current_recognizer = recognizer_dormant
 
         stream = None
@@ -127,7 +128,7 @@ class VoskProvider(BaseSTTProvider):
                     # For the DORMANT state, we allow lower-confidence results to pass through
                     # to the fuzzy matcher, which is better at handling wake-word variations.
                     words = result_dict.get('result', [])
-                    if words and current_state == 'LISTENING':
+                    if words and current_state == STATE_LISTENING:
                         total_confidence = sum(item['conf'] for item in words)
                         average_confidence = total_confidence / len(words)
 

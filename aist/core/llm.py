@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 
 def initialize_llm(event_broadcaster):
     """Loads the Local AI Model."""
-    log.info("Loading AI model... This may take a few moments.")
+    log.info("Loading local AI model. This can take several minutes on the first run...")
     model_path = config.get('models.llm.path')
     if not model_path:
         log.fatal("FATAL: LLM model path is not configured in config.yaml (models.llm.path).")

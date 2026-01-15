@@ -20,7 +20,8 @@ dist/
 venv/
 
 # Project-specific data (logs, models, memory)
-/data/
+/data/models/
+/data/memory/
 
 # OS-generated files
 .DS_Store

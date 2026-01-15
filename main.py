@@ -16,6 +16,7 @@ from aist.core.events import bus, STT_TRANSCRIBED, TTS_SPEAK, STATE_CHANGED, VAD
 from aist.core.tts import initialize_tts_engine, subscribe_to_events
 from aist.core.stt import initialize_stt_engine
 from aist.core.ipc.client import IPCClient
+from aist.core.ipc.protocol import STATE_DORMANT, STATE_LISTENING
 from aist.core.log_setup import setup_logging, console_log, Colors
 from aist.core.config_manager import config
 
@@ -58,7 +59,7 @@ def main():
     event_broadcaster = FrontendEventProxy(ipc_client)
 
     # --- State Machine ---
-    assistant_state = 'DORMANT'
+    assistant_state = STATE_DORMANT
     app_state = AppState()
     
     # --- Icon Loading ---
@@ -122,9 +123,9 @@ def main():
             bus.sendMessage(TTS_SPEAK, text=text_to_speak)
 
         if action == "ACTIVATE":
-            set_assistant_state('LISTENING')
+            set_assistant_state(STATE_LISTENING)
         elif action == "DEACTIVATE":
-            set_assistant_state('DORMANT')
+            set_assistant_state(STATE_DORMANT)
         elif action == "EXIT":
             time.sleep(1.5)
             shutdown_app()
@@ -136,16 +137,12 @@ def main():
     def setup_services(icon):
         icon.visible = True
 
-        def _hotkey_listener():
-            quit_hotkey = config.get('hotkeys.quit', 'ctrl+win+x')
-            log.info(f"Registering global quit hotkey: {quit_hotkey.upper()}")
-            try:
-                keyboard.wait(quit_hotkey)
-                log.info(f"Global quit hotkey ({quit_hotkey.upper()}) detected. Shutting down.")
-                shutdown_app()
-            except Exception as e:
-                log.warning(f"Hotkey listener failed: {e}")
-        threading.Thread(target=_hotkey_listener, daemon=True).start()
+        quit_hotkey = config.get('hotkeys.quit', 'ctrl+win+x')
+        log.info(f"Registering global quit hotkey: {quit_hotkey.upper()}")
+        try:
+            keyboard.add_hotkey(quit_hotkey, shutdown_app)
+        except Exception as e:
+            log.warning(f"Failed to register quit hotkey: {e}")
 
         def _text_command_listener():
             context = zmq.Context()
@@ -186,7 +183,7 @@ def main():
         console_log("Waiting for STT engine to be ready...", prefix="INIT")
         stt_ready_event.wait()
 
-        console_log("--- AIST is DORMANT ---", prefix="STATE", color=Colors.YELLOW)
+        console_log(f"--- AIST is {STATE_DORMANT} ---", prefix="STATE", color=Colors.YELLOW)
         bus.sendMessage(TTS_SPEAK, text="Assistant is online.")
 
     tray_icon.run(setup=setup_services)
