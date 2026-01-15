@@ -70,6 +70,10 @@ audio:
       phrase_timeout: 1.0
       # Minimum volume (RMS) to be considered speech. Tune this for your microphone.
       energy_threshold: 300
+    # --- VAD settings for the 'vosk' provider ---
+    vosk_vad:
+      # Minimum volume (RMS) to be considered speech. Tune this for your microphone.
+      energy_threshold: 300
 
 logging:
   # Path for the log folder, relative to project root.

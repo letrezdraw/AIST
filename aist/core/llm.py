@@ -32,7 +32,7 @@ def initialize_llm(event_broadcaster):
         llm = AutoModelForCausalLM.from_pretrained(
             model_path,
             model_type="mistral",
-            gpu_layers=config.get('models.llm.gpu_layers', 0),
+            gpu_layers=0, # Hardcoded to 0 to prevent CUDA errors
             context_length=config.get('models.llm.context_length', 2048)
         )
         log.info("AI Model loaded successfully.")
@@ -111,7 +111,14 @@ def process_with_llm(llm, command, conversation_history, relevant_facts, system_
 
     try:
         log.info("Sending prompt to LLM...")
-        return llm(prompt, stream=False, max_new_tokens=max_tokens, temperature=temperature)
+        # LLM inference with timeout awareness
+        # Note: ctransformers doesn't natively support timeouts, so we rely on config and monitoring
+        # For long-running inferences, consider using threading with timeout wrapper
+        response = llm(prompt, stream=False, max_new_tokens=max_tokens, temperature=temperature)
+        return response
+    except KeyboardInterrupt:
+        log.warning("LLM inference interrupted by user.")
+        return "I was interrupted while thinking."
     except Exception as e:
         log.error(f"Error during LLM processing: {e}", exc_info=True)
         return "I encountered an error while thinking."

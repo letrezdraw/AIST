@@ -35,12 +35,15 @@ ipc:
   # This is separate from the main command/response channel.
   event_bus_port: 5556
   # Port for broadcasting log records to the GUI or other listeners.
+  # This is separate from the main command/response channel.
   log_broadcast_port: 5558
+  # Port for text commands, enabling external tools or scripts to send text input to the assistant.
+  text_command_port: 5557
 
 models:
   llm:
     path: "./data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
-    gpu_layers: 99
+    gpu_layers: 50
     context_length: 4096
     max_new_tokens: 150
   tts:
@@ -52,18 +55,32 @@ models:
     vosk_model_path: "data/models/stt/vosk-model-en-us-0.22"
     # The STT provider to use. 'vosk' is the default lightweight engine.
     # 'whisper' will provide higher quality recognition.
-    provider: "vosk"
+    provider: "whisper"
     # --- Whisper Provider Settings ---
     # Model size (e.g., "tiny.en", "base.en", "small.en", "medium.en"). Larger models are
     # more accurate but slower and use more memory. ".en" models are English-only.
-    whisper_model_name: "base.en"
+    whisper_model_name: "medium.en"
     whisper_device: "cuda" # "cuda" for NVIDIA GPUs, "cpu" for CPU
+    # --- Whisper VAD (Voice Activity Detection) Settings ---
+    whisper_vad:
+      # Energy threshold for detecting speech (0-3000). Higher = less sensitive.
+      # Default: 300. Increase if picking up too much background noise.
+      energy_threshold: 300
+      # Timeout in seconds for ending a phrase (0.1-5.0).
+      # Default: 1.0. Increase if your speech is frequently cut off.
+      phrase_timeout: 1.0
 
 audio:
   stt:
     # Confidence threshold (0.0 to 1.0) for accepting a transcription.
     # Lower values are more permissive but may result in more errors.
     confidence_threshold: 0.85
+    # Voice Activity Detection (VAD) energy threshold. This controls how sensitive
+    # the microphone is to sound. Higher values make it less sensitive, ignoring
+    # more background noise. Lower values make it more sensitive, picking up
+    # softer speech but also more noise. Adjust this based on your environment.
+    # A good starting point for noisy environments might be 600-800.
+    energy_threshold: 800
 
 logging:
   # Path for the log folder, relative to project root.

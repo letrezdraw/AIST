@@ -4,11 +4,16 @@ import json
 import os
 import pyaudio
 import vosk
+import numpy as np
+import time
+
 from aist.core.audio import audio_manager
-from aist.core.events import bus, STT_TRANSCRIBED, TTS_STARTED, TTS_FINISHED, STATE_CHANGED
+from aist.core.events import bus, STT_TRANSCRIBED, TTS_STARTED, TTS_FINISHED, STATE_CHANGED, VAD_STATUS_CHANGED
 from aist.core.config_manager import config
-from aist.core.ipc.protocol import STATE_DORMANT, STATE_LISTENING
 from .base import BaseSTTProvider
+
+STATE_DORMANT = "DORMANT"
+STATE_LISTENING = "LISTENING"
 
 log = logging.getLogger(__name__)
 
@@ -100,7 +105,13 @@ class VoskProvider(BaseSTTProvider):
 
         stream = None
         try:
-            stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8192)
+            try:
+                stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
+            except OSError as e:
+                log.fatal(f"FATAL: Could not open microphone stream: {e}")
+                log.fatal("Please ensure you have a microphone connected and configured as the default input device.")
+                return
+
             stream.start_stream()
             log.info("Microphone stream opened for Vosk.")
 
@@ -111,13 +122,35 @@ class VoskProvider(BaseSTTProvider):
             # Signal that the STT provider is initialized and ready to receive events.
             self.stt_ready_event.set()
 
+            energy_threshold = config.get('audio.stt.energy_threshold', 300)
+            last_vad_status = "silence"
+
             while self.app_state.is_running:
-                data = stream.read(4096, exception_on_overflow=False)
+                data = stream.read(2048, exception_on_overflow=False)
 
                 if is_tts_active:
                     continue
 
                 if not data:
+                    continue
+                
+                audio_chunk_np = np.frombuffer(data, dtype=np.int16)
+                if audio_chunk_np.size == 0:
+                    continue
+                
+                try:
+                    energy = np.sqrt(np.mean(audio_chunk_np.astype(np.float64)**2))
+                except RuntimeWarning:
+                    energy = 0.0
+                
+                if energy > energy_threshold:
+                    if last_vad_status == "silence":
+                        bus.sendMessage(VAD_STATUS_CHANGED, status="speech")
+                        last_vad_status = "speech"
+                else:
+                    if last_vad_status == "speech":
+                        bus.sendMessage(VAD_STATUS_CHANGED, status="silence")
+                        last_vad_status = "silence"
                     continue
 
                 if current_recognizer.AcceptWaveform(data):

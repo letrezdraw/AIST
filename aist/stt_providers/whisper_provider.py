@@ -6,6 +6,7 @@ import pyaudio
 import numpy as np
 import threading
 import time
+import os
 from queue import Queue, Empty
 
 from aist.core.audio import audio_manager
@@ -30,12 +31,19 @@ class WhisperProvider(BaseSTTProvider):
         """Loads the Whisper model based on configuration."""
         model_name = config.get('models.stt.whisper_model_name', 'tiny.en')
         device = config.get('models.stt.whisper_device', 'cpu')
+        
+        # Set custom cache directory for Whisper models
+        cache_dir = "data/models/stt"
+        os.makedirs(cache_dir, exist_ok=True)
+        os.environ['XDG_CACHE_HOME'] = os.path.abspath(cache_dir)
+        
         log.info(f"Checking for CUDA availability... torch.cuda.is_available() = {torch.cuda.is_available()}")
         if device == "cuda" and not torch.cuda.is_available():
             log.warning("CUDA device specified but not available. Falling back to CPU.")
             device = "cpu"
         
         log.info(f"Loading Whisper model '{model_name}' on device '{device}'... This may take a moment.")
+        log.info(f"Model cache directory: {os.path.abspath(cache_dir)}")
         try:
             model = whisper.load_model(model_name, device=device)
             log.info("Whisper model loaded successfully.")
@@ -160,11 +168,10 @@ class WhisperProvider(BaseSTTProvider):
                         audio_to_transcribe = b''.join(phrase_buffer)
                         phrase_buffer.clear()
                         self.audio_queue.put(audio_to_transcribe)
-                
-                # Broadcast that silence is detected, but only on change
-                if energy <= ENERGY_THRESHOLD and last_vad_status == "speech":
-                    bus.sendMessage(VAD_STATUS_CHANGED, status="silence")
-                    last_vad_status = "silence"
+                        # Broadcast that silence is detected, but only on change
+                        if last_vad_status == "speech":
+                            bus.sendMessage(VAD_STATUS_CHANGED, status="silence")
+                            last_vad_status = "silence"
 
         except Exception as e:
             log.error(f"An error occurred in the Whisper listening loop: {e}", exc_info=True)

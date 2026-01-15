@@ -28,13 +28,24 @@ class AppState:
     def __init__(self):
         """Initializes the application state."""
         self.is_running = True
+        self._lock = threading.Lock()
+    
+    def stop(self):
+        """Thread-safe way to signal shutdown."""
+        with self._lock:
+            self.is_running = False
+    
+    def is_active(self) -> bool:
+        """Thread-safe way to check if still running."""
+        with self._lock:
+            return self.is_running
 
 class FrontendEventProxy:
     """A proxy to send events from the frontend to the backend via IPC."""
     def __init__(self, ipc_client: IPCClient):
         self.ipc_client = ipc_client
 
-    def broadcast(self, event_type: str, payload: Dict[str, Any]):
+    def broadcast(self, event_type: str, payload: Dict[str, Any]) -> None:
         """Sends the event to the backend."""
         log.debug(f"Forwarding event '{event_type}' to backend.")
         self.ipc_client.send_event(event_type, payload)
@@ -61,6 +72,7 @@ def main():
     # --- State Machine ---
     assistant_state = STATE_DORMANT
     app_state = AppState()
+    state_lock = threading.Lock()  # Thread-safe state updates
     
     # --- Icon Loading ---
     try:
@@ -73,7 +85,7 @@ def main():
     def shutdown_app():
         """Signals all parts of the application to shut down gracefully."""
         log.info("--- SHUTDOWN_APP CALLED --- Shutdown signal received. Terminating.")
-        app_state.is_running = False
+        app_state.stop()  # Use thread-safe stop method
         ipc_client.stop()
         event_broadcaster.stop()
 
@@ -87,12 +99,13 @@ def main():
 
     # --- State Management Helper ---
     def set_assistant_state(new_state: str):
-        """Updates, logs, and broadcasts the assistant's state."""
+        """Updates, logs, and broadcasts the assistant's state (thread-safe)."""
         nonlocal assistant_state
-        if new_state != assistant_state:
-            assistant_state = new_state
-            log.info(f"State changed to {assistant_state}.")
-            event_broadcaster.broadcast("state:changed", {"state": assistant_state})
+        with state_lock:
+            if new_state != assistant_state:
+                assistant_state = new_state
+                log.info(f"State changed to {assistant_state}.")
+                event_broadcaster.broadcast("state:changed", {"state": assistant_state})
             
     menu = (item('Quit AIST', lambda icon, item: shutdown_app()),)
     tray_icon = icon("AIST", image, "AIST Assistant", menu)
@@ -100,7 +113,7 @@ def main():
     # --- Event Handler for Transcribed Text ---
     def _handle_transcription(text: str):
         nonlocal assistant_state
-        if not app_state.is_running:
+        if not app_state.is_active():  # Use thread-safe check
             return
 
         console_log(f"'{text}'", prefix="HEARD", color=Colors.CYAN)
@@ -151,7 +164,7 @@ def main():
             socket.bind(f"tcp://*:{port}")
             log.info(f"Text command listener started on tcp://*:{port}")
 
-            while app_state.is_running:
+            while app_state.is_active():  # Use thread-safe check
                 try:
                     if socket.poll(1000):
                         command_text = socket.recv_string()
@@ -185,7 +198,6 @@ def main():
 
         console_log(f"--- AIST is {STATE_DORMANT} ---", prefix="STATE", color=Colors.YELLOW)
         bus.sendMessage(TTS_SPEAK, text="Assistant is online.")
-
     tray_icon.run(setup=setup_services)
 
     keyboard.remove_all_hotkeys()

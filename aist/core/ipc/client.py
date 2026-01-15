@@ -17,6 +17,9 @@ class IPCClient:
         
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REQ)
+        # Set socket timeout to prevent indefinite hangs (10 second timeout)
+        self.socket.setsockopt(zmq.RCVTIMEO, 10000)
+        self.socket.setsockopt(zmq.SNDTIMEO, 10000)
         port = config.get('ipc.command_port', 5555)
         self.socket.connect(f"tcp://localhost:{port}")
         self.is_running = False
@@ -42,6 +45,10 @@ class IPCClient:
             response_dict = json.loads(response_json)
             return response_dict
 
+        except zmq.error.Again:
+            # Timeout occurred (socket.RCVTIMEO or SNDTIMEO exceeded)
+            log.error("IPC timeout: Backend did not respond within 10 seconds. Backend may be unresponsive.")
+            return {"action": "COMMAND", "speak": "I'm taking too long to think. Please try again."}
         except zmq.ZMQError as e:
             log.error(f"ZMQ error while communicating with backend: {e}")
             # Return a dictionary that the frontend can handle, indicating an error.

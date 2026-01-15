@@ -9,7 +9,7 @@ from aist.core.config_manager import config
 from aist.core.ipc.protocol import STATE_DORMANT, STATE_LISTENING
 from aist.skills import skill_loader
 from aist.core.llm import process_with_llm, summarize_system_output
-from aist.core.memory import retrieve_relevant_facts
+from aist.core.memory import retrieve_relevant_facts, store_fact
 
 log = logging.getLogger(__name__)
 
@@ -53,7 +53,7 @@ def _skill_process_wrapper(skill_id, handler_name, params, result_queue):
     from aist.core.log_setup import setup_logging
     import importlib
     import logging
-    setup_logging() # Ensure logging is set up first
+    setup_logging(is_skill_process=True) # Ensure logging is set up first and correctly configured for a skill process
     log = logging.getLogger(__name__)
     log.info(f"Skill process wrapper started for skill: {skill_id}") # Added log
 

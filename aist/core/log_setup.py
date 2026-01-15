@@ -29,7 +29,7 @@ def console_log(message: str, prefix: str = "STATUS", color: str = Colors.WHITE)
     print(f"{color}[{prefix:<8}]{Colors.RESET} {message}", file=sys.stdout)
     sys.stdout.flush()
 
-def setup_logging(is_frontend=False):
+def setup_logging(is_frontend=False, is_skill_process=False):
     """
     Configures the root logger for the entire application.
     This will log to both a rotating file and the console.
@@ -77,9 +77,8 @@ def setup_logging(is_frontend=False):
         logger.addHandler(console_handler)
 
     # --- GUI Handler (broadcasts logs for the GUI to display) ---
-    if is_frontend:
-        gui_handler = GUILoggingHandler()
-        gui_handler.setFormatter(formatter)
-        gui_handler.setLevel(logging.INFO)
-        logger.addHandler(gui_handler)
+    gui_handler = GUILoggingHandler(is_frontend=is_frontend, is_skill_process=is_skill_process)
+    gui_handler.setFormatter(formatter)
+    gui_handler.setLevel(logging.INFO)
+    logger.addHandler(gui_handler)
 
