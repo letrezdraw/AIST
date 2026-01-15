@@ -4,7 +4,7 @@
 # The --extra-index-url points pip to a special repository with these wheels.
 # If you have a different CUDA version (e.g., 11.8), change 'cu121' to 'cu118'.
 # The URL is now passed via the start_aist.bat script.
-llama-cpp-python
+llama-cpp-python==0.2.90
 piper-tts>=1.2.0
 vosk>=0.3.45
 openai-whisper>=20231117
