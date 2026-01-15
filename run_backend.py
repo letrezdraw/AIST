@@ -23,14 +23,12 @@ def main():
     try:
         event_broadcaster = EventBroadcaster()
         ipc_server = IPCServer(event_broadcaster=event_broadcaster)
-        
-        if ipc_server.start():
-            console_log("Backend is running. Press Ctrl+C to stop.", prefix="READY", color=Colors.GREEN)
-            # Keep the main thread alive to listen for KeyboardInterrupt
-            while True:
-                time.sleep(1)
-        else:
-            log.fatal("Backend failed to start. Please check the logs.")
+        ipc_server.start()
+
+        console_log("Backend is running. Press Ctrl+C to stop.", prefix="READY", color=Colors.GREEN)
+        # Keep the main thread alive to listen for KeyboardInterrupt
+        while True:
+            time.sleep(1)
 
     except KeyboardInterrupt:
         log.info("Ctrl+C received. Shutting down backend server.")

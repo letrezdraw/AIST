@@ -30,13 +30,13 @@ class IPCServer:
         initialize_skill_manager(event_broadcaster)
 
     def start(self):
-        """Starts the IPC server and loads the LLM model. Returns True on success, False on failure."""
+        """Starts the IPC server and attempts to load the LLM model."""
         console_log("Initializing LLM...", prefix="INIT")
         console_log("The first model load can take several minutes. Please be patient.", prefix="INFO", color=Colors.YELLOW)
-        self.llm = initialize_llm(event_broadcaster=self.event_broadcaster) # Pass broadcaster
+        self.llm = initialize_llm(event_broadcaster=self.event_broadcaster)
         if self.llm is None:
-            log.fatal("Failed to initialize LLM. IPC Server will not start.")
-            return False
+            log.warning("Failed to initialize LLM. AI-based skills will be disabled.")
+        
         self.is_running = True
         self.thread = threading.Thread(target=self._serve_forever, daemon=False)
         self.thread.start()
@@ -50,8 +50,6 @@ class IPCServer:
 
         while self.is_running:
             try:
-                # Poll for events with a timeout (e.g., 100ms)
-                # This makes the loop non-blocking and allows it to check self.is_running
                 socks = dict(poller.poll(100))
                 if self.socket in socks and socks[self.socket] == zmq.POLLIN:
                     try:
@@ -62,40 +60,43 @@ class IPCServer:
                         self.socket.send_string(json.dumps({"error": "Invalid JSON format"}))
                         continue
 
-                    request_type = request.get("type", "command") # Default to command for old clients
+                    request_type = request.get("type", "command")
 
                     if request_type == "event":
                         event_type = request.get("event_type")
                         payload = request.get("payload")
                         if event_type and payload:
                             self.event_broadcaster.broadcast(event_type, payload)
-                        self.socket.send_string(json.dumps({})) # Send empty ack
+                        self.socket.send_string(json.dumps({}))
                         continue
 
-                    # --- Existing Command Processing ---
                     command_text = request.get("payload", {}).get("text", "")
                     state = request.get("payload", {}).get("state", STATE_DORMANT)
 
-                    # --- Handle Special GUI Commands ---
                     if command_text == "__AIST_CLEAR_CONVERSATION__":
                         log.info("Received special command to clear conversation history.")
                         self.conversation_manager.clear()
-                        self.socket.send_string(json.dumps({})) # Send an empty ack
-                        continue # Skip normal processing
+                        self.socket.send_string(json.dumps({}))
+                        continue
 
                     console_log(f"'{command_text}' (State: {state})", prefix="RECV", color=Colors.CYAN)
 
-                    # Add user's message to history and get the current context
+                    if self.llm is None:
+                        log.warning("LLM is not available. Responding with an error message.")
+                        response = {
+                            "action": "COMMAND",
+                            "speak": "The Artificial Intelligence model is not available. Please check the logs for more details.",
+                            "intent": {"name": "llm_unavailable", "confidence": 100}
+                        }
+                        self.socket.send_string(json.dumps(response))
+                        continue
+
                     self.conversation_manager.add_message(role="user", text=command_text)
                     history = self.conversation_manager.get_history()
 
-                    # The dispatcher will handle retrieving relevant facts from long-term memory.
-                    # We pass the conversation history to it for context.
                     response = command_dispatcher(command_text, state, self.llm, history)
                     
                     if response is None:
-                        # If the dispatcher returns None (e.g., ignored command in DORMANT state),
-                        # send a valid but empty JSON object back to the client to prevent errors.
                         response = {}
 
                     speak_text = response.get("speak") if response else None

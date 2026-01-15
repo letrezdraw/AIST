@@ -1,9 +1,11 @@
 # core/llm.py - Large Language Model Interaction
 
 import logging
+import os
 from ctransformers import AutoModelForCausalLM
+from huggingface_hub.errors import RepositoryNotFoundError
 from aist.core.config_manager import config
-from aist.core.ipc.protocol import INIT_STATUS_UPDATE # New import
+from aist.core.ipc.protocol import INIT_STATUS_UPDATE
 
 log = logging.getLogger(__name__)
 
@@ -13,6 +15,17 @@ def initialize_llm(event_broadcaster):
     model_path = config.get('models.llm.path')
     if not model_path:
         log.fatal("FATAL: LLM model path is not configured in config.yaml (models.llm.path).")
+        event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "llm", "status": "failed", "error": "LLM model path not configured."})
+        return None
+
+    # Check if the path is a local file and if it exists
+    if os.path.exists(model_path):
+        log.info(f"Found local model at: {model_path}")
+    elif not any(s in model_path for s in ['/', '\\']):
+        log.info(f"'{model_path}' is not a local path. Assuming it's a Hugging Face repo and attempting to download.")
+    else:
+        log.fatal(f"FATAL: The specified LLM model file does not exist at the path: {model_path}")
+        event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "llm", "status": "failed", "error": f"Model file not found at {model_path}"})
         return None
 
     try:
@@ -23,12 +36,37 @@ def initialize_llm(event_broadcaster):
             context_length=config.get('models.llm.context_length', 2048)
         )
         log.info("AI Model loaded successfully.")
-        event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "llm", "status": "initialized"}) # Send update
+        event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "llm", "status": "initialized"})
         return llm
+    except ValueError as e:
+        if "Model path" in str(e) and "doesn't exist" in str(e):
+            log.fatal(f"FATAL: The model path '{model_path}' does not seem to exist, either locally or on Hugging Face.")
+            log.error(f"Please check that the path in your config.yaml is correct.", exc_info=True)
+            event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "llm", "status": "failed", "error": f"Model path '{model_path}' not found."})
+        else:
+            log.fatal(f"FATAL: A ValueError occurred while loading the model: {e}")
+            event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "llm", "status": "failed", "error": str(e)})
+        return None
+    except RepositoryNotFoundError as e:
+        log.fatal(f"FATAL: The Hugging Face repository '{model_path}' could not be found.")
+        log.error("Please ensure the repository ID is correct and that you have an internet connection.", exc_info=True)
+        log.error("If it's a private repository, make sure you are authenticated with 'huggingface-cli login'.")
+        event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "llm", "status": "failed", "error": f"Hugging Face repo '{model_path}' not found."})
+        return None
+    except FileNotFoundError as e:
+        if 'ctransformers.dll' in str(e) and config.get('models.llm.gpu_layers', 0) > 0:
+            log.fatal("FATAL: Could not find the ctransformers CUDA library.")
+            log.error("This usually means the NVIDIA CUDA Toolkit is not installed or not in the system's PATH.")
+            log.error("You can either install the CUDA toolkit or set 'gpu_layers: 0' in your config.yaml to run on CPU.", exc_info=True)
+            event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "llm", "status": "failed", "error": "ctransformers CUDA library not found."})
+        else:
+            log.fatal(f"FATAL: A FileNotFoundError occurred: {e}", exc_info=True)
+            event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "llm", "status": "failed", "error": str(e)})
+        return None
     except Exception as e:
-        log.fatal(f"FATAL: Could not load the AI model from path: {model_path}")
+        log.fatal(f"FATAL: An unexpected error occurred while loading the AI model from path: {model_path}")
         log.error(f"Error: {e}", exc_info=True)
-        event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "llm", "status": "failed", "error": str(e)}) # Send error update
+        event_broadcaster.broadcast(INIT_STATUS_UPDATE, {"component": "llm", "status": "failed", "error": str(e)})
         return None
 
 def _format_history(history: list[tuple[str, str]]) -> str:

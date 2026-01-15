@@ -1,215 +1,252 @@
-2026-01-15 11:04:42,654 - INFO     - aist.gui.main_window   - AIST GUI application started.
-2026-01-15 11:04:42,694 - INFO     - aist.gui.main_window   - GUI widgets created.
-2026-01-15 11:04:42,694 - INFO     - aist.gui.main_window   - Starting GUI services...
-2026-01-15 11:04:42,694 - INFO     - aist.core.ipc.client   - IPC Client started and connected to tcp://localhost:5555
-2026-01-15 11:04:42,694 - INFO     - aist.gui.main_window   - GUI log listener started.
-2026-01-15 11:06:58,926 - INFO     - aist.gui.main_window   - AIST GUI application started.
-2026-01-15 11:06:58,964 - INFO     - aist.gui.main_window   - GUI widgets created.
-2026-01-15 11:06:58,964 - INFO     - aist.gui.main_window   - Starting GUI services...
-2026-01-15 11:06:58,964 - INFO     - aist.core.ipc.client   - IPC Client started and connected to tcp://localhost:5555
-2026-01-15 11:06:58,964 - INFO     - aist.gui.main_window   - GUI log listener started.
-2026-01-15 11:07:26,070 - INFO     - aist.gui.main_window   - AIST GUI application started.
-2026-01-15 11:07:26,102 - INFO     - aist.gui.main_window   - GUI widgets created.
-2026-01-15 11:07:26,102 - INFO     - aist.gui.main_window   - Starting GUI services...
-2026-01-15 11:07:26,102 - INFO     - aist.core.ipc.client   - IPC Client started and connected to tcp://localhost:5555
-2026-01-15 11:07:26,102 - INFO     - aist.gui.main_window   - GUI log listener started.
-2026-01-15 11:07:29,874 - INFO     - aist.gui.main_window   - GUI closing initiated.
-2026-01-15 11:07:30,225 - INFO     - aist.core.ipc.client   - Stopping IPC client...
-2026-01-15 11:07:30,225 - INFO     - aist.core.ipc.client   - IPC Client stopped.
-2026-01-15 11:07:30,225 - INFO     - aist.gui.main_window   - IPC Client stopped. Destroying GUI.
-2026-01-15 11:09:29,070 - INFO     - aist.core.ipc.event_bus - Event broadcaster started on tcp://*:5556
-2026-01-15 11:09:29,070 - INFO     - aist.skills.skill_loader - Searching for skills in 'aist\skills'...
-2026-01-15 11:09:29,070 - INFO     - aist.skills.memory_skill - Memory skill initialized.
-2026-01-15 11:09:29,070 - INFO     - aist.skills.skill_loader - Registered intent 'store_memory' for skill 'memory_skill'.
-2026-01-15 11:09:29,070 - INFO     - aist.skills.skill_loader - Registered intent 'recall_memory' for skill 'memory_skill'.
-2026-01-15 11:09:29,070 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Memory Skill' (v1.0).
-2026-01-15 11:09:29,070 - INFO     - aist.skills.system_skill - System skill initialized.
-2026-01-15 11:09:29,070 - INFO     - aist.skills.skill_loader - Registered intent 'open_application' for skill 'system_skill'.
-2026-01-15 11:09:29,070 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'System Control Skill' (v1.0).
-2026-01-15 11:09:29,070 - INFO     - aist.skills.time_skill - Time skill initialized.
-2026-01-15 11:09:29,070 - INFO     - aist.skills.skill_loader - Registered intent 'get_current_time' for skill 'time_skill'.
-2026-01-15 11:09:29,070 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Current Time Skill' (v1.0).
-2026-01-15 11:09:29,070 - INFO     - aist.core.conversation - ConversationManager initialized with a max history of 5 exchanges.
-2026-01-15 11:09:29,070 - INFO     - aist.core.llm          - Loading AI model... This may take a few moments.
-2026-01-15 11:09:29,070 - CRITICAL - aist.core.llm          - FATAL: Could not load the AI model from path: data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
-2026-01-15 11:09:29,070 - ERROR    - aist.core.llm          - Error: Model path 'data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf' doesn't exist.
+2026-01-15 11:48:09,315 - INFO     - aist.core.ipc.event_bus - Event broadcaster started on tcp://*:5556
+2026-01-15 11:48:09,315 - INFO     - aist.core.conversation - ConversationManager initialized with a max history of 5 exchanges.
+2026-01-15 11:48:09,315 - INFO     - aist.skills.skill_loader - Searching for skills in 'aist\skills'...
+2026-01-15 11:48:09,315 - INFO     - aist.skills.memory_skill - Memory skill initialized.
+2026-01-15 11:48:09,315 - INFO     - aist.skills.skill_loader - Registered intent 'store_memory' for skill 'memory_skill'.
+2026-01-15 11:48:09,315 - INFO     - aist.skills.skill_loader - Registered intent 'recall_memory' for skill 'memory_skill'.
+2026-01-15 11:48:09,315 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Memory Skill' (v1.0).
+2026-01-15 11:48:09,315 - INFO     - aist.skills.system_skill - System skill initialized.
+2026-01-15 11:48:09,315 - INFO     - aist.skills.skill_loader - Registered intent 'open_application' for skill 'system_skill'.
+2026-01-15 11:48:09,315 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'System Control Skill' (v1.0).
+2026-01-15 11:48:09,315 - INFO     - aist.skills.time_skill - Time skill initialized.
+2026-01-15 11:48:09,315 - INFO     - aist.skills.skill_loader - Registered intent 'get_current_time' for skill 'time_skill'.
+2026-01-15 11:48:09,315 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Current Time Skill' (v1.0).
+2026-01-15 11:48:09,315 - INFO     - aist.core.llm          - Loading local AI model. This can take several minutes on the first run...
+2026-01-15 11:48:09,330 - CRITICAL - aist.core.llm          - FATAL: Could not load the AI model from path: ./data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+2026-01-15 11:48:09,330 - ERROR    - aist.core.llm          - Error: Could not find module 'E:\Project\AIST\venv\Lib\site-packages\ctransformers\lib\cuda\ctransformers.dll' (or one of its dependencies). Try using the full path with constructor syntax.
 Traceback (most recent call last):
   File "E:\Project\AIST\aist\core\llm.py", line 19, in initialize_llm
     llm = AutoModelForCausalLM.from_pretrained(
-  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\hub.py", line 151, in from_pretrained
-    config = config or AutoConfig.from_pretrained(
-  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\hub.py", line 40, in from_pretrained
-    raise ValueError(f"Model path '{model_path_or_repo_id}' doesn't exist.")
-ValueError: Model path 'data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf' doesn't exist.
-2026-01-15 11:09:29,070 - CRITICAL - aist.core.ipc.server   - Failed to initialize LLM. IPC Server will not start.
-2026-01-15 11:09:29,070 - CRITICAL - __main__               - Backend failed to start due to a critical error. Please check the logs.
-2026-01-15 11:09:29,070 - INFO     - aist.core.ipc.server   - Stopping IPC Server...
-2026-01-15 11:09:29,070 - INFO     - aist.core.ipc.server   - IPC Server stopped.
-2026-01-15 11:09:29,070 - INFO     - aist.core.ipc.event_bus - Event broadcaster stopped.
-2026-01-15 11:09:44,124 - INFO     - aist.core.ipc.event_bus - Event broadcaster started on tcp://*:5556
-2026-01-15 11:09:44,124 - INFO     - aist.skills.skill_loader - Searching for skills in 'aist\skills'...
-2026-01-15 11:09:44,124 - INFO     - aist.skills.memory_skill - Memory skill initialized.
-2026-01-15 11:09:44,124 - INFO     - aist.skills.skill_loader - Registered intent 'store_memory' for skill 'memory_skill'.
-2026-01-15 11:09:44,124 - INFO     - aist.skills.skill_loader - Registered intent 'recall_memory' for skill 'memory_skill'.
-2026-01-15 11:09:44,124 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Memory Skill' (v1.0).
-2026-01-15 11:09:44,124 - INFO     - aist.skills.system_skill - System skill initialized.
-2026-01-15 11:09:44,124 - INFO     - aist.skills.skill_loader - Registered intent 'open_application' for skill 'system_skill'.
-2026-01-15 11:09:44,124 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'System Control Skill' (v1.0).
-2026-01-15 11:09:44,124 - INFO     - aist.skills.time_skill - Time skill initialized.
-2026-01-15 11:09:44,124 - INFO     - aist.skills.skill_loader - Registered intent 'get_current_time' for skill 'time_skill'.
-2026-01-15 11:09:44,124 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Current Time Skill' (v1.0).
-2026-01-15 11:09:44,124 - INFO     - aist.core.conversation - ConversationManager initialized with a max history of 5 exchanges.
-2026-01-15 11:09:44,124 - INFO     - aist.core.llm          - Loading AI model... This may take a few moments.
-2026-01-15 11:09:44,124 - CRITICAL - aist.core.llm          - FATAL: Could not load the AI model from path: data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
-2026-01-15 11:09:44,124 - ERROR    - aist.core.llm          - Error: Model path 'data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf' doesn't exist.
+  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\hub.py", line 175, in from_pretrained
+    llm = LLM(
+  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\llm.py", line 246, in __init__
+    self._lib = load_library(lib, gpu=config.gpu_layers > 0)
+  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\llm.py", line 126, in load_library
+    lib = CDLL(path)
+  File "C:\Users\letrezdraw\AppData\Local\Programs\Python\Python310\lib\ctypes\__init__.py", line 374, in __init__
+    self._handle = _dlopen(self._name, mode)
+FileNotFoundError: Could not find module 'E:\Project\AIST\venv\Lib\site-packages\ctransformers\lib\cuda\ctransformers.dll' (or one of its dependencies). Try using the full path with constructor syntax.
+2026-01-15 11:48:09,346 - CRITICAL - aist.core.ipc.server   - Failed to initialize LLM. IPC Server will not start.
+2026-01-15 11:48:09,346 - CRITICAL - __main__               - Backend failed to start. Please check the logs.
+2026-01-15 11:48:09,346 - INFO     - aist.core.ipc.server   - Stopping IPC Server...
+2026-01-15 11:48:09,346 - INFO     - aist.core.ipc.server   - IPC Server stopped.
+2026-01-15 11:48:09,346 - INFO     - aist.core.ipc.event_bus - Event broadcaster stopped.
+2026-01-15 11:48:15,326 - INFO     - aist.gui.main_window   - AIST GUI application started.
+2026-01-15 11:48:15,364 - INFO     - aist.gui.main_window   - GUI widgets created.
+2026-01-15 11:48:15,364 - INFO     - aist.gui.main_window   - Starting GUI services...
+2026-01-15 11:48:15,364 - INFO     - aist.core.ipc.client   - IPC Client started and connected to tcp://localhost:5555
+2026-01-15 11:48:15,364 - INFO     - aist.gui.main_window   - GUI log listener started.
+2026-01-15 11:48:15,484 - INFO     - aist.core.ipc.event_bus - Event broadcaster started on tcp://*:5556
+2026-01-15 11:48:15,493 - INFO     - aist.core.conversation - ConversationManager initialized with a max history of 5 exchanges.
+2026-01-15 11:48:15,493 - INFO     - aist.skills.skill_loader - Searching for skills in 'aist\skills'...
+2026-01-15 11:48:15,493 - INFO     - aist.skills.memory_skill - Memory skill initialized.
+2026-01-15 11:48:15,493 - INFO     - aist.skills.skill_loader - Registered intent 'store_memory' for skill 'memory_skill'.
+2026-01-15 11:48:15,493 - INFO     - aist.skills.skill_loader - Registered intent 'recall_memory' for skill 'memory_skill'.
+2026-01-15 11:48:15,493 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Memory Skill' (v1.0).
+2026-01-15 11:48:15,493 - INFO     - aist.skills.system_skill - System skill initialized.
+2026-01-15 11:48:15,493 - INFO     - aist.skills.skill_loader - Registered intent 'open_application' for skill 'system_skill'.
+2026-01-15 11:48:15,493 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'System Control Skill' (v1.0).
+2026-01-15 11:48:15,493 - INFO     - aist.skills.time_skill - Time skill initialized.
+2026-01-15 11:48:15,493 - INFO     - aist.skills.skill_loader - Registered intent 'get_current_time' for skill 'time_skill'.
+2026-01-15 11:48:15,493 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Current Time Skill' (v1.0).
+2026-01-15 11:48:15,493 - INFO     - aist.core.llm          - Loading local AI model. This can take several minutes on the first run...
+2026-01-15 11:48:15,502 - CRITICAL - aist.core.llm          - FATAL: Could not load the AI model from path: ./data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+2026-01-15 11:48:15,502 - ERROR    - aist.core.llm          - Error: Could not find module 'E:\Project\AIST\venv\Lib\site-packages\ctransformers\lib\cuda\ctransformers.dll' (or one of its dependencies). Try using the full path with constructor syntax.
 Traceback (most recent call last):
   File "E:\Project\AIST\aist\core\llm.py", line 19, in initialize_llm
     llm = AutoModelForCausalLM.from_pretrained(
-  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\hub.py", line 151, in from_pretrained
-    config = config or AutoConfig.from_pretrained(
-  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\hub.py", line 40, in from_pretrained
-    raise ValueError(f"Model path '{model_path_or_repo_id}' doesn't exist.")
-ValueError: Model path 'data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf' doesn't exist.
-2026-01-15 11:09:44,124 - CRITICAL - aist.core.ipc.server   - Failed to initialize LLM. IPC Server will not start.
-2026-01-15 11:09:44,124 - CRITICAL - __main__               - Backend failed to start due to a critical error. Please check the logs.
-2026-01-15 11:09:44,124 - INFO     - aist.core.ipc.server   - Stopping IPC Server...
-2026-01-15 11:09:44,124 - INFO     - aist.core.ipc.server   - IPC Server stopped.
-2026-01-15 11:09:44,124 - INFO     - aist.core.ipc.event_bus - Event broadcaster stopped.
-2026-01-15 11:21:16,446 - INFO     - aist.core.ipc.client   - IPC Client started and connected to tcp://localhost:5555
-2026-01-15 11:21:16,508 - INFO     - aist.core.ipc.event_bus - Event broadcaster started on tcp://*:5556
-2026-01-15 11:21:16,508 - INFO     - aist.core.conversation - ConversationManager initialized with a max history of 5 exchanges.
-2026-01-15 11:21:16,508 - INFO     - aist.skills.skill_loader - Searching for skills in 'aist\skills'...
-2026-01-15 11:21:16,508 - INFO     - aist.skills.memory_skill - Memory skill initialized.
-2026-01-15 11:21:16,508 - INFO     - aist.skills.skill_loader - Registered intent 'store_memory' for skill 'memory_skill'.
-2026-01-15 11:21:16,508 - INFO     - aist.skills.skill_loader - Registered intent 'recall_memory' for skill 'memory_skill'.
-2026-01-15 11:21:16,508 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Memory Skill' (v1.0).
-2026-01-15 11:21:16,508 - INFO     - aist.skills.system_skill - System skill initialized.
-2026-01-15 11:21:16,508 - INFO     - aist.skills.skill_loader - Registered intent 'open_application' for skill 'system_skill'.
-2026-01-15 11:21:16,508 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'System Control Skill' (v1.0).
-2026-01-15 11:21:16,524 - INFO     - aist.skills.time_skill - Time skill initialized.
-2026-01-15 11:21:16,524 - INFO     - aist.skills.skill_loader - Registered intent 'get_current_time' for skill 'time_skill'.
-2026-01-15 11:21:16,524 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Current Time Skill' (v1.0).
-2026-01-15 11:21:16,524 - INFO     - aist.core.llm          - Loading AI model... This may take a few moments.
-2026-01-15 11:21:16,524 - CRITICAL - aist.core.llm          - FATAL: Could not load the AI model from path: data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
-2026-01-15 11:21:16,524 - ERROR    - aist.core.llm          - Error: Model path 'data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf' doesn't exist.
+  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\hub.py", line 175, in from_pretrained
+    llm = LLM(
+  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\llm.py", line 246, in __init__
+    self._lib = load_library(lib, gpu=config.gpu_layers > 0)
+  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\llm.py", line 126, in load_library
+    lib = CDLL(path)
+  File "C:\Users\letrezdraw\AppData\Local\Programs\Python\Python310\lib\ctypes\__init__.py", line 374, in __init__
+    self._handle = _dlopen(self._name, mode)
+FileNotFoundError: Could not find module 'E:\Project\AIST\venv\Lib\site-packages\ctransformers\lib\cuda\ctransformers.dll' (or one of its dependencies). Try using the full path with constructor syntax.
+2026-01-15 11:48:15,502 - CRITICAL - aist.core.ipc.server   - Failed to initialize LLM. IPC Server will not start.
+2026-01-15 11:48:15,502 - CRITICAL - __main__               - Backend failed to start. Please check the logs.
+2026-01-15 11:48:15,502 - INFO     - aist.core.ipc.server   - Stopping IPC Server...
+2026-01-15 11:48:15,502 - INFO     - aist.core.ipc.server   - IPC Server stopped.
+2026-01-15 11:48:15,502 - INFO     - aist.core.ipc.event_bus - Event broadcaster stopped.
+2026-01-15 11:48:20,057 - INFO     - aist.core.ipc.client   - IPC Client started and connected to tcp://localhost:5555
+2026-01-15 11:48:20,059 - DEBUG    - PIL.PngImagePlugin     - STREAM b'IHDR' 16 13
+2026-01-15 11:48:20,059 - DEBUG    - PIL.PngImagePlugin     - STREAM b'pHYs' 41 9
+2026-01-15 11:48:20,059 - DEBUG    - PIL.PngImagePlugin     - STREAM b'iTXt' 62 1264
+2026-01-15 11:48:20,059 - DEBUG    - PIL.PngImagePlugin     - STREAM b'IDAT' 1338 23284
+2026-01-15 11:48:20,059 - DEBUG    - PIL.Image              - Importing AvifImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing BlpImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing BmpImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing BufrStubImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing CurImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing DcxImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing DdsImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing EpsImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing FitsImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing FliImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing FpxImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Image: failed to import FpxImagePlugin: No module named 'olefile'
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing FtexImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing GbrImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing GifImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing GribStubImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing Hdf5StubImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing IcnsImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing IcoImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing ImImagePlugin
+2026-01-15 11:48:20,976 - DEBUG    - PIL.Image              - Importing ImtImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing IptcImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing JpegImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing Jpeg2KImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing McIdasImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing MicImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Image: failed to import MicImagePlugin: No module named 'olefile'
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing MpegImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing MpoImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing MspImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing PalmImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing PcdImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing PcxImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing PdfImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing PixarImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing PngImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing PpmImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing PsdImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing QoiImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing SgiImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing SpiderImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing SunImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing TgaImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing TiffImagePlugin
+2026-01-15 11:48:20,992 - DEBUG    - PIL.Image              - Importing WebPImagePlugin
+2026-01-15 11:48:21,435 - DEBUG    - PIL.Image              - Importing WmfImagePlugin
+2026-01-15 11:48:21,435 - DEBUG    - PIL.Image              - Importing XbmImagePlugin
+2026-01-15 11:48:21,435 - DEBUG    - PIL.Image              - Importing XpmImagePlugin
+2026-01-15 11:48:21,435 - DEBUG    - PIL.Image              - Importing XVThumbImagePlugin
+2026-01-15 11:48:21,467 - INFO     - __main__               - Registering global quit hotkey: CTRL+WIN+X
+2026-01-15 11:48:21,530 - INFO     - aist.core.tts          - Initializing TTS engine with provider: 'piper'
+2026-01-15 11:48:21,530 - WARNING  - aist.core.config_manager - Config key 'ipc.text_command_port' not found. Using default value: 5557
+2026-01-15 11:48:21,530 - INFO     - __main__               - Text command listener started on tcp://*:5557
+2026-01-15 11:48:21,907 - INFO     - aist.tts_providers.piper_provider - Loading Piper TTS voice... This may take a moment.
+2026-01-15 11:48:22,515 - INFO     - aist.tts_providers.piper_provider - Piper TTS voice loaded successfully.
+2026-01-15 11:48:22,515 - INFO     - aist.core.tts          - TTS provider 'piper' initialized.
+2026-01-15 11:48:22,515 - DEBUG    - __main__               - Forwarding event 'init_status_update' to backend.
+2026-01-15 11:50:33,464 - INFO     - __main__               - --- SHUTDOWN_APP CALLED --- Shutdown signal received. Terminating.
+2026-01-15 11:50:33,464 - INFO     - aist.core.ipc.client   - Stopping IPC client...
+2026-01-15 11:50:33,464 - ERROR    - aist.core.ipc.client   - ZMQ error while sending event to backend: Context was terminated
+2026-01-15 11:50:33,464 - INFO     - aist.core.tts          - TTS engine is listening for 'tts.speak' events.
+2026-01-15 11:50:33,781 - DEBUG    - __main__               - Forwarding event 'init_status_update' to backend.
+2026-01-15 11:50:33,781 - INFO     - aist.stt_providers.vosk_provider - Loading Vosk model from 'data/models/stt/vosk-model-en-us-0.22'...
+2026-01-15 11:50:33,781 - WARNING  - aist.core.ipc.client   - IPC client is not running. Cannot send event.
+2026-01-15 11:50:34,283 - INFO     - __main__               - Text command listener stopped.
+2026-01-15 12:15:21,462 - INFO     - aist.gui.main_window   - AIST GUI application started.
+2026-01-15 12:15:21,495 - INFO     - aist.gui.main_window   - GUI widgets created.
+2026-01-15 12:15:21,495 - INFO     - aist.gui.main_window   - Starting GUI services...
+2026-01-15 12:15:21,495 - INFO     - aist.core.ipc.client   - IPC Client started and connected to tcp://localhost:5555
+2026-01-15 12:15:21,495 - INFO     - aist.gui.main_window   - GUI log listener started.
+2026-01-15 12:15:41,899 - INFO     - aist.core.ipc.client   - IPC Client started and connected to tcp://localhost:5555
+2026-01-15 12:15:41,907 - DEBUG    - PIL.PngImagePlugin     - STREAM b'IHDR' 16 13
+2026-01-15 12:15:41,907 - DEBUG    - PIL.PngImagePlugin     - STREAM b'pHYs' 41 9
+2026-01-15 12:15:41,908 - DEBUG    - PIL.PngImagePlugin     - STREAM b'iTXt' 62 1264
+2026-01-15 12:15:41,908 - DEBUG    - PIL.PngImagePlugin     - STREAM b'IDAT' 1338 23284
+2026-01-15 12:15:41,911 - DEBUG    - PIL.Image              - Importing AvifImagePlugin
+2026-01-15 12:15:41,912 - DEBUG    - PIL.Image              - Importing BlpImagePlugin
+2026-01-15 12:15:41,912 - DEBUG    - PIL.Image              - Importing BmpImagePlugin
+2026-01-15 12:15:41,912 - DEBUG    - PIL.Image              - Importing BufrStubImagePlugin
+2026-01-15 12:15:41,913 - DEBUG    - PIL.Image              - Importing CurImagePlugin
+2026-01-15 12:15:41,913 - DEBUG    - PIL.Image              - Importing DcxImagePlugin
+2026-01-15 12:15:41,913 - DEBUG    - PIL.Image              - Importing DdsImagePlugin
+2026-01-15 12:15:41,915 - DEBUG    - PIL.Image              - Importing EpsImagePlugin
+2026-01-15 12:15:41,916 - DEBUG    - PIL.Image              - Importing FitsImagePlugin
+2026-01-15 12:15:41,917 - DEBUG    - PIL.Image              - Importing FliImagePlugin
+2026-01-15 12:15:41,917 - DEBUG    - PIL.Image              - Importing FpxImagePlugin
+2026-01-15 12:15:41,918 - DEBUG    - PIL.Image              - Image: failed to import FpxImagePlugin: No module named 'olefile'
+2026-01-15 12:15:41,918 - DEBUG    - PIL.Image              - Importing FtexImagePlugin
+2026-01-15 12:15:41,918 - DEBUG    - PIL.Image              - Importing GbrImagePlugin
+2026-01-15 12:15:41,918 - DEBUG    - PIL.Image              - Importing GifImagePlugin
+2026-01-15 12:15:41,918 - DEBUG    - PIL.Image              - Importing GribStubImagePlugin
+2026-01-15 12:15:41,919 - DEBUG    - PIL.Image              - Importing Hdf5StubImagePlugin
+2026-01-15 12:15:41,919 - DEBUG    - PIL.Image              - Importing IcnsImagePlugin
+2026-01-15 12:15:41,920 - DEBUG    - PIL.Image              - Importing IcoImagePlugin
+2026-01-15 12:15:41,920 - DEBUG    - PIL.Image              - Importing ImImagePlugin
+2026-01-15 12:15:41,920 - DEBUG    - PIL.Image              - Importing ImtImagePlugin
+2026-01-15 12:15:41,921 - DEBUG    - PIL.Image              - Importing IptcImagePlugin
+2026-01-15 12:15:41,921 - DEBUG    - PIL.Image              - Importing JpegImagePlugin
+2026-01-15 12:15:41,921 - DEBUG    - PIL.Image              - Importing Jpeg2KImagePlugin
+2026-01-15 12:15:41,921 - DEBUG    - PIL.Image              - Importing McIdasImagePlugin
+2026-01-15 12:15:41,921 - DEBUG    - PIL.Image              - Importing MicImagePlugin
+2026-01-15 12:15:41,922 - DEBUG    - PIL.Image              - Image: failed to import MicImagePlugin: No module named 'olefile'
+2026-01-15 12:15:41,922 - DEBUG    - PIL.Image              - Importing MpegImagePlugin
+2026-01-15 12:15:41,922 - DEBUG    - PIL.Image              - Importing MpoImagePlugin
+2026-01-15 12:15:41,923 - DEBUG    - PIL.Image              - Importing MspImagePlugin
+2026-01-15 12:15:41,924 - DEBUG    - PIL.Image              - Importing PalmImagePlugin
+2026-01-15 12:15:41,924 - DEBUG    - PIL.Image              - Importing PcdImagePlugin
+2026-01-15 12:15:41,924 - DEBUG    - PIL.Image              - Importing PcxImagePlugin
+2026-01-15 12:15:41,924 - DEBUG    - PIL.Image              - Importing PdfImagePlugin
+2026-01-15 12:15:41,927 - DEBUG    - PIL.Image              - Importing PixarImagePlugin
+2026-01-15 12:15:41,927 - DEBUG    - PIL.Image              - Importing PngImagePlugin
+2026-01-15 12:15:41,928 - DEBUG    - PIL.Image              - Importing PpmImagePlugin
+2026-01-15 12:15:41,928 - DEBUG    - PIL.Image              - Importing PsdImagePlugin
+2026-01-15 12:15:41,928 - DEBUG    - PIL.Image              - Importing QoiImagePlugin
+2026-01-15 12:15:41,928 - DEBUG    - PIL.Image              - Importing SgiImagePlugin
+2026-01-15 12:15:41,928 - DEBUG    - PIL.Image              - Importing SpiderImagePlugin
+2026-01-15 12:15:41,929 - DEBUG    - PIL.Image              - Importing SunImagePlugin
+2026-01-15 12:15:41,929 - DEBUG    - PIL.Image              - Importing TgaImagePlugin
+2026-01-15 12:15:41,929 - DEBUG    - PIL.Image              - Importing TiffImagePlugin
+2026-01-15 12:15:41,929 - DEBUG    - PIL.Image              - Importing WebPImagePlugin
+2026-01-15 12:15:41,930 - DEBUG    - PIL.Image              - Importing WmfImagePlugin
+2026-01-15 12:15:41,930 - DEBUG    - PIL.Image              - Importing XbmImagePlugin
+2026-01-15 12:15:41,931 - DEBUG    - PIL.Image              - Importing XpmImagePlugin
+2026-01-15 12:15:41,931 - DEBUG    - PIL.Image              - Importing XVThumbImagePlugin
+2026-01-15 12:15:41,966 - INFO     - __main__               - Registering global quit hotkey: CTRL+WIN+X
+2026-01-15 12:15:42,025 - WARNING  - aist.core.config_manager - Config key 'ipc.text_command_port' not found. Using default value: 5557
+2026-01-15 12:15:42,025 - INFO     - aist.core.tts          - Initializing TTS engine with provider: 'piper'
+2026-01-15 12:15:42,025 - INFO     - __main__               - Text command listener started on tcp://*:5557
+2026-01-15 12:15:42,094 - INFO     - aist.tts_providers.piper_provider - Loading Piper TTS voice... This may take a moment.
+2026-01-15 12:15:42,788 - INFO     - aist.tts_providers.piper_provider - Piper TTS voice loaded successfully.
+2026-01-15 12:15:42,788 - INFO     - aist.core.tts          - TTS provider 'piper' initialized.
+2026-01-15 12:15:42,789 - DEBUG    - __main__               - Forwarding event 'init_status_update' to backend.
+2026-01-15 12:15:49,705 - INFO     - __main__               - --- SHUTDOWN_APP CALLED --- Shutdown signal received. Terminating.
+2026-01-15 12:15:49,705 - INFO     - aist.core.ipc.client   - Stopping IPC client...
+2026-01-15 12:15:49,705 - ERROR    - aist.core.ipc.client   - ZMQ error while sending event to backend: Context was terminated
+2026-01-15 12:15:49,706 - INFO     - aist.core.tts          - TTS engine is listening for 'tts.speak' events.
+2026-01-15 12:15:49,765 - DEBUG    - __main__               - Forwarding event 'init_status_update' to backend.
+2026-01-15 12:15:49,765 - INFO     - aist.stt_providers.vosk_provider - Loading Vosk model from 'data/models/stt/vosk-model-en-us-0.22'...
+2026-01-15 12:15:49,767 - WARNING  - aist.core.ipc.client   - IPC client is not running. Cannot send event.
+2026-01-15 12:15:50,070 - INFO     - __main__               - Text command listener stopped.
+2026-01-15 12:16:07,236 - INFO     - aist.gui.main_window   - AIST GUI application started.
+2026-01-15 12:16:07,271 - INFO     - aist.gui.main_window   - GUI widgets created.
+2026-01-15 12:16:07,271 - INFO     - aist.gui.main_window   - Starting GUI services...
+2026-01-15 12:16:07,271 - INFO     - aist.core.ipc.client   - IPC Client started and connected to tcp://localhost:5555
+2026-01-15 12:16:07,271 - INFO     - aist.gui.main_window   - GUI log listener started.
+2026-01-15 12:16:07,436 - INFO     - aist.core.ipc.event_bus - Event broadcaster started on tcp://*:5556
+2026-01-15 12:16:07,444 - INFO     - aist.core.conversation - ConversationManager initialized with a max history of 5 exchanges.
+2026-01-15 12:16:07,444 - INFO     - aist.skills.skill_loader - Searching for skills in 'aist\skills'...
+2026-01-15 12:16:07,446 - INFO     - aist.skills.memory_skill - Memory skill initialized.
+2026-01-15 12:16:07,446 - INFO     - aist.skills.skill_loader - Registered intent 'store_memory' for skill 'memory_skill'.
+2026-01-15 12:16:07,446 - INFO     - aist.skills.skill_loader - Registered intent 'recall_memory' for skill 'memory_skill'.
+2026-01-15 12:16:07,446 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Memory Skill' (v1.0).
+2026-01-15 12:16:07,446 - INFO     - aist.skills.system_skill - System skill initialized.
+2026-01-15 12:16:07,446 - INFO     - aist.skills.skill_loader - Registered intent 'open_application' for skill 'system_skill'.
+2026-01-15 12:16:07,446 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'System Control Skill' (v1.0).
+2026-01-15 12:16:07,446 - INFO     - aist.skills.time_skill - Time skill initialized.
+2026-01-15 12:16:07,446 - INFO     - aist.skills.skill_loader - Registered intent 'get_current_time' for skill 'time_skill'.
+2026-01-15 12:16:07,446 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Current Time Skill' (v1.0).
+2026-01-15 12:16:07,446 - INFO     - aist.core.llm          - Loading local AI model. This can take several minutes on the first run...
+2026-01-15 12:16:07,446 - INFO     - aist.core.llm          - Found local model at: ./data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+2026-01-15 12:16:07,496 - CRITICAL - aist.core.llm          - FATAL: Could not find the ctransformers CUDA library.
+2026-01-15 12:16:07,496 - ERROR    - aist.core.llm          - This usually means the NVIDIA CUDA Toolkit is not installed or not in the system's PATH.
+2026-01-15 12:16:07,496 - ERROR    - aist.core.llm          - You can either install the CUDA toolkit or set 'gpu_layers: 0' in your config.yaml to run on CPU.
 Traceback (most recent call last):
-  File "E:\Project\AIST\aist\core\llm.py", line 19, in initialize_llm
+  File "E:\Project\AIST\aist\core\llm.py", line 32, in initialize_llm
     llm = AutoModelForCausalLM.from_pretrained(
-  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\hub.py", line 151, in from_pretrained
-    config = config or AutoConfig.from_pretrained(
-  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\hub.py", line 40, in from_pretrained
-    raise ValueError(f"Model path '{model_path_or_repo_id}' doesn't exist.")
-ValueError: Model path 'data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf' doesn't exist.
-2026-01-15 11:21:16,524 - CRITICAL - aist.core.ipc.server   - Failed to initialize LLM. IPC Server will not start.
-2026-01-15 11:21:16,524 - CRITICAL - __main__               - Backend failed to start. Please check the logs.
-2026-01-15 11:21:16,524 - INFO     - aist.core.ipc.server   - Stopping IPC Server...
-2026-01-15 11:21:16,524 - INFO     - aist.core.ipc.server   - IPC Server stopped.
-2026-01-15 11:21:16,524 - INFO     - aist.core.ipc.event_bus - Event broadcaster stopped.
-2026-01-15 11:28:47,476 - INFO     - aist.gui.main_window   - AIST GUI application started.
-2026-01-15 11:28:47,505 - INFO     - aist.gui.main_window   - GUI widgets created.
-2026-01-15 11:28:47,505 - INFO     - aist.gui.main_window   - Starting GUI services...
-2026-01-15 11:28:47,505 - INFO     - aist.core.ipc.client   - IPC Client started and connected to tcp://localhost:5555
-2026-01-15 11:28:47,505 - INFO     - aist.gui.main_window   - GUI log listener started.
-2026-01-15 11:28:47,606 - INFO     - aist.core.ipc.event_bus - Event broadcaster started on tcp://*:5556
-2026-01-15 11:28:47,615 - INFO     - aist.core.conversation - ConversationManager initialized with a max history of 5 exchanges.
-2026-01-15 11:28:47,615 - INFO     - aist.skills.skill_loader - Searching for skills in 'aist\skills'...
-2026-01-15 11:28:47,616 - INFO     - aist.skills.memory_skill - Memory skill initialized.
-2026-01-15 11:28:47,616 - INFO     - aist.skills.skill_loader - Registered intent 'store_memory' for skill 'memory_skill'.
-2026-01-15 11:28:47,616 - INFO     - aist.skills.skill_loader - Registered intent 'recall_memory' for skill 'memory_skill'.
-2026-01-15 11:28:47,616 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Memory Skill' (v1.0).
-2026-01-15 11:28:47,617 - INFO     - aist.skills.system_skill - System skill initialized.
-2026-01-15 11:28:47,617 - INFO     - aist.skills.skill_loader - Registered intent 'open_application' for skill 'system_skill'.
-2026-01-15 11:28:47,617 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'System Control Skill' (v1.0).
-2026-01-15 11:28:47,617 - INFO     - aist.skills.time_skill - Time skill initialized.
-2026-01-15 11:28:47,618 - INFO     - aist.skills.skill_loader - Registered intent 'get_current_time' for skill 'time_skill'.
-2026-01-15 11:28:47,618 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Current Time Skill' (v1.0).
-2026-01-15 11:28:47,618 - INFO     - aist.core.llm          - Loading AI model... This may take a few moments.
-2026-01-15 11:28:47,622 - DEBUG    - httpcore.connection    - connect_tcp.started host='huggingface.co' port=443 local_address=None timeout=None socket_options=None
-2026-01-15 11:28:47,693 - DEBUG    - httpcore.connection    - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000002411F74E050>
-2026-01-15 11:28:47,693 - DEBUG    - httpcore.connection    - start_tls.started ssl_context=<ssl.SSLContext object at 0x000002411F7347C0> server_hostname='huggingface.co' timeout=None
-2026-01-15 11:28:47,725 - DEBUG    - httpcore.connection    - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000002411F74E020>
-2026-01-15 11:28:47,725 - DEBUG    - httpcore.http11        - send_request_headers.started request=<Request [b'GET']>
-2026-01-15 11:28:47,726 - DEBUG    - httpcore.http11        - send_request_headers.complete
-2026-01-15 11:28:47,726 - DEBUG    - httpcore.http11        - send_request_body.started request=<Request [b'GET']>
-2026-01-15 11:28:47,726 - DEBUG    - httpcore.http11        - send_request_body.complete
-2026-01-15 11:28:47,726 - DEBUG    - httpcore.http11        - receive_response_headers.started request=<Request [b'GET']>
-2026-01-15 11:28:48,010 - DEBUG    - httpcore.http11        - receive_response_headers.complete return_value=(b'HTTP/1.1', 401, b'Unauthorized', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Content-Length', b'41'), (b'Connection', b'keep-alive'), (b'Date', b'Thu, 15 Jan 2026 05:58:46 GMT'), (b'ETag', b'W/"29-dEMcHWfJi78ZR1aqzb1ELAhp3Us"'), (b'X-Powered-By', b'huggingface-moon'), (b'X-Request-Id', b'Root=1-69688216-5562b421056d62647ba9dffe;00b0a396-fbeb-4c76-903e-79cc6825de96'), (b'RateLimit', b'"api";r=499;t=106'), (b'RateLimit-Policy', b'"fixed window";"api";q=500;w=300'), (b'cross-origin-opener-policy', b'same-origin'), (b'Referrer-Policy', b'strict-origin-when-cross-origin'), (b'Access-Control-Max-Age', b'86400'), (b'Access-Control-Allow-Origin', b'https://huggingface.co'), (b'Vary', b'Origin'), (b'Access-Control-Expose-Headers', b'X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash'), (b'X-Error-Message', b'Invalid username or password.'), (b'WWW-Authenticate', b'Bearer realm="Authentication required", charset="UTF-8"'), (b'X-Cache', b'Error from cloudfront'), (b'Via', b'1.1 5649e6254f2524a9ce26411d57b20972.cloudfront.net (CloudFront)'), (b'X-Amz-Cf-Pop', b'PNQ50-P2'), (b'X-Amz-Cf-Id', b'QkZaxE2Ipdb73Zgrne2gG3n8eUADhYYP1t0mf8I0HlxGvcLTj3glXw==')])
-2026-01-15 11:28:48,010 - INFO     - httpx                  - HTTP Request: GET https://huggingface.co/api/models/mistral-7b-instruct-v0.2.Q4_K_M.gguf/revision/main "HTTP/1.1 401 Unauthorized"
-2026-01-15 11:28:48,010 - DEBUG    - httpcore.http11        - receive_response_body.started request=<Request [b'GET']>
-2026-01-15 11:28:48,010 - DEBUG    - httpcore.http11        - receive_response_body.complete
-2026-01-15 11:28:48,010 - DEBUG    - httpcore.http11        - response_closed.started
-2026-01-15 11:28:48,010 - DEBUG    - httpcore.http11        - response_closed.complete
-2026-01-15 11:28:48,010 - CRITICAL - aist.core.llm          - FATAL: Could not load the AI model from path: mistral-7b-instruct-v0.2.Q4_K_M.gguf
-2026-01-15 11:28:48,010 - ERROR    - aist.core.llm          - Error: 401 Client Error. (Request ID: Root=1-69688216-5562b421056d62647ba9dffe;00b0a396-fbeb-4c76-903e-79cc6825de96)
-
-Repository Not Found for url: https://huggingface.co/api/models/mistral-7b-instruct-v0.2.Q4_K_M.gguf/revision/main.
-Please make sure you specified the correct `repo_id` and `repo_type`.
-If you are trying to access a private or gated repo, make sure you are authenticated. For more details, see https://huggingface.co/docs/huggingface_hub/authentication
-Invalid username or password.
-Traceback (most recent call last):
-  File "E:\Project\AIST\venv\lib\site-packages\huggingface_hub\utils\_http.py", line 657, in hf_raise_for_status
-    response.raise_for_status()
-  File "E:\Project\AIST\venv\lib\site-packages\httpx\_models.py", line 829, in raise_for_status
-    raise HTTPStatusError(message, request=request, response=self)
-httpx.HTTPStatusError: Client error '401 Unauthorized' for url 'https://huggingface.co/api/models/mistral-7b-instruct-v0.2.Q4_K_M.gguf/revision/main'
-For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "E:\Project\AIST\aist\core\llm.py", line 19, in initialize_llm
-    llm = AutoModelForCausalLM.from_pretrained(
-  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\hub.py", line 151, in from_pretrained
-    config = config or AutoConfig.from_pretrained(
-  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\hub.py", line 48, in from_pretrained
-    cls._update_from_repo(
-  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\hub.py", line 72, in _update_from_repo
-    path = snapshot_download(
-  File "E:\Project\AIST\venv\lib\site-packages\huggingface_hub\utils\_validators.py", line 89, in _inner_fn
-    return fn(*args, **kwargs)
-  File "E:\Project\AIST\venv\lib\site-packages\huggingface_hub\_snapshot_download.py", line 321, in snapshot_download
-    raise api_call_error
-  File "E:\Project\AIST\venv\lib\site-packages\huggingface_hub\_snapshot_download.py", line 240, in snapshot_download
-    repo_info = api.repo_info(repo_id=repo_id, repo_type=repo_type, revision=revision)
-  File "E:\Project\AIST\venv\lib\site-packages\huggingface_hub\utils\_validators.py", line 89, in _inner_fn
-    return fn(*args, **kwargs)
-  File "E:\Project\AIST\venv\lib\site-packages\huggingface_hub\hf_api.py", line 2974, in repo_info
-    return method(
-  File "E:\Project\AIST\venv\lib\site-packages\huggingface_hub\utils\_validators.py", line 89, in _inner_fn
-    return fn(*args, **kwargs)
-  File "E:\Project\AIST\venv\lib\site-packages\huggingface_hub\hf_api.py", line 2768, in model_info
-    hf_raise_for_status(r)
-  File "E:\Project\AIST\venv\lib\site-packages\huggingface_hub\utils\_http.py", line 710, in hf_raise_for_status
-    raise _format(RepositoryNotFoundError, message, response) from e
-huggingface_hub.errors.RepositoryNotFoundError: 401 Client Error. (Request ID: Root=1-69688216-5562b421056d62647ba9dffe;00b0a396-fbeb-4c76-903e-79cc6825de96)
-
-Repository Not Found for url: https://huggingface.co/api/models/mistral-7b-instruct-v0.2.Q4_K_M.gguf/revision/main.
-Please make sure you specified the correct `repo_id` and `repo_type`.
-If you are trying to access a private or gated repo, make sure you are authenticated. For more details, see https://huggingface.co/docs/huggingface_hub/authentication
-Invalid username or password.
-2026-01-15 11:28:48,010 - CRITICAL - aist.core.ipc.server   - Failed to initialize LLM. IPC Server will not start.
-2026-01-15 11:28:48,010 - CRITICAL - __main__               - Backend failed to start. Please check the logs.
-2026-01-15 11:28:48,010 - INFO     - aist.core.ipc.server   - Stopping IPC Server...
-2026-01-15 11:28:48,010 - INFO     - aist.core.ipc.server   - IPC Server stopped.
-2026-01-15 11:28:48,026 - INFO     - aist.core.ipc.event_bus - Event broadcaster stopped.
-2026-01-15 11:28:48,026 - DEBUG    - httpcore.connection    - close.started
-2026-01-15 11:28:48,026 - DEBUG    - httpcore.connection    - close.complete
-2026-01-15 11:38:13,942 - INFO     - aist.gui.main_window   - AIST GUI application started.
-2026-01-15 11:38:13,976 - INFO     - aist.gui.main_window   - GUI widgets created.
-2026-01-15 11:38:13,976 - INFO     - aist.gui.main_window   - Starting GUI services...
-2026-01-15 11:38:13,976 - INFO     - aist.core.ipc.client   - IPC Client started and connected to tcp://localhost:5555
-2026-01-15 11:38:13,976 - INFO     - aist.gui.main_window   - GUI log listener started.
-2026-01-15 11:38:14,080 - INFO     - aist.core.ipc.event_bus - Event broadcaster started on tcp://*:5556
-2026-01-15 11:38:14,089 - INFO     - aist.core.conversation - ConversationManager initialized with a max history of 5 exchanges.
-2026-01-15 11:38:14,096 - INFO     - aist.skills.skill_loader - Searching for skills in 'aist\skills'...
-2026-01-15 11:38:14,096 - INFO     - aist.skills.memory_skill - Memory skill initialized.
-2026-01-15 11:38:14,096 - INFO     - aist.skills.skill_loader - Registered intent 'store_memory' for skill 'memory_skill'.
-2026-01-15 11:38:14,096 - INFO     - aist.skills.skill_loader - Registered intent 'recall_memory' for skill 'memory_skill'.
-2026-01-15 11:38:14,096 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Memory Skill' (v1.0).
-2026-01-15 11:38:14,096 - INFO     - aist.skills.system_skill - System skill initialized.
-2026-01-15 11:38:14,096 - INFO     - aist.skills.skill_loader - Registered intent 'open_application' for skill 'system_skill'.
-2026-01-15 11:38:14,096 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'System Control Skill' (v1.0).
-2026-01-15 11:38:14,096 - INFO     - aist.skills.time_skill - Time skill initialized.
-2026-01-15 11:38:14,096 - INFO     - aist.skills.skill_loader - Registered intent 'get_current_time' for skill 'time_skill'.
-2026-01-15 11:38:14,096 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Current Time Skill' (v1.0).
-2026-01-15 11:38:14,096 - INFO     - aist.core.llm          - Loading AI model... This may take a few moments.
+  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\hub.py", line 175, in from_pretrained
+    llm = LLM(
+  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\llm.py", line 246, in __init__
+    self._lib = load_library(lib, gpu=config.gpu_layers > 0)
+  File "E:\Project\AIST\venv\lib\site-packages\ctransformers\llm.py", line 126, in load_library
+    lib = CDLL(path)
+  File "C:\Users\letrezdraw\AppData\Local\Programs\Python\Python310\lib\ctypes\__init__.py", line 374, in __init__
+    self._handle = _dlopen(self._name, mode)
+FileNotFoundError: Could not find module 'E:\Project\AIST\venv\Lib\site-packages\ctransformers\lib\cuda\ctransformers.dll' (or one of its dependencies). Try using the full path with constructor syntax.
+2026-01-15 12:16:07,496 - WARNING  - aist.core.ipc.server   - Failed to initialize LLM. AI-based skills will be disabled.
