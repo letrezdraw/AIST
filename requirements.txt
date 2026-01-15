@@ -1,0 +1,24 @@
+﻿# Core AI and ML Libraries
+# llama-cpp-python with CUDA 12.1 support.
+# This uses a pre-compiled wheel to avoid needing a C++ compiler installed on the system.
+# The --extra-index-url points pip to a special repository with these wheels.
+# If you have a different CUDA version (e.g., 11.8), change 'cu121' to 'cu118'.
+# The URL is now passed via the start_aist.bat script.
+llama-cpp-python
+piper-tts>=1.2.0
+vosk>=0.3.45
+openai-whisper>=20231117
+torch>=2.0.0
+
+# GUI and System Integration
+customtkinter
+pystray>=0.19.0
+Pillow>=10.0.0
+keyboard>=0.13.5
+
+# Audio, Communication, and Utilities
+pyaudio>=0.2.14
+pyzmq>=25.1.2
+PyYAML>=6.0.1
+# thefuzz with the 'speedup' extra for performance
+thefuzz[speedup]>=0.20.0
