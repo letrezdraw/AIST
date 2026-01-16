@@ -31,3 +31,5 @@ Thumbs.db
 # Editor-specific files
 .vscode/
 .idea/
+
+STT_Test_Project/ffmpeg.exe
