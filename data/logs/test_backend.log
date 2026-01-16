@@ -1,284 +1,171 @@
-[2026-01-15 14:45:58] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:45:58] [INFO   ] __main__ - TEST BACKEND STT Starting...
-[2026-01-15 14:45:58] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:45:58] [INFO   ] __main__ - Command: test_tools/backend_stt.py --voice
-[2026-01-15 14:45:58] [INFO   ] __main__ - Log file: data/logs/test_backend.log
-[2026-01-15 14:45:58] [INFO   ] __main__ - 
-[2026-01-15 14:47:04] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:47:04] [INFO   ] __main__ - TEST BACKEND STT Starting...
-[2026-01-15 14:47:04] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:47:04] [INFO   ] __main__ - Command: test_tools/backend_stt.py --voice
-[2026-01-15 14:47:04] [INFO   ] __main__ - Log file: data/logs/test_backend.log
-[2026-01-15 14:47:04] [INFO   ] __main__ - 
-[2026-01-15 14:47:04] [INFO   ] aist.core.config_manager - Successfully loaded configuration from 'config.yaml'.
-[2026-01-15 14:47:05] [INFO   ] aist.core.ipc.event_bus - Event broadcaster started on tcp://*:5556
-[2026-01-15 14:47:05] [INFO   ] __main__ - ✅ Backend initialized - Voice mode: True
-[2026-01-15 14:47:05] [INFO   ] __main__ - Setting up IPC...
-[2026-01-15 14:47:05] [INFO   ] __main__ - ✅ Test input listener on tcp://127.0.0.1:15555
-[2026-01-15 14:47:05] [INFO   ] __main__ - ✅ Test output broadcaster on tcp://127.0.0.1:15556
+[2026-01-16 12:51:42] [INFO   ] __main__ - ======================================================================
+[2026-01-16 12:51:42] [INFO   ] __main__ - TEST BACKEND STT Starting...
+[2026-01-16 12:51:42] [INFO   ] __main__ - ======================================================================
+[2026-01-16 12:51:42] [INFO   ] __main__ - Command: test_tools/backend_stt.py --voice
+[2026-01-16 12:51:42] [INFO   ] __main__ - Log file: data/logs/test_backend.log
+[2026-01-16 12:51:42] [INFO   ] __main__ - 
+[2026-01-16 12:51:42] [INFO   ] aist.core.config_manager - Successfully loaded configuration from 'config.yaml'.
+[2026-01-16 12:51:43] [INFO   ] aist.core.ipc.event_bus - Event broadcaster started on tcp://*:5556
+[2026-01-16 12:51:43] [INFO   ] __main__ - ✅ Backend initialized - Voice mode: True
+[2026-01-16 12:51:43] [INFO   ] __main__ - Setting up IPC...
+[2026-01-16 12:51:43] [INFO   ] __main__ - ✅ Test input listener on tcp://127.0.0.1:15555
+[2026-01-16 12:51:43] [INFO   ] __main__ - ✅ Test output broadcaster on tcp://127.0.0.1:15556
 
-[2026-01-15 14:47:05] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:47:05] [INFO   ] __main__ - COMPONENT SETUP
-[2026-01-15 14:47:05] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:47:05] [INFO   ] __main__ - 📋 Configuration:
-[2026-01-15 14:47:05] [INFO   ] __main__ -   LLM: ./data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
-[2026-01-15 14:47:05] [INFO   ] __main__ -   TTS Provider: piper
-[2026-01-15 14:47:05] [INFO   ] __main__ -   STT Provider: whisper
-[2026-01-15 14:47:05] [INFO   ] __main__ -   Voice Mode: True
+[2026-01-16 12:51:43] [INFO   ] __main__ - ======================================================================
+[2026-01-16 12:51:43] [INFO   ] __main__ - COMPONENT SETUP
+[2026-01-16 12:51:43] [INFO   ] __main__ - ======================================================================
+[2026-01-16 12:51:43] [INFO   ] __main__ - 📋 Configuration:
+[2026-01-16 12:51:43] [INFO   ] __main__ -   LLM: ./data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+[2026-01-16 12:51:43] [INFO   ] __main__ -   TTS Provider: piper
+[2026-01-16 12:51:43] [INFO   ] __main__ -   STT Provider: whisper
+[2026-01-16 12:51:43] [INFO   ] __main__ -   Voice Mode: True
 
-[2026-01-15 14:47:05] [INFO   ] __main__ - 🤖 Loading LLM...
-[2026-01-15 14:47:05] [INFO   ] aist.core.llm - Loading local AI model. This can take several minutes on the first run...
-[2026-01-15 14:47:05] [INFO   ] aist.core.llm - Found local model at: ./data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
-[2026-01-15 14:47:06] [INFO   ] aist.core.llm - AI Model loaded successfully.
-[2026-01-15 14:47:06] [INFO   ] __main__ - ✅ LLM loaded
+[2026-01-16 12:51:43] [INFO   ] __main__ - 🤖 Loading LLM...
+[2026-01-16 12:51:43] [INFO   ] aist.core.llm - Loading local AI model. This can take several minutes on the first run...
+[2026-01-16 12:51:43] [INFO   ] aist.core.llm - Found local model at: ./data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+[2026-01-16 12:51:44] [INFO   ] aist.core.llm - AI Model loaded successfully.
+[2026-01-16 12:51:44] [INFO   ] __main__ - ✅ LLM loaded
 
-[2026-01-15 14:47:06] [INFO   ] __main__ - 🔊 Loading TTS...
-[2026-01-15 14:47:06] [INFO   ] aist.core.tts - Initializing TTS engine with provider: 'piper'
-[2026-01-15 14:47:06] [INFO   ] aist.core.audio - Initializing shared PyAudio instance...
-[2026-01-15 14:47:06] [INFO   ] aist.core.audio - Shared PyAudio instance initialized successfully.
-[2026-01-15 14:47:06] [INFO   ] aist.tts_providers.piper_provider - Loading Piper TTS voice... This may take a moment.
-[2026-01-15 14:47:07] [INFO   ] aist.tts_providers.piper_provider - Piper TTS voice loaded successfully.
-[2026-01-15 14:47:07] [INFO   ] aist.core.tts - TTS provider 'piper' initialized.
-[2026-01-15 14:47:07] [INFO   ] __main__ - ✅ TTS loaded
+[2026-01-16 12:51:44] [INFO   ] __main__ - 🔊 Loading TTS...
+[2026-01-16 12:51:44] [INFO   ] aist.core.tts - Initializing TTS engine with provider: 'piper'
+[2026-01-16 12:51:44] [INFO   ] aist.core.audio - Initializing shared PyAudio instance...
+[2026-01-16 12:51:44] [INFO   ] aist.core.audio - Shared PyAudio instance initialized successfully.
+[2026-01-16 12:51:44] [INFO   ] aist.tts_providers.piper_provider - Loading Piper TTS voice... This may take a moment.
+[2026-01-16 12:51:45] [INFO   ] aist.tts_providers.piper_provider - Piper TTS voice loaded successfully.
+[2026-01-16 12:51:45] [INFO   ] aist.core.tts - TTS provider 'piper' initialized.
+[2026-01-16 12:51:45] [INFO   ] aist.core.tts - TTS engine is listening for 'tts.speak' events.
+[2026-01-16 12:51:45] [INFO   ] __main__ - ✅ TTS loaded
 
-[2026-01-15 14:47:07] [INFO   ] __main__ - 🎤 Starting STT initialization in background (30-second timeout)...
-[2026-01-15 14:47:07] [INFO   ] __main__ -   [STT Thread] Starting...
-[2026-01-15 14:47:07] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:47:07] [INFO   ] __main__ - 🚀 READY - Listening for input
-[2026-01-15 14:47:07] [INFO   ] __main__ - ======================================================================
+[2026-01-16 12:51:45] [INFO   ] __main__ - 🎤 Starting STT initialization in background (30-second timeout)...
+[2026-01-16 12:51:45] [INFO   ] __main__ -   [STT Thread] Starting...
+[2026-01-16 12:51:45] [INFO   ] __main__ - ======================================================================
+[2026-01-16 12:51:45] [INFO   ] __main__ - 🚀 READY - Listening for input
+[2026-01-16 12:51:45] [INFO   ] __main__ - ======================================================================
 
-[2026-01-15 14:47:07] [INFO   ] __main__ - Starting voice listener thread...
-[2026-01-15 14:47:07] [INFO   ] __main__ - 🎤 Voice input listener started
-[2026-01-15 14:47:07] [INFO   ] __main__ - ✅ Subscribed to speech events
+[2026-01-16 12:51:45] [INFO   ] __main__ - Starting voice listener thread...
+[2026-01-16 12:51:45] [INFO   ] __main__ - 🎤 Voice input listener started
+[2026-01-16 12:51:45] [INFO   ] __main__ - ✅ Subscribed to speech events
 
-[2026-01-15 14:47:08] [INFO   ] aist.stt_providers.whisper_provider - Checking for CUDA availability... torch.cuda.is_available() = False
-[2026-01-15 14:47:08] [WARNING] aist.stt_providers.whisper_provider - CUDA device specified but not available. Falling back to CPU.
-[2026-01-15 14:47:08] [INFO   ] aist.stt_providers.whisper_provider - Loading Whisper model 'medium.en' on device 'cpu'... This may take a moment.
-[2026-01-15 14:47:08] [INFO   ] aist.stt_providers.whisper_provider - Model cache directory: E:\Project\AIST\data\models\stt
-[2026-01-15 14:47:13] [INFO   ] aist.stt_providers.whisper_provider - Whisper model loaded successfully.
-[2026-01-15 14:47:13] [INFO   ] __main__ -   [STT Thread] ✅ Ready
-[2026-01-15 14:47:13] [WARNING] aist.core.config_manager - Config key 'audio.stt.whisper_vad.phrase_timeout' not found. Using default value: 1.0
-[2026-01-15 14:47:13] [WARNING] aist.core.config_manager - Config key 'audio.stt.whisper_vad.energy_threshold' not found. Using default value: 300
-[2026-01-15 14:47:13] [INFO   ] aist.stt_providers.whisper_provider - Microphone stream opened for Whisper.
-[2026-01-15 14:47:13] [ERROR  ] aist.stt_providers.whisper_provider - An error occurred in the Whisper listening loop: 'TestBackendWithSTT' object has no attribute 'is_running'
-Traceback (most recent call last):
-  File "E:\Project\AIST\aist\stt_providers\whisper_provider.py", line 133, in run
-    while self.app_state.is_running:
-AttributeError: 'TestBackendWithSTT' object has no attribute 'is_running'. Did you mean: 'running'?
-[2026-01-15 14:47:13] [INFO   ] aist.stt_providers.whisper_provider - Whisper provider stopped.
-[2026-01-15 14:49:03] [INFO   ] __main__ - 
+[2026-01-16 12:51:46] [INFO   ] aist.stt_providers.whisper_provider - Checking for CUDA availability... torch.cuda.is_available() = False
+[2026-01-16 12:51:46] [WARNING] aist.stt_providers.whisper_provider - CUDA device specified but not available. Falling back to CPU.
+[2026-01-16 12:51:46] [INFO   ] aist.stt_providers.whisper_provider - Loading Whisper model 'medium.en' on device 'cpu'... This may take a moment.
+[2026-01-16 12:51:46] [INFO   ] aist.stt_providers.whisper_provider - Model cache directory: E:\Project\AIST\data\models\stt
+[2026-01-16 12:51:50] [INFO   ] aist.stt_providers.whisper_provider - Whisper model loaded successfully.
+[2026-01-16 12:51:50] [INFO   ] __main__ -   [STT Thread] ✅ Ready
+[2026-01-16 12:51:50] [INFO   ] aist.stt_providers.whisper_provider - Microphone stream opened for Whisper.
+[2026-01-16 12:52:24] [INFO   ] aist.stt_providers.whisper_provider - Whisper transcribed: 'Hello.'
+[2026-01-16 12:52:24] [INFO   ] __main__ - 🎤 Heard: 'Hello.'
+[2026-01-16 12:52:24] [INFO   ] __main__ - Processing: 'Hello.'
+[2026-01-16 12:52:24] [INFO   ] aist.core.llm - Sending prompt to LLM...
+[2026-01-16 12:52:33] [INFO   ] __main__ - ✅ Response: ' Hi there! I'm here to help answer any questions you might have. Feel free to as'...
+[2026-01-16 12:52:33] [INFO   ] __main__ - 📤 Response sent to frontend
+[2026-01-16 12:52:33] [INFO   ] __main__ - 🎙️  Speaking: ' Hi there! I'm here to help answer any questions you might h'...
+[2026-01-16 12:52:33] [INFO   ] aist.tts_providers.piper_provider - AIST Speaking: " Hi there! I'm here to help answer any questions you might have. Feel free to ask anything you'd like to know. In the meantime, is there a specific topic or question you have in mind?"
+[2026-01-16 12:52:33] [DEBUG  ] __main__ - ✅ TTS message sent
+[2026-01-16 12:52:33] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) paused due to TTS activity.
+[2026-01-16 12:52:44] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) resumed after TTS activity.
+[2026-01-16 12:53:10] [INFO   ] aist.stt_providers.whisper_provider - Whisper transcribed: 'LeBlanc, 2 hours 4 hours Mondaysolo The encouraged'
+[2026-01-16 12:53:10] [INFO   ] __main__ - 🎤 Heard: 'LeBlanc, 2 hours 4 hours Mondaysolo The encouraged'
+[2026-01-16 12:53:10] [INFO   ] __main__ - Processing: 'LeBlanc, 2 hours 4 hours Mondaysolo The encouraged'
+[2026-01-16 12:53:10] [INFO   ] aist.core.llm - Sending prompt to LLM...
+[2026-01-16 12:53:25] [INFO   ] __main__ - ✅ Response: ' It appears the user is asking about LeBlanc's schedule for solo performances on'...
+[2026-01-16 12:53:25] [INFO   ] __main__ - 📤 Response sent to frontend
+[2026-01-16 12:53:25] [INFO   ] __main__ - 🎙️  Speaking: ' It appears the user is asking about LeBlanc's schedule for '...
+[2026-01-16 12:53:25] [INFO   ] aist.tts_providers.piper_provider - AIST Speaking: " It appears the user is asking about LeBlanc's schedule for solo performances on Mondays, with a duration of 2 hours each event and one performance occurring every four hours. Therefore, LeBlanc performs a solo concert every 2 hours and 4 minutes (2 hours + 4 minutes = 2 hours 4 minutes) on Monday. The next performance would be approximately 2 hours and 4 minutes after the last one."
+[2026-01-16 12:53:25] [DEBUG  ] __main__ - ✅ TTS message sent
+[2026-01-16 12:53:25] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) paused due to TTS activity.
+[2026-01-16 12:53:48] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) resumed after TTS activity.
+[2026-01-16 12:54:13] [INFO   ] aist.stt_providers.whisper_provider - Whisper transcribed: 'counselors'
+[2026-01-16 12:54:13] [INFO   ] __main__ - 🎤 Heard: 'counselors'
+[2026-01-16 12:54:13] [INFO   ] __main__ - Processing: 'counselors'
+[2026-01-16 12:54:13] [INFO   ] aist.core.llm - Sending prompt to LLM...
+[2026-01-16 12:54:28] [INFO   ] __main__ - ✅ Response: ' I apologize for any confusion earlier. Regarding your query about LeBlanc's sch'...
+[2026-01-16 12:54:28] [INFO   ] __main__ - 📤 Response sent to frontend
+[2026-01-16 12:54:28] [INFO   ] __main__ - 🎙️  Speaking: ' I apologize for any confusion earlier. Regarding your query'...
+[2026-01-16 12:54:28] [INFO   ] aist.tts_providers.piper_provider - AIST Speaking: " I apologize for any confusion earlier. Regarding your query about LeBlanc's schedule for solo performances on Mondays as counselors, the information provided indicates that LeBlanc performs a solo concert every 2 hours and 4 minutes on Monday. So, there is no mention of LeBlanc acting as counselors during these performances."
+[2026-01-16 12:54:28] [DEBUG  ] __main__ - ✅ TTS message sent
+[2026-01-16 12:54:28] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) paused due to TTS activity.
+[2026-01-16 12:54:37] [INFO   ] __main__ - 
 👋 Keyboard interrupt
-[2026-01-15 14:49:03] [INFO   ] __main__ - Cleaning up...
-[2026-01-15 14:49:03] [INFO   ] aist.core.ipc.event_bus - Event broadcaster stopped.
-[2026-01-15 14:49:03] [INFO   ] __main__ - ✅ Cleanup complete
-[2026-01-15 14:49:03] [INFO   ] __main__ - ======================================================================
+[2026-01-16 12:54:37] [INFO   ] __main__ - Cleaning up...
+[2026-01-16 12:54:37] [INFO   ] aist.core.ipc.event_bus - Event broadcaster stopped.
+[2026-01-16 12:54:37] [INFO   ] __main__ - ✅ Cleanup complete
+[2026-01-16 12:54:37] [INFO   ] __main__ - ======================================================================
 
-[2026-01-15 14:49:11] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:49:11] [INFO   ] __main__ - TEST BACKEND STT Starting...
-[2026-01-15 14:49:11] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:49:11] [INFO   ] __main__ - Command: test_tools/backend_stt.py --voice
-[2026-01-15 14:49:11] [INFO   ] __main__ - Log file: data/logs/test_backend.log
-[2026-01-15 14:49:11] [INFO   ] __main__ - 
-[2026-01-15 14:49:11] [INFO   ] aist.core.config_manager - Successfully loaded configuration from 'config.yaml'.
-[2026-01-15 14:49:11] [INFO   ] aist.core.ipc.event_bus - Event broadcaster started on tcp://*:5556
-[2026-01-15 14:49:11] [INFO   ] __main__ - ✅ Backend initialized - Voice mode: True
-[2026-01-15 14:49:11] [INFO   ] __main__ - Setting up IPC...
-[2026-01-15 14:49:11] [INFO   ] __main__ - ✅ Test input listener on tcp://127.0.0.1:15555
-[2026-01-15 14:49:11] [INFO   ] __main__ - ✅ Test output broadcaster on tcp://127.0.0.1:15556
+[2026-01-16 12:55:20] [INFO   ] __main__ - ======================================================================
+[2026-01-16 12:55:20] [INFO   ] __main__ - TEST BACKEND STT Starting...
+[2026-01-16 12:55:20] [INFO   ] __main__ - ======================================================================
+[2026-01-16 12:55:20] [INFO   ] __main__ - Command: test_tools/backend_stt.py --voice
+[2026-01-16 12:55:20] [INFO   ] __main__ - Log file: data/logs/test_backend.log
+[2026-01-16 12:55:20] [INFO   ] __main__ - 
+[2026-01-16 12:55:20] [INFO   ] aist.core.config_manager - Successfully loaded configuration from 'config.yaml'.
+[2026-01-16 12:55:20] [INFO   ] aist.core.ipc.event_bus - Event broadcaster started on tcp://*:5556
+[2026-01-16 12:55:20] [INFO   ] __main__ - ✅ Backend initialized - Voice mode: True
+[2026-01-16 12:55:20] [INFO   ] __main__ - Setting up IPC...
+[2026-01-16 12:55:20] [INFO   ] __main__ - ✅ Test input listener on tcp://127.0.0.1:15555
+[2026-01-16 12:55:20] [INFO   ] __main__ - ✅ Test output broadcaster on tcp://127.0.0.1:15556
 
-[2026-01-15 14:49:11] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:49:11] [INFO   ] __main__ - COMPONENT SETUP
-[2026-01-15 14:49:11] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:49:11] [INFO   ] __main__ - 📋 Configuration:
-[2026-01-15 14:49:11] [INFO   ] __main__ -   LLM: ./data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
-[2026-01-15 14:49:11] [INFO   ] __main__ -   TTS Provider: piper
-[2026-01-15 14:49:11] [INFO   ] __main__ -   STT Provider: whisper
-[2026-01-15 14:49:11] [INFO   ] __main__ -   Voice Mode: True
+[2026-01-16 12:55:20] [INFO   ] __main__ - ======================================================================
+[2026-01-16 12:55:20] [INFO   ] __main__ - COMPONENT SETUP
+[2026-01-16 12:55:20] [INFO   ] __main__ - ======================================================================
+[2026-01-16 12:55:20] [INFO   ] __main__ - 📋 Configuration:
+[2026-01-16 12:55:20] [INFO   ] __main__ -   LLM: ./data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+[2026-01-16 12:55:20] [INFO   ] __main__ -   TTS Provider: piper
+[2026-01-16 12:55:20] [INFO   ] __main__ -   STT Provider: vosk
+[2026-01-16 12:55:20] [INFO   ] __main__ -   Voice Mode: True
 
-[2026-01-15 14:49:11] [INFO   ] __main__ - 🤖 Loading LLM...
-[2026-01-15 14:49:11] [INFO   ] aist.core.llm - Loading local AI model. This can take several minutes on the first run...
-[2026-01-15 14:49:11] [INFO   ] aist.core.llm - Found local model at: ./data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
-[2026-01-15 14:49:14] [INFO   ] aist.core.llm - AI Model loaded successfully.
-[2026-01-15 14:49:14] [INFO   ] __main__ - ✅ LLM loaded
+[2026-01-16 12:55:20] [INFO   ] __main__ - 🤖 Loading LLM...
+[2026-01-16 12:55:20] [INFO   ] aist.core.llm - Loading local AI model. This can take several minutes on the first run...
+[2026-01-16 12:55:20] [INFO   ] aist.core.llm - Found local model at: ./data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+[2026-01-16 12:55:22] [INFO   ] aist.core.llm - AI Model loaded successfully.
+[2026-01-16 12:55:22] [INFO   ] __main__ - ✅ LLM loaded
 
-[2026-01-15 14:49:14] [INFO   ] __main__ - 🔊 Loading TTS...
-[2026-01-15 14:49:14] [INFO   ] aist.core.tts - Initializing TTS engine with provider: 'piper'
-[2026-01-15 14:49:14] [INFO   ] aist.core.audio - Initializing shared PyAudio instance...
-[2026-01-15 14:49:14] [INFO   ] aist.core.audio - Shared PyAudio instance initialized successfully.
-[2026-01-15 14:49:14] [INFO   ] aist.tts_providers.piper_provider - Loading Piper TTS voice... This may take a moment.
-[2026-01-15 14:49:15] [INFO   ] aist.tts_providers.piper_provider - Piper TTS voice loaded successfully.
-[2026-01-15 14:49:15] [INFO   ] aist.core.tts - TTS provider 'piper' initialized.
-[2026-01-15 14:49:15] [INFO   ] __main__ - ✅ TTS loaded
+[2026-01-16 12:55:22] [INFO   ] __main__ - 🔊 Loading TTS...
+[2026-01-16 12:55:22] [INFO   ] aist.core.tts - Initializing TTS engine with provider: 'piper'
+[2026-01-16 12:55:22] [INFO   ] aist.core.audio - Initializing shared PyAudio instance...
+[2026-01-16 12:55:22] [INFO   ] aist.core.audio - Shared PyAudio instance initialized successfully.
+[2026-01-16 12:55:22] [INFO   ] aist.tts_providers.piper_provider - Loading Piper TTS voice... This may take a moment.
+[2026-01-16 12:55:23] [INFO   ] aist.tts_providers.piper_provider - Piper TTS voice loaded successfully.
+[2026-01-16 12:55:23] [INFO   ] aist.core.tts - TTS provider 'piper' initialized.
+[2026-01-16 12:55:23] [INFO   ] aist.core.tts - TTS engine is listening for 'tts.speak' events.
+[2026-01-16 12:55:23] [INFO   ] __main__ - ✅ TTS loaded
 
-[2026-01-15 14:49:15] [INFO   ] __main__ - 🎤 Starting STT initialization in background (30-second timeout)...
-[2026-01-15 14:49:15] [INFO   ] __main__ -   [STT Thread] Starting...
-[2026-01-15 14:49:15] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:49:15] [INFO   ] __main__ - 🚀 READY - Listening for input
-[2026-01-15 14:49:15] [INFO   ] __main__ - ======================================================================
+[2026-01-16 12:55:23] [INFO   ] __main__ - 🎤 Starting STT initialization in background (30-second timeout)...
+[2026-01-16 12:55:23] [INFO   ] __main__ -   [STT Thread] Starting...
+[2026-01-16 12:55:23] [INFO   ] __main__ - ======================================================================
+[2026-01-16 12:55:23] [INFO   ] __main__ - 🚀 READY - Listening for input
+[2026-01-16 12:55:23] [INFO   ] __main__ - ======================================================================
 
-[2026-01-15 14:49:15] [INFO   ] __main__ - Starting voice listener thread...
-[2026-01-15 14:49:15] [INFO   ] __main__ - 🎤 Voice input listener started
-[2026-01-15 14:49:15] [INFO   ] __main__ - ✅ Subscribed to speech events
+[2026-01-16 12:55:23] [INFO   ] __main__ - Starting voice listener thread...
+[2026-01-16 12:55:23] [INFO   ] __main__ - 🎤 Voice input listener started
+[2026-01-16 12:55:23] [INFO   ] __main__ - ✅ Subscribed to speech events
 
-[2026-01-15 14:49:15] [INFO   ] aist.stt_providers.whisper_provider - Checking for CUDA availability... torch.cuda.is_available() = False
-[2026-01-15 14:49:15] [WARNING] aist.stt_providers.whisper_provider - CUDA device specified but not available. Falling back to CPU.
-[2026-01-15 14:49:15] [INFO   ] aist.stt_providers.whisper_provider - Loading Whisper model 'medium.en' on device 'cpu'... This may take a moment.
-[2026-01-15 14:49:15] [INFO   ] aist.stt_providers.whisper_provider - Model cache directory: E:\Project\AIST\data\models\stt
-[2026-01-15 14:49:20] [INFO   ] aist.stt_providers.whisper_provider - Whisper model loaded successfully.
-[2026-01-15 14:49:20] [INFO   ] __main__ -   [STT Thread] ✅ Ready
-[2026-01-15 14:49:20] [WARNING] aist.core.config_manager - Config key 'audio.stt.whisper_vad.phrase_timeout' not found. Using default value: 1.0
-[2026-01-15 14:49:20] [WARNING] aist.core.config_manager - Config key 'audio.stt.whisper_vad.energy_threshold' not found. Using default value: 300
-[2026-01-15 14:49:20] [INFO   ] aist.stt_providers.whisper_provider - Microphone stream opened for Whisper.
-[2026-01-15 14:49:55] [INFO   ] aist.stt_providers.whisper_provider - Whisper transcribed: 'Hello'
-[2026-01-15 14:49:55] [INFO   ] __main__ - 🎤 Heard: 'Hello'
-[2026-01-15 14:49:55] [INFO   ] __main__ - Processing: 'Hello'
-[2026-01-15 14:49:55] [INFO   ] aist.core.llm - Sending prompt to LLM...
-[2026-01-15 14:50:06] [INFO   ] __main__ - ✅ Response: ' Hello! How may I assist you today? If you have a specific question or topic in '...
-[2026-01-15 14:50:06] [INFO   ] __main__ - 📤 Response sent to frontend
-[2026-01-15 14:50:06] [INFO   ] __main__ - 🎙️  Speaking: ' Hello! How may I assist you today? If you have a specific q'...
-[2026-01-15 14:50:06] [DEBUG  ] __main__ - ✅ TTS message sent
-[2026-01-15 14:50:49] [INFO   ] aist.stt_providers.whisper_provider - Whisper transcribed: 'What are you?'
-[2026-01-15 14:50:49] [INFO   ] __main__ - 🎤 Heard: 'What are you?'
-[2026-01-15 14:50:49] [INFO   ] __main__ - Processing: 'What are you?'
-[2026-01-15 14:50:49] [INFO   ] aist.core.llm - Sending prompt to LLM...
-[2026-01-15 14:50:59] [INFO   ] __main__ - ✅ Response: ' I am an artificial intelligence designed to assist with various tasks and engag'...
-[2026-01-15 14:50:59] [INFO   ] __main__ - 📤 Response sent to frontend
-[2026-01-15 14:50:59] [INFO   ] __main__ - 🎙️  Speaking: ' I am an artificial intelligence designed to assist with var'...
-[2026-01-15 14:50:59] [DEBUG  ] __main__ - ✅ TTS message sent
-[2026-01-15 14:51:33] [INFO   ] __main__ - 
+[2026-01-16 12:55:23] [INFO   ] __main__ -   [STT Thread] ✅ Ready
+[2026-01-16 12:55:23] [INFO   ] aist.stt_providers.vosk_provider - Loading Vosk model from 'data/models/stt/vosk-model-en-us-0.22'...
+[2026-01-16 12:55:24] [INFO   ] __main__ - ======================================================================
+[2026-01-16 12:55:24] [INFO   ] __main__ - TEST BACKEND STT Starting...
+[2026-01-16 12:55:24] [INFO   ] __main__ - ======================================================================
+[2026-01-16 12:55:24] [INFO   ] __main__ - Command: test_tools/backend_stt.py --voice
+[2026-01-16 12:55:24] [INFO   ] __main__ - Log file: data/logs/test_backend.log
+[2026-01-16 12:55:24] [INFO   ] __main__ - 
+[2026-01-16 12:55:24] [INFO   ] aist.core.config_manager - Successfully loaded configuration from 'config.yaml'.
+[2026-01-16 12:55:39] [INFO   ] aist.stt_providers.vosk_provider - Vosk model loaded successfully.
+[2026-01-16 12:55:39] [INFO   ] aist.stt_providers.vosk_provider - Vosk recognizers (Dormant and Listening) created successfully.
+[2026-01-16 12:55:39] [INFO   ] aist.stt_providers.vosk_provider - Microphone stream opened for Vosk.
+[2026-01-16 12:56:26] [INFO   ] __main__ - 📥 Text input: 'hello'
+[2026-01-16 12:56:26] [INFO   ] __main__ - Processing: 'hello'
+[2026-01-16 12:56:26] [INFO   ] aist.core.llm - Sending prompt to LLM...
+[2026-01-16 12:56:35] [INFO   ] __main__ - ✅ Response: ' Hello there! How can I assist you today? If you have any specific question or r'...
+[2026-01-16 12:56:35] [INFO   ] __main__ - 📤 Response sent to frontend
+[2026-01-16 12:56:35] [INFO   ] __main__ - 🎙️  Speaking: ' Hello there! How can I assist you today? If you have any sp'...
+[2026-01-16 12:56:35] [INFO   ] aist.tts_providers.piper_provider - AIST Speaking: " Hello there! How can I assist you today? If you have any specific question or request, please let me know. Otherwise, feel free to share some topic of interest or just say hi. I'm here to help!"
+[2026-01-16 12:56:35] [DEBUG  ] __main__ - ✅ TTS message sent
+[2026-01-16 12:56:35] [DEBUG  ] aist.stt_providers.vosk_provider - STT paused and recognizers reset due to TTS activity.
+[2026-01-16 12:56:48] [DEBUG  ] aist.stt_providers.vosk_provider - STT resumed after TTS activity.
+[2026-01-16 12:58:40] [INFO   ] __main__ - 
 👋 Keyboard interrupt
-[2026-01-15 14:51:33] [INFO   ] __main__ - Cleaning up...
-[2026-01-15 14:51:33] [INFO   ] aist.core.ipc.event_bus - Event broadcaster stopped.
-[2026-01-15 14:51:33] [INFO   ] __main__ - ✅ Cleanup complete
-[2026-01-15 14:51:33] [INFO   ] __main__ - ======================================================================
-
-[2026-01-15 14:56:16] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:56:16] [INFO   ] __main__ - TEST BACKEND STT Starting...
-[2026-01-15 14:56:16] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:56:16] [INFO   ] __main__ - Command: test_tools/backend_stt.py --voice
-[2026-01-15 14:56:16] [INFO   ] __main__ - Log file: data/logs/test_backend.log
-[2026-01-15 14:56:16] [INFO   ] __main__ - 
-[2026-01-15 14:56:16] [INFO   ] aist.core.config_manager - Successfully loaded configuration from 'config.yaml'.
-[2026-01-15 14:56:17] [INFO   ] aist.core.ipc.event_bus - Event broadcaster started on tcp://*:5556
-[2026-01-15 14:56:17] [INFO   ] __main__ - ✅ Backend initialized - Voice mode: True
-[2026-01-15 14:56:17] [INFO   ] __main__ - Setting up IPC...
-[2026-01-15 14:56:17] [INFO   ] __main__ - ✅ Test input listener on tcp://127.0.0.1:15555
-[2026-01-15 14:56:17] [INFO   ] __main__ - ✅ Test output broadcaster on tcp://127.0.0.1:15556
-
-[2026-01-15 14:56:17] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:56:17] [INFO   ] __main__ - COMPONENT SETUP
-[2026-01-15 14:56:17] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:56:17] [INFO   ] __main__ - 📋 Configuration:
-[2026-01-15 14:56:17] [INFO   ] __main__ -   LLM: ./data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
-[2026-01-15 14:56:17] [INFO   ] __main__ -   TTS Provider: piper
-[2026-01-15 14:56:17] [INFO   ] __main__ -   STT Provider: whisper
-[2026-01-15 14:56:17] [INFO   ] __main__ -   Voice Mode: True
-
-[2026-01-15 14:56:17] [INFO   ] __main__ - 🤖 Loading LLM...
-[2026-01-15 14:56:17] [INFO   ] aist.core.llm - Loading local AI model. This can take several minutes on the first run...
-[2026-01-15 14:56:17] [INFO   ] aist.core.llm - Found local model at: ./data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
-[2026-01-15 14:56:18] [INFO   ] aist.core.llm - AI Model loaded successfully.
-[2026-01-15 14:56:18] [INFO   ] __main__ - ✅ LLM loaded
-
-[2026-01-15 14:56:18] [INFO   ] __main__ - 🔊 Loading TTS...
-[2026-01-15 14:56:18] [INFO   ] aist.core.tts - Initializing TTS engine with provider: 'piper'
-[2026-01-15 14:56:18] [INFO   ] aist.core.audio - Initializing shared PyAudio instance...
-[2026-01-15 14:56:19] [INFO   ] aist.core.audio - Shared PyAudio instance initialized successfully.
-[2026-01-15 14:56:19] [INFO   ] aist.tts_providers.piper_provider - Loading Piper TTS voice... This may take a moment.
-[2026-01-15 14:56:19] [INFO   ] aist.tts_providers.piper_provider - Piper TTS voice loaded successfully.
-[2026-01-15 14:56:19] [INFO   ] aist.core.tts - TTS provider 'piper' initialized.
-[2026-01-15 14:56:19] [INFO   ] aist.core.tts - TTS engine is listening for 'tts.speak' events.
-[2026-01-15 14:56:19] [INFO   ] __main__ - ✅ TTS loaded
-
-[2026-01-15 14:56:19] [INFO   ] __main__ - 🎤 Starting STT initialization in background (30-second timeout)...
-[2026-01-15 14:56:19] [INFO   ] __main__ -   [STT Thread] Starting...
-[2026-01-15 14:56:19] [INFO   ] __main__ - ======================================================================
-[2026-01-15 14:56:19] [INFO   ] __main__ - 🚀 READY - Listening for input
-[2026-01-15 14:56:19] [INFO   ] __main__ - ======================================================================
-
-[2026-01-15 14:56:19] [INFO   ] __main__ - Starting voice listener thread...
-[2026-01-15 14:56:19] [INFO   ] __main__ - 🎤 Voice input listener started
-[2026-01-15 14:56:19] [INFO   ] __main__ - ✅ Subscribed to speech events
-
-[2026-01-15 14:56:20] [INFO   ] aist.stt_providers.whisper_provider - Checking for CUDA availability... torch.cuda.is_available() = False
-[2026-01-15 14:56:20] [WARNING] aist.stt_providers.whisper_provider - CUDA device specified but not available. Falling back to CPU.
-[2026-01-15 14:56:20] [INFO   ] aist.stt_providers.whisper_provider - Loading Whisper model 'medium.en' on device 'cpu'... This may take a moment.
-[2026-01-15 14:56:20] [INFO   ] aist.stt_providers.whisper_provider - Model cache directory: E:\Project\AIST\data\models\stt
-[2026-01-15 14:56:25] [INFO   ] aist.stt_providers.whisper_provider - Whisper model loaded successfully.
-[2026-01-15 14:56:25] [INFO   ] __main__ -   [STT Thread] ✅ Ready
-[2026-01-15 14:56:25] [WARNING] aist.core.config_manager - Config key 'audio.stt.whisper_vad.phrase_timeout' not found. Using default value: 1.0
-[2026-01-15 14:56:25] [WARNING] aist.core.config_manager - Config key 'audio.stt.whisper_vad.energy_threshold' not found. Using default value: 300
-[2026-01-15 14:56:25] [INFO   ] aist.stt_providers.whisper_provider - Microphone stream opened for Whisper.
-[2026-01-15 14:56:39] [INFO   ] aist.stt_providers.whisper_provider - Whisper transcribed: 'that. Thanks for watching. I'll see you next time. Bye.'
-[2026-01-15 14:56:39] [INFO   ] __main__ - 🎤 Heard: 'that. Thanks for watching. I'll see you next time. Bye.'
-[2026-01-15 14:56:39] [INFO   ] __main__ - Processing: 'that. Thanks for watching. I'll see you next time. Bye.'
-[2026-01-15 14:56:39] [INFO   ] aist.core.llm - Sending prompt to LLM...
-[2026-01-15 14:56:47] [INFO   ] __main__ - ✅ Response: ' The user is likely saying goodbye after finishing a video call or watching a vi'...
-[2026-01-15 14:56:47] [INFO   ] __main__ - 📤 Response sent to frontend
-[2026-01-15 14:56:47] [INFO   ] __main__ - 🎙️  Speaking: ' The user is likely saying goodbye after finishing a video c'...
-[2026-01-15 14:56:47] [INFO   ] aist.tts_providers.piper_provider - AIST Speaking: " The user is likely saying goodbye after finishing a video call or watching a video. They may have enjoyed the experience and plan to engage again in the future."
-[2026-01-15 14:56:47] [DEBUG  ] __main__ - ✅ TTS message sent
-[2026-01-15 14:56:47] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) paused due to TTS activity.
-[2026-01-15 14:56:57] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) resumed after TTS activity.
-[2026-01-15 14:57:03] [INFO   ] aist.stt_providers.whisper_provider - Whisper transcribed: 'Hello'
-[2026-01-15 14:57:03] [INFO   ] __main__ - 🎤 Heard: 'Hello'
-[2026-01-15 14:57:03] [INFO   ] __main__ - Processing: 'Hello'
-[2026-01-15 14:57:03] [INFO   ] aist.core.llm - Sending prompt to LLM...
-[2026-01-15 14:57:12] [INFO   ] __main__ - ✅ Response: ' The user is greeting the conversation partner. There is no specific response re'...
-[2026-01-15 14:57:12] [INFO   ] __main__ - 📤 Response sent to frontend
-[2026-01-15 14:57:12] [INFO   ] __main__ - 🎙️  Speaking: ' The user is greeting the conversation partner. There is no '...
-[2026-01-15 14:57:12] [INFO   ] aist.tts_providers.piper_provider - AIST Speaking: " The user is greeting the conversation partner. There is no specific response required unless the context of the conversation warrants a reply. A simple "Hi" or "Hello back" would suffice."
-[2026-01-15 14:57:12] [DEBUG  ] __main__ - ✅ TTS message sent
-[2026-01-15 14:57:12] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) paused due to TTS activity.
-[2026-01-15 14:57:23] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) resumed after TTS activity.
-[2026-01-15 14:58:28] [INFO   ] aist.stt_providers.whisper_provider - Whisper transcribed: 'below.'
-[2026-01-15 14:58:28] [INFO   ] __main__ - 🎤 Heard: 'below.'
-[2026-01-15 14:58:28] [INFO   ] __main__ - Processing: 'below.'
-[2026-01-15 14:58:28] [INFO   ] aist.core.llm - Sending prompt to LLM...
-[2026-01-15 14:58:36] [INFO   ] __main__ - ✅ Response: ' I'm sorry, but there is no previous conversation history or provided informatio'...
-[2026-01-15 14:58:36] [INFO   ] __main__ - 📤 Response sent to frontend
-[2026-01-15 14:58:36] [INFO   ] __main__ - 🎙️  Speaking: ' I'm sorry, but there is no previous conversation history or'...
-[2026-01-15 14:58:36] [INFO   ] aist.tts_providers.piper_provider - AIST Speaking: " I'm sorry, but there is no previous conversation history or provided information for me to use in answering your query. Please provide more context or details so that I can assist you effectively."
-[2026-01-15 14:58:36] [DEBUG  ] __main__ - ✅ TTS message sent
-[2026-01-15 14:58:36] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) paused due to TTS activity.
-[2026-01-15 14:58:47] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) resumed after TTS activity.
-[2026-01-15 14:58:53] [INFO   ] aist.stt_providers.whisper_provider - Whisper transcribed: 'How are you?'
-[2026-01-15 14:58:53] [INFO   ] __main__ - 🎤 Heard: 'How are you?'
-[2026-01-15 14:58:53] [INFO   ] __main__ - Processing: 'How are you?'
-[2026-01-15 14:58:53] [INFO   ] aist.core.llm - Sending prompt to LLM...
-[2026-01-15 14:59:05] [INFO   ] __main__ - ✅ Response: ' Based on the lack of prior conversation history and provided information, it is'...
-[2026-01-15 14:59:05] [INFO   ] __main__ - 📤 Response sent to frontend
-[2026-01-15 14:59:05] [INFO   ] __main__ - 🎙️  Speaking: ' Based on the lack of prior conversation history and provide'...
-[2026-01-15 14:59:05] [INFO   ] aist.tts_providers.piper_provider - AIST Speaking: " Based on the lack of prior conversation history and provided information, it is not possible for me to accurately answer the user's query about my well-being. However, a typical response might be "I'm doing well, thank you for asking." or "I'm fine, how about you?" depending on the context of the interaction."
-[2026-01-15 14:59:05] [DEBUG  ] __main__ - ✅ TTS message sent
-[2026-01-15 14:59:05] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) paused due to TTS activity.
-[2026-01-15 14:59:24] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) resumed after TTS activity.
-[2026-01-15 14:59:37] [INFO   ] aist.stt_providers.whisper_provider - Whisper transcribed: 'Thank you'
-[2026-01-15 14:59:37] [INFO   ] __main__ - 🎤 Heard: 'Thank you'
-[2026-01-15 14:59:37] [INFO   ] __main__ - Processing: 'Thank you'
-[2026-01-15 14:59:37] [INFO   ] aist.core.llm - Sending prompt to LLM...
-[2026-01-15 14:59:51] [INFO   ] __main__ - ✅ Response: ' Based on the lack of prior conversation history or provided information, I cann'...
-[2026-01-15 14:59:51] [INFO   ] __main__ - 📤 Response sent to frontend
-[2026-01-15 14:59:51] [INFO   ] __main__ - 🎙️  Speaking: ' Based on the lack of prior conversation history or provided'...
-[2026-01-15 14:59:51] [INFO   ] aist.tts_providers.piper_provider - AIST Speaking: " Based on the lack of prior conversation history or provided information, I cannot provide an accurate response to the user's query as there is no context for me to understand why they are expressing gratitude. A simple "You're welcome" would suffice if we were engaging in a typical conversational exchange. However, without further context it may not be applicable or meaningful in this situation."
-[2026-01-15 14:59:51] [DEBUG  ] __main__ - ✅ TTS message sent
-[2026-01-15 14:59:51] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) paused due to TTS activity.
-[2026-01-15 15:00:13] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) resumed after TTS activity.
-[2026-01-15 15:00:22] [INFO   ] aist.stt_providers.whisper_provider - Whisper transcribed: 'exit'
-[2026-01-15 15:00:22] [INFO   ] __main__ - 🎤 Heard: 'exit'
-[2026-01-15 15:00:22] [INFO   ] __main__ - Processing: 'exit'
-[2026-01-15 15:00:22] [INFO   ] aist.core.llm - Sending prompt to LLM...
-[2026-01-15 15:00:38] [INFO   ] __main__ - ✅ Response: ' If the user has explicitly stated that they want to exit the conversation or en'...
-[2026-01-15 15:00:38] [INFO   ] __main__ - 📤 Response sent to frontend
-[2026-01-15 15:00:38] [INFO   ] __main__ - 🎙️  Speaking: ' If the user has explicitly stated that they want to exit th'...
-[2026-01-15 15:00:38] [INFO   ] aist.tts_providers.piper_provider - AIST Speaking: " If the user has explicitly stated that they want to exit the conversation or end the interaction, I would respond by saying "Alright, goodbye then." or "I understand, see you later." Depending on the context of the conversation, other responses may be more appropriate such as "Okay, have a nice day" or "Take care." However, without prior conversation history it is not possible to provide a definitive answer."
-[2026-01-15 15:00:38] [DEBUG  ] __main__ - ✅ TTS message sent
-[2026-01-15 15:00:38] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) paused due to TTS activity.
-[2026-01-15 15:01:02] [DEBUG  ] aist.stt_providers.whisper_provider - STT (Whisper) resumed after TTS activity.
-[2026-01-15 15:01:15] [INFO   ] __main__ - 
-👋 Keyboard interrupt
-[2026-01-15 15:01:15] [INFO   ] __main__ - Cleaning up...
-[2026-01-15 15:01:15] [INFO   ] aist.core.ipc.event_bus - Event broadcaster stopped.
-[2026-01-15 15:01:15] [INFO   ] __main__ - ✅ Cleanup complete
-[2026-01-15 15:01:15] [INFO   ] __main__ - ======================================================================
+[2026-01-16 12:58:40] [INFO   ] __main__ - Cleaning up...
+[2026-01-16 12:58:40] [INFO   ] aist.core.ipc.event_bus - Event broadcaster stopped.
+[2026-01-16 12:58:40] [INFO   ] __main__ - ✅ Cleanup complete
+[2026-01-16 12:58:40] [INFO   ] __main__ - ======================================================================
 

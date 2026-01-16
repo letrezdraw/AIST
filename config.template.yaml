@@ -44,10 +44,8 @@ models:
     context_length: 4096
     max_new_tokens: 150
   tts:
-    # The TTS provider to use. 'piper' is the default high-quality local engine.
-    provider: "piper"
-    # --- Piper Provider Settings ---
-    piper_voice_model: "data/models/tts/en_US-lessac-medium.onnx"
+    # The TTS provider to use. 'pyttsx3' is a good offline choice for Windows.
+    provider: "pyttsx3"
   stt:
     vosk_model_path: "data/models/stt/vosk-model-en-us-0.22"
     # The STT provider to use. 'vosk' is the default lightweight engine.

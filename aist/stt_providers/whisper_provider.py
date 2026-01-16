@@ -117,8 +117,8 @@ class WhisperProvider(BaseSTTProvider):
         # --- VAD Parameters ---
         RATE = 16000
         CHUNK = 1024
-        PHRASE_TIMEOUT = config.get('audio.stt.whisper_vad.phrase_timeout', 1.0)
-        ENERGY_THRESHOLD = config.get('audio.stt.whisper_vad.energy_threshold', 300)
+        PHRASE_TIMEOUT = config.get('models.stt.whisper_vad.phrase_timeout', 1.0)
+        ENERGY_THRESHOLD = config.get('models.stt.whisper_vad.energy_threshold', 300)
 
         stream = None
         try:

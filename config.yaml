@@ -47,9 +47,9 @@ models:
     context_length: 4096
     max_new_tokens: 150
   tts:
-    # The TTS provider to use. 'piper' is the default high-quality local engine.
+    # The TTS provider to use. 'piper' is the recommended high-quality offline provider.
     provider: "piper"
-    # --- Piper Provider Settings ---
+    # Path to the .onnx voice model for Piper.
     piper_voice_model: "data/models/tts/en_US-lessac-medium.onnx"
   stt:
     vosk_model_path: "data/models/stt/vosk-model-en-us-0.22"
@@ -65,7 +65,7 @@ models:
     whisper_vad:
       # Energy threshold for detecting speech (0-3000). Higher = less sensitive.
       # Default: 300. Increase if picking up too much background noise.
-      energy_threshold: 300
+      energy_threshold: 1000
       # Timeout in seconds for ending a phrase (0.1-5.0).
       # Default: 1.0. Increase if your speech is frequently cut off.
       phrase_timeout: 1.0
@@ -80,7 +80,7 @@ audio:
     # more background noise. Lower values make it more sensitive, picking up
     # softer speech but also more noise. Adjust this based on your environment.
     # A good starting point for noisy environments might be 600-800.
-    energy_threshold: 800
+    energy_threshold: 1000
 
 logging:
   # Path for the log folder, relative to project root.

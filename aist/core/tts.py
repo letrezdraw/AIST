@@ -23,7 +23,10 @@ def initialize_tts_engine(event_broadcaster=None):
 
     try:
         provider_module = importlib.import_module(f"aist.tts_providers.{provider_name}_provider")
-        ProviderClass = getattr(provider_module, f"{provider_name.capitalize()}Provider")
+        if provider_name == 'pyttsx3':
+            ProviderClass = getattr(provider_module, "Pyttsx3Provider")
+        else:
+            ProviderClass = getattr(provider_module, f"{provider_name.capitalize()}Provider")
         tts_provider = ProviderClass()
         log.info(f"TTS provider '{provider_name}' initialized.")
         if event_broadcaster:
