@@ -378,3 +378,100 @@
 2026-01-16 22:03:06,648 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
 2026-01-16 22:03:06,649 - ERROR    - aist.core.ipc.client   - ZMQ error while sending event to backend: Operation cannot be accomplished in current state
 2026-01-16 22:03:06,649 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 23:09:02,887 - INFO     - aist.core.ipc.client   - IPC Client started and connected to tcp://localhost:5555
+2026-01-16 23:09:03,834 - DEBUG    - PIL.PngImagePlugin     - STREAM b'IHDR' 16 13
+2026-01-16 23:09:03,835 - DEBUG    - PIL.PngImagePlugin     - STREAM b'pHYs' 41 9
+2026-01-16 23:09:03,835 - DEBUG    - PIL.PngImagePlugin     - STREAM b'iTXt' 62 1264
+2026-01-16 23:09:03,836 - DEBUG    - PIL.PngImagePlugin     - STREAM b'IDAT' 1338 23284
+2026-01-16 23:09:03,840 - DEBUG    - PIL.Image              - Importing AvifImagePlugin
+2026-01-16 23:09:04,377 - DEBUG    - PIL.Image              - Importing BlpImagePlugin
+2026-01-16 23:09:04,378 - DEBUG    - PIL.Image              - Importing BmpImagePlugin
+2026-01-16 23:09:04,379 - DEBUG    - PIL.Image              - Importing BufrStubImagePlugin
+2026-01-16 23:09:04,379 - DEBUG    - PIL.Image              - Importing CurImagePlugin
+2026-01-16 23:09:04,380 - DEBUG    - PIL.Image              - Importing DcxImagePlugin
+2026-01-16 23:09:04,381 - DEBUG    - PIL.Image              - Importing DdsImagePlugin
+2026-01-16 23:09:04,382 - DEBUG    - PIL.Image              - Importing EpsImagePlugin
+2026-01-16 23:09:04,383 - DEBUG    - PIL.Image              - Importing FitsImagePlugin
+2026-01-16 23:09:04,385 - DEBUG    - PIL.Image              - Importing FliImagePlugin
+2026-01-16 23:09:04,385 - DEBUG    - PIL.Image              - Importing FpxImagePlugin
+2026-01-16 23:09:04,387 - DEBUG    - PIL.Image              - Importing FtexImagePlugin
+2026-01-16 23:09:04,387 - DEBUG    - PIL.Image              - Importing GbrImagePlugin
+2026-01-16 23:09:04,388 - DEBUG    - PIL.Image              - Importing GifImagePlugin
+2026-01-16 23:09:04,388 - DEBUG    - PIL.Image              - Importing GribStubImagePlugin
+2026-01-16 23:09:04,388 - DEBUG    - PIL.Image              - Importing Hdf5StubImagePlugin
+2026-01-16 23:09:04,389 - DEBUG    - PIL.Image              - Importing IcnsImagePlugin
+2026-01-16 23:09:04,390 - DEBUG    - PIL.Image              - Importing IcoImagePlugin
+2026-01-16 23:09:04,391 - DEBUG    - PIL.Image              - Importing ImImagePlugin
+2026-01-16 23:09:04,392 - DEBUG    - PIL.Image              - Importing ImtImagePlugin
+2026-01-16 23:09:04,392 - DEBUG    - PIL.Image              - Importing IptcImagePlugin
+2026-01-16 23:09:04,393 - DEBUG    - PIL.Image              - Importing JpegImagePlugin
+2026-01-16 23:09:04,393 - DEBUG    - PIL.Image              - Importing Jpeg2KImagePlugin
+2026-01-16 23:09:04,393 - DEBUG    - PIL.Image              - Importing McIdasImagePlugin
+2026-01-16 23:09:04,393 - DEBUG    - PIL.Image              - Importing MicImagePlugin
+2026-01-16 23:09:04,395 - DEBUG    - PIL.Image              - Importing MpegImagePlugin
+2026-01-16 23:09:04,397 - DEBUG    - PIL.Image              - Importing MpoImagePlugin
+2026-01-16 23:09:04,397 - DEBUG    - PIL.Image              - Importing MspImagePlugin
+2026-01-16 23:09:04,398 - DEBUG    - PIL.Image              - Importing PalmImagePlugin
+2026-01-16 23:09:04,398 - DEBUG    - PIL.Image              - Importing PcdImagePlugin
+2026-01-16 23:09:04,399 - DEBUG    - PIL.Image              - Importing PcxImagePlugin
+2026-01-16 23:09:04,399 - DEBUG    - PIL.Image              - Importing PdfImagePlugin
+2026-01-16 23:09:04,404 - DEBUG    - PIL.Image              - Importing PixarImagePlugin
+2026-01-16 23:09:04,405 - DEBUG    - PIL.Image              - Importing PngImagePlugin
+2026-01-16 23:09:04,405 - DEBUG    - PIL.Image              - Importing PpmImagePlugin
+2026-01-16 23:09:04,405 - DEBUG    - PIL.Image              - Importing PsdImagePlugin
+2026-01-16 23:09:04,405 - DEBUG    - PIL.Image              - Importing QoiImagePlugin
+2026-01-16 23:09:04,406 - DEBUG    - PIL.Image              - Importing SgiImagePlugin
+2026-01-16 23:09:04,406 - DEBUG    - PIL.Image              - Importing SpiderImagePlugin
+2026-01-16 23:09:04,407 - DEBUG    - PIL.Image              - Importing SunImagePlugin
+2026-01-16 23:09:04,407 - DEBUG    - PIL.Image              - Importing TgaImagePlugin
+2026-01-16 23:09:04,407 - DEBUG    - PIL.Image              - Importing TiffImagePlugin
+2026-01-16 23:09:04,408 - DEBUG    - PIL.Image              - Importing WebPImagePlugin
+2026-01-16 23:09:04,942 - DEBUG    - PIL.Image              - Importing WmfImagePlugin
+2026-01-16 23:09:04,943 - DEBUG    - PIL.Image              - Importing XbmImagePlugin
+2026-01-16 23:09:04,943 - DEBUG    - PIL.Image              - Importing XpmImagePlugin
+2026-01-16 23:09:04,944 - DEBUG    - PIL.Image              - Importing XVThumbImagePlugin
+2026-01-16 23:09:04,981 - INFO     - __main__               - Registering global quit hotkey: CTRL+WIN+X
+2026-01-16 23:09:05,044 - INFO     - aist.core.tts          - Initializing TTS engine with provider: 'piper'
+2026-01-16 23:09:05,044 - WARNING  - aist.core.config_manager - Config key 'ipc.text_command_port' not found. Using default value: 5557
+2026-01-16 23:09:05,044 - INFO     - __main__               - Text command listener started on tcp://*:5557
+2026-01-16 23:09:05,460 - WARNING  - aist.core.config_manager - Config key 'models.tts.piper_voice_model' not found. Using default value: None
+2026-01-16 23:09:05,460 - CRITICAL - aist.tts_providers.piper_provider - FATAL: Piper TTS model path is not configured in config.yaml (models.tts.piper_voice_model).
+2026-01-16 23:09:05,460 - INFO     - aist.core.tts          - TTS provider 'piper' initialized.
+2026-01-16 23:09:05,460 - DEBUG    - __main__               - Forwarding event 'init_status_update' to backend.
+2026-01-16 23:09:15,472 - ERROR    - aist.core.ipc.client   - ZMQ error while sending event to backend: Resource temporarily unavailable
+2026-01-16 23:09:15,472 - INFO     - aist.core.tts          - TTS engine is listening for 'tts.speak' events.
+2026-01-16 23:09:28,752 - INFO     - aist.stt_providers.whisper_provider - Checking for CUDA availability... torch.cuda.is_available() = False
+2026-01-16 23:09:28,752 - INFO     - aist.stt_providers.whisper_provider - Loading Whisper model 'small.en' on device 'cpu'... This may take a moment.
+2026-01-16 23:09:28,752 - INFO     - aist.stt_providers.whisper_provider - Model cache directory: E:\Project\AIST\data\models\stt
+2026-01-16 23:09:31,457 - INFO     - aist.stt_providers.whisper_provider - Whisper model loaded successfully.
+2026-01-16 23:09:31,457 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 23:09:31,457 - DEBUG    - aist.stt_providers.whisper_provider - Noise cancellation not enabled in config, skipping calibration.
+2026-01-16 23:09:31,458 - DEBUG    - __main__               - Forwarding event 'init_status_update' to backend.
+2026-01-16 23:09:31,458 - ERROR    - aist.core.ipc.client   - ZMQ error while sending event to backend: Operation cannot be accomplished in current state
+2026-01-16 23:09:31,458 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_dynamic_energy' not found. Using default value: False
+2026-01-16 23:09:31,459 - WARNING  - aist.core.config_manager - Config key 'audio.stt.pause_threshold' not found. Using default value: 0.8
+2026-01-16 23:09:31,459 - WARNING  - aist.core.config_manager - Config key 'audio.stt.listen_timeout' not found. Using default value: 1.6
+2026-01-16 23:09:31,459 - ERROR    - aist.tts_providers.piper_provider - TTS engine (Piper) not available. Cannot play audio.
+2026-01-16 23:09:31,482 - INFO     - aist.stt_providers.whisper_provider - Using manual energy threshold: 300.
+2026-01-16 23:09:31,482 - INFO     - aist.stt_providers.whisper_provider - Whisper STT listening with pause_threshold=0.8, phrase_time_limit=1.0, listen_timeout=1.6
+2026-01-16 23:09:31,482 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 23:09:34,035 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 23:09:34,035 - ERROR    - aist.core.ipc.client   - ZMQ error while sending event to backend: Operation cannot be accomplished in current state
+2026-01-16 23:09:34,036 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 23:09:34,036 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 23:09:34,036 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 23:09:34,036 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 23:09:36,426 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 23:09:36,426 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 23:09:36,426 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 23:09:37,445 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 23:09:37,446 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 23:09:37,446 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 23:09:38,471 - INFO     - __main__               - --- SHUTDOWN_APP CALLED --- Shutdown signal received. Terminating.
+2026-01-16 23:09:38,471 - INFO     - aist.core.ipc.client   - Stopping IPC client...
+2026-01-16 23:09:39,335 - INFO     - __main__               - Text command listener stopped.
+2026-01-16 23:09:39,565 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 23:09:39,566 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 23:09:39,566 - WARNING  - aist.core.ipc.client   - IPC client is not running. Cannot send event.
+2026-01-16 23:09:42,259 - INFO     - aist.stt_providers.whisper_provider - Whisper transcribed: 'do'
+2026-01-16 23:09:42,259 - INFO     - aist.stt_providers.whisper_provider - Whisper provider stopped.
