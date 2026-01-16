@@ -1,0 +1,14 @@
+{
+    "whisper_model": "small",
+    "language": "en",
+    "clear_log_on_start": true,
+    "ffmpeg_path": "ffmpeg.exe",
+    "phrase_time_limit": 10,
+    "energy_threshold": 490025,
+    "pause_threshold": 0.8,
+    "listen_timeout": 1.6,
+    "use_dynamic_energy": false,
+    "use_noise_cancellation": true,
+    "noise_calibration_duration": 2,
+    "noise_profile_path": "noise_profile.wav"
+}

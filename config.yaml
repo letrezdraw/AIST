@@ -1,93 +1,61 @@
 # AIST Configuration File
 #
-# Copy this file to 'config.yaml' in the project root and edit it to your needs.
-# The application will load 'config.yaml' at startup.
+# This config.yaml is created for testing the updated Whisper STT provider.
 
 assistant:
-  name: "AIST"
-  # Phrases that will activate the assistant from the DORMANT state.
-  # The STT engine is highly optimized to listen for these specific phrases.
+  name: "MAX"
   activation_phrases:
     - "hey assist"
     - "okay assist"
     - "hey assistant"
     - "okay assistant"
-  # Phrases that will shut down the assistant from any state.
   exit_phrases:
     - "assist exit"
     - "assist quit"
-  # Phrases that will return the assistant to the DORMANT state.
   deactivation_phrases:
     - "assist pause"
     - "go to sleep"
-  # How similar (in percent) speech must be to a command phrase to be a match.
-  # Lower is more lenient but risks more false positives. 85 is a good starting point.
   fuzzy_match_threshold: 85
-  # The maximum time in seconds a skill is allowed to run before being terminated.
   skill_timeout: 5
-  # The number of user/assistant exchanges to keep in short-term memory for context.
   conversation_history_length: 5
 
 ipc:
-  # Port for the main command/response channel between the frontend and backend.
   command_port: 5555
-  # Port for the event bus, broadcasting state changes to GUIs or other listeners.
-  # This is separate from the main command/response channel.
   event_bus_port: 5556
-  # Port for broadcasting log records to the GUI or other listeners.
-  # This is separate from the main command/response channel.
   log_broadcast_port: 5558
-  # Port for text commands, enabling external tools or scripts to send text input to the assistant.
-  text_command_port: 5557
 
 models:
   llm:
-    path: "./data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
-    gpu_layers: 50
+    path: "data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
+    gpu_layers: 99
     context_length: 4096
     max_new_tokens: 150
   tts:
-    # The TTS provider to use. 'piper' is the recommended high-quality offline provider.
     provider: "piper"
-    # Path to the .onnx voice model for Piper.
-    piper_voice_model: "data/models/tts/en_US-lessac-medium.onnx"
   stt:
     vosk_model_path: "data/models/stt/vosk-model-en-us-0.22"
-    # The STT provider to use. 'vosk' is the default lightweight engine.
-    # 'whisper' will provide higher quality recognition.
-    provider: "whisper"
-    # --- Whisper Provider Settings ---
-    # Model size (e.g., "tiny.en", "base.en", "small.en", "medium.en"). Larger models are
-    # more accurate but slower and use more memory. ".en" models are English-only.
-    whisper_model_name: "medium.en"
-    whisper_device: "cuda" # "cuda" for NVIDIA GPUs, "cpu" for CPU
-    # --- Whisper VAD (Voice Activity Detection) Settings ---
-    whisper_vad:
-      # Energy threshold for detecting speech (0-3000). Higher = less sensitive.
-      # Default: 300. Increase if picking up too much background noise.
-      energy_threshold: 1000
-      # Timeout in seconds for ending a phrase (0.1-5.0).
-      # Default: 1.0. Increase if your speech is frequently cut off.
-      phrase_timeout: 1.0
+    provider: "whisper" # Set to whisper for testing
+    whisper_model_name: "small.en" # Use small.en for better performance
+    whisper_device: "cpu"
+    pause_threshold: 0.8
+    listen_timeout: 1.6
+    use_dynamic_energy: false
+    use_noise_cancellation: true # Enable noise cancellation for testing
+    noise_calibration_duration: 2
+    noise_profile_path: "data/audio/noise_profile.wav"
 
 audio:
   stt:
-    # Confidence threshold (0.0 to 1.0) for accepting a transcription.
-    # Lower values are more permissive but may result in more errors.
     confidence_threshold: 0.85
-    # Voice Activity Detection (VAD) energy threshold. This controls how sensitive
-    # the microphone is to sound. Higher values make it less sensitive, ignoring
-    # more background noise. Lower values make it more sensitive, picking up
-    # softer speech but also more noise. Adjust this based on your environment.
-    # A good starting point for noisy environments might be 600-800.
-    energy_threshold: 1000
+    whisper_vad:
+      phrase_timeout: 1.0
+      energy_threshold: 300
+    vosk_vad:
+      energy_threshold: 300
 
 logging:
-  # Path for the log folder, relative to project root.
   folder: "data/logs"
-  # Whether to show log output in the console. Set to false for a cleaner terminal.
   console_enabled: false
 
 hotkeys:
-  # Global hotkey to force quit the application.
   quit: "ctrl+win+x"

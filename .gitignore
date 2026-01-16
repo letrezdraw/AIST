@@ -18,6 +18,7 @@ dist/
 
 # Virtual environment
 venv/
+STT_Test_Project/venv/
 
 # Project-specific data (logs, models, memory)
 /data/models/

@@ -24,6 +24,7 @@ class ConfigManager:
         """Loads configuration from config.yaml."""
         config_path = 'config.yaml'
         if not os.path.exists(config_path):
+            log.info(f"Attempting to load configuration from '{os.path.abspath(config_path)}'.")
             log.fatal(f"Configuration file '{config_path}' not found.")
             log.fatal("Please copy 'config.template.yaml' to 'config.yaml' and customize it.")
             # Proceed with an empty config, which will cause controlled failures downstream.

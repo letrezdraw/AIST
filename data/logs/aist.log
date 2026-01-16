@@ -1,0 +1,380 @@
+2026-01-16 22:01:18,242 - INFO     - aist.gui.main_window   - AIST GUI application started.
+2026-01-16 22:01:18,278 - INFO     - aist.gui.main_window   - GUI widgets created.
+2026-01-16 22:01:18,278 - INFO     - aist.gui.main_window   - Starting GUI services...
+2026-01-16 22:01:18,278 - INFO     - aist.core.ipc.client   - IPC Client started and connected to tcp://localhost:5555
+2026-01-16 22:01:18,279 - INFO     - aist.gui.main_window   - GUI log listener started.
+2026-01-16 22:01:22,682 - INFO     - aist.core.ipc.event_bus - Event broadcaster started on tcp://*:5556
+2026-01-16 22:01:22,704 - INFO     - aist.core.conversation - ConversationManager initialized with a max history of 5 exchanges.
+2026-01-16 22:01:22,704 - INFO     - aist.skills.skill_loader - Searching for skills in 'aist\skills'...
+2026-01-16 22:01:22,705 - INFO     - aist.skills.memory_skill - Memory skill initialized.
+2026-01-16 22:01:22,705 - INFO     - aist.skills.skill_loader - Registered intent 'store_memory' for skill 'memory_skill'.
+2026-01-16 22:01:22,705 - INFO     - aist.skills.skill_loader - Registered intent 'recall_memory' for skill 'memory_skill'.
+2026-01-16 22:01:22,705 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Memory Skill' (v1.0).
+2026-01-16 22:01:22,706 - INFO     - aist.skills.system_skill - System skill initialized.
+2026-01-16 22:01:22,706 - INFO     - aist.skills.skill_loader - Registered intent 'open_application' for skill 'system_skill'.
+2026-01-16 22:01:22,706 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'System Control Skill' (v1.0).
+2026-01-16 22:01:22,706 - INFO     - aist.skills.time_skill - Time skill initialized.
+2026-01-16 22:01:22,706 - INFO     - aist.skills.skill_loader - Registered intent 'get_current_time' for skill 'time_skill'.
+2026-01-16 22:01:22,706 - INFO     - aist.skills.skill_loader - Successfully loaded skill 'Current Time Skill' (v1.0).
+2026-01-16 22:01:22,707 - INFO     - aist.core.llm          - Loading local AI model. This can take several minutes on the first run...
+2026-01-16 22:01:22,707 - DEBUG    - aist.gui.main_window   - Received event: init_status_update with payload: {'component': 'skills', 'status': 'initialized', 'count': 3}
+2026-01-16 22:01:22,707 - INFO     - aist.core.llm          - Found local model at: data/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+2026-01-16 22:01:22,780 - DEBUG    - aist.gui.main_window   - Processing log queue item: Type=init_status_update, Data={'component': 'skills', 'status': 'initialized', 'count': 3}
+2026-01-16 22:01:22,780 - INFO     - aist.gui.main_window   - Handling INIT_STATUS_UPDATE: {'component': 'skills', 'status': 'initialized', 'count': 3}
+2026-01-16 22:01:22,781 - INFO     - aist.gui.main_window   - Checking if all components are initialized...
+2026-01-16 22:01:22,781 - INFO     - aist.gui.main_window   - Not all components are initialized yet.
+2026-01-16 22:01:24,125 - INFO     - aist.core.llm          - AI Model loaded successfully.
+2026-01-16 22:01:24,126 - DEBUG    - aist.gui.main_window   - Received event: init_status_update with payload: {'component': 'llm', 'status': 'initialized'}
+2026-01-16 22:01:24,182 - DEBUG    - aist.gui.main_window   - Processing log queue item: Type=init_status_update, Data={'component': 'llm', 'status': 'initialized'}
+2026-01-16 22:01:24,182 - INFO     - aist.gui.main_window   - Handling INIT_STATUS_UPDATE: {'component': 'llm', 'status': 'initialized'}
+2026-01-16 22:01:24,182 - INFO     - aist.gui.main_window   - Checking if all components are initialized...
+2026-01-16 22:01:24,182 - INFO     - aist.gui.main_window   - Not all components are initialized yet.
+2026-01-16 22:01:24,485 - INFO     - aist.core.ipc.client   - IPC Client started and connected to tcp://localhost:5555
+2026-01-16 22:01:24,492 - DEBUG    - PIL.PngImagePlugin     - STREAM b'IHDR' 16 13
+2026-01-16 22:01:24,492 - DEBUG    - PIL.PngImagePlugin     - STREAM b'pHYs' 41 9
+2026-01-16 22:01:24,492 - DEBUG    - PIL.PngImagePlugin     - STREAM b'iTXt' 62 1264
+2026-01-16 22:01:24,492 - DEBUG    - PIL.PngImagePlugin     - STREAM b'IDAT' 1338 23284
+2026-01-16 22:01:24,497 - DEBUG    - PIL.Image              - Importing AvifImagePlugin
+2026-01-16 22:01:24,498 - DEBUG    - PIL.Image              - Importing BlpImagePlugin
+2026-01-16 22:01:24,498 - DEBUG    - PIL.Image              - Importing BmpImagePlugin
+2026-01-16 22:01:24,498 - DEBUG    - PIL.Image              - Importing BufrStubImagePlugin
+2026-01-16 22:01:24,499 - DEBUG    - PIL.Image              - Importing CurImagePlugin
+2026-01-16 22:01:24,499 - DEBUG    - PIL.Image              - Importing DcxImagePlugin
+2026-01-16 22:01:24,500 - DEBUG    - PIL.Image              - Importing DdsImagePlugin
+2026-01-16 22:01:24,501 - DEBUG    - PIL.Image              - Importing EpsImagePlugin
+2026-01-16 22:01:24,502 - DEBUG    - PIL.Image              - Importing FitsImagePlugin
+2026-01-16 22:01:24,502 - DEBUG    - PIL.Image              - Importing FliImagePlugin
+2026-01-16 22:01:24,503 - DEBUG    - PIL.Image              - Importing FpxImagePlugin
+2026-01-16 22:01:24,504 - DEBUG    - PIL.Image              - Importing FtexImagePlugin
+2026-01-16 22:01:24,504 - DEBUG    - PIL.Image              - Importing GbrImagePlugin
+2026-01-16 22:01:24,504 - DEBUG    - PIL.Image              - Importing GifImagePlugin
+2026-01-16 22:01:24,504 - DEBUG    - PIL.Image              - Importing GribStubImagePlugin
+2026-01-16 22:01:24,505 - DEBUG    - PIL.Image              - Importing Hdf5StubImagePlugin
+2026-01-16 22:01:24,505 - DEBUG    - PIL.Image              - Importing IcnsImagePlugin
+2026-01-16 22:01:24,505 - DEBUG    - PIL.Image              - Importing IcoImagePlugin
+2026-01-16 22:01:24,506 - DEBUG    - PIL.Image              - Importing ImImagePlugin
+2026-01-16 22:01:24,507 - DEBUG    - PIL.Image              - Importing ImtImagePlugin
+2026-01-16 22:01:24,507 - DEBUG    - PIL.Image              - Importing IptcImagePlugin
+2026-01-16 22:01:24,507 - DEBUG    - PIL.Image              - Importing JpegImagePlugin
+2026-01-16 22:01:24,507 - DEBUG    - PIL.Image              - Importing Jpeg2KImagePlugin
+2026-01-16 22:01:24,507 - DEBUG    - PIL.Image              - Importing McIdasImagePlugin
+2026-01-16 22:01:24,508 - DEBUG    - PIL.Image              - Importing MicImagePlugin
+2026-01-16 22:01:24,508 - DEBUG    - PIL.Image              - Importing MpegImagePlugin
+2026-01-16 22:01:24,509 - DEBUG    - PIL.Image              - Importing MpoImagePlugin
+2026-01-16 22:01:24,509 - DEBUG    - PIL.Image              - Importing MspImagePlugin
+2026-01-16 22:01:24,509 - DEBUG    - PIL.Image              - Importing PalmImagePlugin
+2026-01-16 22:01:24,510 - DEBUG    - PIL.Image              - Importing PcdImagePlugin
+2026-01-16 22:01:24,510 - DEBUG    - PIL.Image              - Importing PcxImagePlugin
+2026-01-16 22:01:24,510 - DEBUG    - PIL.Image              - Importing PdfImagePlugin
+2026-01-16 22:01:24,513 - DEBUG    - PIL.Image              - Importing PixarImagePlugin
+2026-01-16 22:01:24,513 - DEBUG    - PIL.Image              - Importing PngImagePlugin
+2026-01-16 22:01:24,513 - DEBUG    - PIL.Image              - Importing PpmImagePlugin
+2026-01-16 22:01:24,513 - DEBUG    - PIL.Image              - Importing PsdImagePlugin
+2026-01-16 22:01:24,514 - DEBUG    - PIL.Image              - Importing QoiImagePlugin
+2026-01-16 22:01:24,514 - DEBUG    - PIL.Image              - Importing SgiImagePlugin
+2026-01-16 22:01:24,514 - DEBUG    - PIL.Image              - Importing SpiderImagePlugin
+2026-01-16 22:01:24,514 - DEBUG    - PIL.Image              - Importing SunImagePlugin
+2026-01-16 22:01:24,515 - DEBUG    - PIL.Image              - Importing TgaImagePlugin
+2026-01-16 22:01:24,515 - DEBUG    - PIL.Image              - Importing TiffImagePlugin
+2026-01-16 22:01:24,515 - DEBUG    - PIL.Image              - Importing WebPImagePlugin
+2026-01-16 22:01:24,516 - DEBUG    - PIL.Image              - Importing WmfImagePlugin
+2026-01-16 22:01:24,516 - DEBUG    - PIL.Image              - Importing XbmImagePlugin
+2026-01-16 22:01:24,517 - DEBUG    - PIL.Image              - Importing XpmImagePlugin
+2026-01-16 22:01:24,517 - DEBUG    - PIL.Image              - Importing XVThumbImagePlugin
+2026-01-16 22:01:24,551 - INFO     - __main__               - Registering global quit hotkey: CTRL+WIN+X
+2026-01-16 22:01:24,609 - WARNING  - aist.core.config_manager - Config key 'ipc.text_command_port' not found. Using default value: 5557
+2026-01-16 22:01:24,609 - INFO     - aist.core.tts          - Initializing TTS engine with provider: 'piper'
+2026-01-16 22:01:24,610 - INFO     - __main__               - Text command listener started on tcp://*:5557
+2026-01-16 22:01:24,811 - WARNING  - aist.core.config_manager - Config key 'models.tts.piper_voice_model' not found. Using default value: None
+2026-01-16 22:01:24,811 - CRITICAL - aist.tts_providers.piper_provider - FATAL: Piper TTS model path is not configured in config.yaml (models.tts.piper_voice_model).
+2026-01-16 22:01:24,811 - INFO     - aist.core.tts          - TTS provider 'piper' initialized.
+2026-01-16 22:01:24,811 - DEBUG    - __main__               - Forwarding event 'init_status_update' to backend.
+2026-01-16 22:01:24,812 - INFO     - aist.core.tts          - TTS engine is listening for 'tts.speak' events.
+2026-01-16 22:01:24,812 - DEBUG    - aist.gui.main_window   - Received event: init_status_update with payload: {'component': 'tts', 'status': 'initialized'}
+2026-01-16 22:01:24,848 - DEBUG    - aist.gui.main_window   - Processing log queue item: Type=init_status_update, Data={'component': 'tts', 'status': 'initialized'}
+2026-01-16 22:01:24,848 - INFO     - aist.gui.main_window   - Handling INIT_STATUS_UPDATE: {'component': 'tts', 'status': 'initialized'}
+2026-01-16 22:01:24,849 - INFO     - aist.gui.main_window   - Checking if all components are initialized...
+2026-01-16 22:01:24,849 - INFO     - aist.gui.main_window   - Not all components are initialized yet.
+2026-01-16 22:01:25,976 - INFO     - aist.stt_providers.whisper_provider - Checking for CUDA availability... torch.cuda.is_available() = False
+2026-01-16 22:01:25,976 - INFO     - aist.stt_providers.whisper_provider - Loading Whisper model 'small.en' on device 'cpu'... This may take a moment.
+2026-01-16 22:01:25,976 - INFO     - aist.stt_providers.whisper_provider - Model cache directory: E:\Project\AIST\data\models\stt
+2026-01-16 22:01:27,293 - INFO     - aist.stt_providers.whisper_provider - Whisper model loaded successfully.
+2026-01-16 22:01:27,293 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:01:27,294 - DEBUG    - aist.stt_providers.whisper_provider - Noise cancellation not enabled in config, skipping calibration.
+2026-01-16 22:01:27,294 - DEBUG    - __main__               - Forwarding event 'init_status_update' to backend.
+2026-01-16 22:01:27,295 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_dynamic_energy' not found. Using default value: False
+2026-01-16 22:01:27,295 - WARNING  - aist.core.config_manager - Config key 'audio.stt.pause_threshold' not found. Using default value: 0.8
+2026-01-16 22:01:27,295 - DEBUG    - aist.gui.main_window   - Received event: init_status_update with payload: {'component': 'stt', 'status': 'initialized', 'provider': 'whisper'}
+2026-01-16 22:01:27,295 - WARNING  - aist.core.config_manager - Config key 'audio.stt.listen_timeout' not found. Using default value: 1.6
+2026-01-16 22:01:27,295 - ERROR    - aist.tts_providers.piper_provider - TTS engine (Piper) not available. Cannot play audio.
+2026-01-16 22:01:27,305 - INFO     - aist.stt_providers.whisper_provider - Using manual energy threshold: 300.
+2026-01-16 22:01:27,306 - INFO     - aist.stt_providers.whisper_provider - Whisper STT listening with pause_threshold=0.8, phrase_time_limit=1.0, listen_timeout=1.6
+2026-01-16 22:01:27,306 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:27,357 - DEBUG    - aist.gui.main_window   - Processing log queue item: Type=init_status_update, Data={'component': 'stt', 'status': 'initialized', 'provider': 'whisper'}
+2026-01-16 22:01:27,357 - INFO     - aist.gui.main_window   - Handling INIT_STATUS_UPDATE: {'component': 'stt', 'status': 'initialized', 'provider': 'whisper'}
+2026-01-16 22:01:27,357 - INFO     - aist.gui.main_window   - Checking if all components are initialized...
+2026-01-16 22:01:27,357 - INFO     - aist.gui.main_window   - All components reported as initialized. Transitioning to chat frame.
+2026-01-16 22:01:28,326 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:01:28,327 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:01:28,327 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:01:28,327 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:28,327 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:01:28,369 - INFO     - aist.gui.main_window   - Showing chat frame.
+2026-01-16 22:01:30,116 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:01:30,116 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:01:30,117 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:32,336 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:01:32,337 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:01:32,337 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:01:32,337 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:32,337 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:01:33,916 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:01:33,916 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:01:33,917 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:35,496 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:01:35,496 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:37,076 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:01:37,076 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:01:37,077 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:01:37,077 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:37,077 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:01:39,586 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:01:39,586 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:01:39,586 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:39,586 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:01:41,166 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:01:41,166 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:01:41,167 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:42,747 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:01:42,747 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:44,396 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:01:44,396 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:45,856 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:01:45,856 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:01:45,857 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:01:45,857 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:45,857 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:01:47,206 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:01:47,206 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:01:47,206 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:47,206 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:01:48,164 - INFO     - aist.stt_providers.whisper_provider - Whisper transcribed: 'you'
+2026-01-16 22:01:48,165 - DEBUG    - aist.core.ipc.client   - Sending request to backend: {"type": "command", "payload": {"text": "you", "state": "DORMANT"}}
+2026-01-16 22:01:48,166 - DEBUG    - aist.core.ipc.client   - Received response from backend: {}
+2026-01-16 22:01:48,166 - INFO     - __main__               - Received an empty or null response from backend (e.g., ignored command). Continuing.
+2026-01-16 22:01:48,776 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:01:48,776 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:01:48,777 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:50,355 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:01:50,357 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:52,567 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:01:52,567 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:53,776 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:01:53,777 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:01:53,777 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:01:53,777 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:53,777 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:01:55,217 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:01:55,217 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:01:55,217 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:55,217 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:01:57,207 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:01:57,208 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:01:57,208 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:01:58,647 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:01:58,648 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:01:58,648 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:01:58,648 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:00,787 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:02:00,787 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:02:00,788 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:01,857 - INFO     - aist.stt_providers.whisper_provider - Whisper transcribed: 'Imp lemon'
+2026-01-16 22:02:01,858 - DEBUG    - aist.core.ipc.client   - Sending request to backend: {"type": "command", "payload": {"text": "Imp lemon", "state": "DORMANT"}}
+2026-01-16 22:02:01,859 - DEBUG    - aist.core.ipc.client   - Received response from backend: {}
+2026-01-16 22:02:01,859 - INFO     - __main__               - Received an empty or null response from backend (e.g., ignored command). Continuing.
+2026-01-16 22:02:01,859 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:02,227 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:02:02,228 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:02,228 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:02,228 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:02,855 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:04,387 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:02:04,387 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:02:04,388 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:05,497 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:02:05,497 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:05,498 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:05,498 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:05,498 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:08,007 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:08,008 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:08,008 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:09,587 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:02:09,587 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:02:09,588 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:11,167 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:02:11,168 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:13,258 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:02:13,258 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:14,345 - INFO     - aist.gui.main_window   - Send command button pressed.
+2026-01-16 22:02:14,345 - INFO     - aist.gui.main_window   - Sending command to backend: 'open notepad'
+2026-01-16 22:02:14,346 - DEBUG    - aist.gui.main_window   - _send_command_thread started for command: 'open notepad'
+2026-01-16 22:02:14,346 - DEBUG    - aist.core.ipc.client   - Sending request to backend: {"type": "command", "payload": {"text": "open notepad", "state": "LISTENING"}}
+2026-01-16 22:02:14,347 - INFO     - aist.skills.dispatcher - Fuzzy match successful for 'open notepad' with 'open' (Similarity: 100%)
+2026-01-16 22:02:14,347 - INFO     - aist.skills.dispatcher - Fast-path intent match found: 'open_application'
+2026-01-16 22:02:14,351 - INFO     - aist.skills.dispatcher - Executing skill 'system_skill' in a sandboxed process.
+2026-01-16 22:02:14,434 - DEBUG    - aist.gui.main_window   - Processing log queue item: Type=log, Data=You: open notepad
+2026-01-16 22:02:14,646 - INFO     - aist.skills.dispatcher - Skill process wrapper started for skill: system_skill
+2026-01-16 22:02:14,646 - INFO     - aist.skills.dispatcher - Attempting to load skill module: system_skill
+2026-01-16 22:02:14,647 - INFO     - aist.skills.system_skill - System skill initialized.
+2026-01-16 22:02:14,647 - INFO     - aist.skills.dispatcher - Executing handler handle_open_application for skill system_skill
+2026-01-16 22:02:14,647 - INFO     - aist.skills.dispatcher - Skill system_skill handler handle_open_application completed successfully.
+2026-01-16 22:02:14,681 - INFO     - aist.skills.dispatcher - Skill 'system_skill' executed successfully.
+2026-01-16 22:02:14,682 - DEBUG    - aist.core.ipc.client   - Received response from backend: {"action": "COMMAND", "speak": "Which application would you like to open?", "intent": {"name": "open_application", "params": {}}}
+2026-01-16 22:02:14,682 - INFO     - aist.gui.main_window   - Received response from backend. Action: COMMAND, Speak: Which application would you like to open?
+2026-01-16 22:02:14,769 - DEBUG    - aist.gui.main_window   - Processing log queue item: Type=log, Data=AIST: Which application would you like to open?
+2026-01-16 22:02:14,927 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:02:14,928 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:14,928 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:14,928 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:16,297 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:16,298 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:16,298 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:18,367 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:18,368 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:18,368 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:19,947 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:02:19,947 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:02:19,948 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:21,517 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:02:21,517 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:23,778 - INFO     - aist.gui.main_window   - Send command button pressed.
+2026-01-16 22:02:23,778 - INFO     - aist.gui.main_window   - Sending command to backend: 'notepad'
+2026-01-16 22:02:23,778 - DEBUG    - aist.gui.main_window   - _send_command_thread started for command: 'notepad'
+2026-01-16 22:02:23,779 - DEBUG    - aist.core.ipc.client   - Sending request to backend: {"type": "command", "payload": {"text": "notepad", "state": "LISTENING"}}
+2026-01-16 22:02:23,779 - INFO     - aist.skills.dispatcher - No fast-path match. Consulting LLM for intent...
+2026-01-16 22:02:23,780 - INFO     - aist.core.llm          - Sending prompt to LLM...
+2026-01-16 22:02:23,883 - DEBUG    - aist.gui.main_window   - Processing log queue item: Type=log, Data=You: notepad
+2026-01-16 22:02:24,028 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:02:27,145 - INFO     - aist.stt_providers.whisper_provider - Whisper transcribed: 'Ok'
+2026-01-16 22:02:27,145 - DEBUG    - aist.core.ipc.client   - Sending request to backend: {"type": "command", "payload": {"text": "Ok", "state": "DORMANT"}}
+2026-01-16 22:02:27,146 - ERROR    - aist.core.ipc.client   - ZMQ error while communicating with backend: Operation cannot be accomplished in current state
+2026-01-16 22:02:27,146 - ERROR    - aist.tts_providers.piper_provider - TTS engine (Piper) not available. Cannot play audio.
+2026-01-16 22:02:27,147 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:28,776 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:30,117 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:31,420 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:33,784 - ERROR    - aist.core.ipc.client   - IPC timeout: Backend did not respond within 10 seconds. Backend may be unresponsive.
+2026-01-16 22:02:33,784 - INFO     - aist.gui.main_window   - Received response from backend. Action: COMMAND, Speak: I'm taking too long to think. Please try again.
+2026-01-16 22:02:33,896 - DEBUG    - aist.gui.main_window   - Processing log queue item: Type=log, Data=AIST: I'm taking too long to think. Please try again.
+2026-01-16 22:02:34,038 - ERROR    - aist.core.ipc.client   - ZMQ error while sending event to backend: Resource temporarily unavailable
+2026-01-16 22:02:34,038 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:34,038 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:34,038 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:34,038 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:36,457 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:36,457 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:36,458 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:36,458 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:37,828 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:37,828 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:37,828 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:38,083 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:39,867 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:39,868 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:39,868 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:39,868 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:41,447 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:02:41,448 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:02:41,448 - ERROR    - aist.core.ipc.client   - ZMQ error while sending event to backend: Operation cannot be accomplished in current state
+2026-01-16 22:02:41,448 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:42,834 - INFO     - aist.gui.main_window   - Send command button pressed.
+2026-01-16 22:02:42,834 - INFO     - aist.gui.main_window   - Sending command to backend: 'can you open notepad'
+2026-01-16 22:02:42,835 - DEBUG    - aist.gui.main_window   - _send_command_thread started for command: 'can you open notepad'
+2026-01-16 22:02:42,835 - DEBUG    - aist.core.ipc.client   - Sending request to backend: {"type": "command", "payload": {"text": "can you open notepad", "state": "LISTENING"}}
+2026-01-16 22:02:42,835 - ERROR    - aist.core.ipc.client   - ZMQ error while communicating with backend: Operation cannot be accomplished in current state
+2026-01-16 22:02:42,835 - INFO     - aist.gui.main_window   - Received response from backend. Action: COMMAND, Speak: I'm having trouble connecting to my brain.
+2026-01-16 22:02:42,921 - DEBUG    - aist.gui.main_window   - Processing log queue item: Type=log, Data=You: can you open notepad
+2026-01-16 22:02:42,921 - DEBUG    - aist.gui.main_window   - Processing log queue item: Type=log, Data=AIST: I'm having trouble connecting to my brain.
+2026-01-16 22:02:43,358 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:02:43,358 - ERROR    - aist.core.ipc.client   - ZMQ error while sending event to backend: Operation cannot be accomplished in current state
+2026-01-16 22:02:43,359 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:43,359 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:43,359 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:43,359 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:44,449 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:44,449 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:44,449 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:44,797 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:46,028 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:02:46,029 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:02:46,029 - ERROR    - aist.core.ipc.client   - ZMQ error while sending event to backend: Operation cannot be accomplished in current state
+2026-01-16 22:02:46,029 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:47,788 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:02:47,788 - ERROR    - aist.core.ipc.client   - ZMQ error while sending event to backend: Operation cannot be accomplished in current state
+2026-01-16 22:02:47,789 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:47,789 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:47,789 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:47,789 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:49,829 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:49,829 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:49,829 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:49,830 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:50,858 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:50,858 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:50,859 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:51,489 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:52,438 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:02:52,439 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:02:52,439 - ERROR    - aist.core.ipc.client   - ZMQ error while sending event to backend: Operation cannot be accomplished in current state
+2026-01-16 22:02:52,439 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:54,288 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:02:54,288 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:54,922 - INFO     - aist.gui.main_window   - Send command button pressed.
+2026-01-16 22:02:54,923 - INFO     - aist.gui.main_window   - Sending command to backend: 'exit'
+2026-01-16 22:02:54,923 - DEBUG    - aist.gui.main_window   - _send_command_thread started for command: 'exit'
+2026-01-16 22:02:54,923 - DEBUG    - aist.core.ipc.client   - Sending request to backend: {"type": "command", "payload": {"text": "exit", "state": "LISTENING"}}
+2026-01-16 22:02:54,923 - ERROR    - aist.core.ipc.client   - ZMQ error while communicating with backend: Operation cannot be accomplished in current state
+2026-01-16 22:02:54,924 - INFO     - aist.gui.main_window   - Received response from backend. Action: COMMAND, Speak: I'm having trouble connecting to my brain.
+2026-01-16 22:02:55,003 - DEBUG    - aist.gui.main_window   - Processing log queue item: Type=log, Data=You: exit
+2026-01-16 22:02:55,003 - DEBUG    - aist.gui.main_window   - Processing log queue item: Type=log, Data=AIST: I'm having trouble connecting to my brain.
+2026-01-16 22:02:55,868 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:02:55,868 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:57,398 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:02:57,398 - ERROR    - aist.core.ipc.client   - ZMQ error while sending event to backend: Operation cannot be accomplished in current state
+2026-01-16 22:02:57,398 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:57,399 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:57,399 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:57,399 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:02:58,568 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:02:58,569 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:02:58,569 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:02:58,674 - INFO     - aist.gui.main_window   - Send command button pressed.
+2026-01-16 22:02:58,675 - INFO     - aist.gui.main_window   - Sending command to backend: 'exit'
+2026-01-16 22:02:58,675 - DEBUG    - aist.gui.main_window   - _send_command_thread started for command: 'exit'
+2026-01-16 22:02:58,675 - DEBUG    - aist.core.ipc.client   - Sending request to backend: {"type": "command", "payload": {"text": "exit", "state": "LISTENING"}}
+2026-01-16 22:02:58,675 - ERROR    - aist.core.ipc.client   - ZMQ error while communicating with backend: Operation cannot be accomplished in current state
+2026-01-16 22:02:58,675 - INFO     - aist.gui.main_window   - Received response from backend. Action: COMMAND, Speak: I'm having trouble connecting to my brain.
+2026-01-16 22:02:58,765 - DEBUG    - aist.gui.main_window   - Processing log queue item: Type=log, Data=You: exit
+2026-01-16 22:02:58,765 - DEBUG    - aist.gui.main_window   - Processing log queue item: Type=log, Data=AIST: I'm having trouble connecting to my brain.
+2026-01-16 22:02:59,000 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:03:00,588 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:03:00,589 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:03:00,589 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:03:00,643 - WARNING  - aist.core.config_manager - Config key 'audio.stt.language' not found. Using default value: en
+2026-01-16 22:03:02,610 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:03:02,610 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:03:02,611 - ERROR    - aist.core.ipc.client   - ZMQ error while sending event to backend: Operation cannot be accomplished in current state
+2026-01-16 22:03:02,611 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:03:04,048 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:03:04,049 - ERROR    - aist.core.ipc.client   - ZMQ error while sending event to backend: Operation cannot be accomplished in current state
+2026-01-16 22:03:04,049 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:03:04,049 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:03:04,050 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:03:05,070 - DEBUG    - aist.stt_providers.whisper_provider - Speech detected, processing audio...
+2026-01-16 22:03:05,071 - WARNING  - aist.core.config_manager - Config key 'audio.stt.use_noise_cancellation' not found. Using default value: False
+2026-01-16 22:03:05,071 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...
+2026-01-16 22:03:06,648 - DEBUG    - aist.stt_providers.whisper_provider - No speech detected within timeout period.
+2026-01-16 22:03:06,648 - DEBUG    - __main__               - Forwarding event 'vad:status_changed' to backend.
+2026-01-16 22:03:06,649 - ERROR    - aist.core.ipc.client   - ZMQ error while sending event to backend: Operation cannot be accomplished in current state
+2026-01-16 22:03:06,649 - DEBUG    - aist.stt_providers.whisper_provider - Listening for speech...

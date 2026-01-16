@@ -54,8 +54,14 @@ models:
     # --- Whisper Provider Settings ---
     # Model size (e.g., "tiny.en", "base.en", "small.en", "medium.en"). Larger models are
     # more accurate but slower and use more memory. ".en" models are English-only.
-    whisper_model_name: "base.en"
+    whisper_model_name: "small.en"
     whisper_device: "cpu" # "cuda" for NVIDIA GPUs, "cpu" for CPU
+    pause_threshold: 0.8 # Seconds of non-speaking audio before a phrase is considered complete
+    listen_timeout: 1.6 # Seconds of non-speaking audio before a phrase is considered complete. If set, an AudioSource will wait this long for a phrase to start before giving up and returning None.
+    use_dynamic_energy: false # Dynamically adjust the energy threshold for ambient noise.
+    use_noise_cancellation: false # Enable noise reduction using noisereduce library.
+    noise_calibration_duration: 2 # Duration in seconds to record ambient noise for calibration.
+    noise_profile_path: "data/audio/noise_profile.wav" # Path to save/load the noise profile for noise reduction.
 
 audio:
   stt:

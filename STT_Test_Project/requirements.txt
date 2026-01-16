@@ -1,0 +1,8 @@
+openai-whisper
+sounddevice
+SpeechRecognition
+numpy
+scipy
+noisereduce
+soundfile
+pysound
